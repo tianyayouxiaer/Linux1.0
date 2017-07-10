@@ -14,16 +14,16 @@
 #include <linux/string.h>
 #include <linux/ctype.h>
 
-/* ×Ö·û´®µ½Êı×ÖµÄ×ª»»
-  * endp±íÊ¾×ª»»×Ö·û´®µÄ½áÊøÎ»ÖÃ
-  * cp±íÊ¾×ª»»×Ö·û´®µÄÆğÊ¼Î»ÖÃ 
-  * base±íÊ¾½øÖÆ 
+/* å­—ç¬¦ä¸²åˆ°æ•°å­—çš„è½¬æ¢
+  * endpè¡¨ç¤ºè½¬æ¢å­—ç¬¦ä¸²çš„ç»“æŸä½ç½®
+  * cpè¡¨ç¤ºè½¬æ¢å­—ç¬¦ä¸²çš„èµ·å§‹ä½ç½® 
+  * baseè¡¨ç¤ºè¿›åˆ¶ 
   */
 unsigned long simple_strtoul(const char *cp,char **endp,unsigned int base)
 {
 	unsigned long result = 0,value;
 
-	/* ÅĞ¶ÏÊäÈë×Ö·ûµÄ½øÖÆ£¬²¢ÇÒ±£´æ½á¹ûµ½baseµ±ÖĞ */
+	/* åˆ¤æ–­è¾“å…¥å­—ç¬¦çš„è¿›åˆ¶ï¼Œå¹¶ä¸”ä¿å­˜ç»“æœåˆ°baseå½“ä¸­ */
 	if (!base) {
 		base = 10;
 		if (*cp == '0') {
@@ -35,7 +35,7 @@ unsigned long simple_strtoul(const char *cp,char **endp,unsigned int base)
 			}
 		}
 	}
-	/*´ËÊ±cpÒÑ¾­Ö¸ÏòÊı×Ö×Ö·û´®µÄÊ×Î»ÁË£¬È»ºó´¦Àí×Ö·û´®£¬²¢»ñÈ¡×Ö·û´®µÄÊı×ÖÖµ*/
+	/*æ­¤æ—¶cpå·²ç»æŒ‡å‘æ•°å­—å­—ç¬¦ä¸²çš„é¦–ä½äº†ï¼Œç„¶åå¤„ç†å­—ç¬¦ä¸²ï¼Œå¹¶è·å–å­—ç¬¦ä¸²çš„æ•°å­—å€¼*/
 	while (isxdigit(*cp) && (value = isdigit(*cp) ? *cp-'0' : (islower(*cp)
 	    ? toupper(*cp) : *cp)-'A'+10) < base) {
 		result = result*base + value;

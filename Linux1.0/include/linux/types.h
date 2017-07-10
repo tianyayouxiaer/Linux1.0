@@ -81,9 +81,9 @@ typedef unsigned long tcflag_t;
 #undef __FDSET_LONGS
 #define __FDSET_LONGS 8
 
-/* Ò»¸öfd_setÕ¼ÓÃ8¸öunsigned long£¬¹²32×Ö½Ú£¬
- * ÓÃÒ»Î»À´±íÊ¾Ò»¸öÎÄ¼şÃèÊö·û£¬ÔòÒ»¸öÎÄ¼şÃèÊö·û¼¯ºÏ¿ÉÒÔ±íÊ¾
- * 32*8¸öÎÄ¼şÃèÊö·û£¬Õâ¸öÊı×Ö×ã¹»±íÊ¾ÏµÍ³ÖĞµÄËùÓĞÎÄ¼şÃèÊö·ûÁË
+/* ä¸€ä¸ªfd_setå ç”¨8ä¸ªunsigned longï¼Œå…±32å­—èŠ‚ï¼Œ
+ * ç”¨ä¸€ä½æ¥è¡¨ç¤ºä¸€ä¸ªæ–‡ä»¶æè¿°ç¬¦ï¼Œåˆ™ä¸€ä¸ªæ–‡ä»¶æè¿°ç¬¦é›†åˆå¯ä»¥è¡¨ç¤º
+ * 32*8ä¸ªæ–‡ä»¶æè¿°ç¬¦ï¼Œè¿™ä¸ªæ•°å­—è¶³å¤Ÿè¡¨ç¤ºç³»ç»Ÿä¸­çš„æ‰€æœ‰æ–‡ä»¶æè¿°ç¬¦äº†
  */
 typedef struct fd_set {
 	unsigned long fds_bits [__FDSET_LONGS];
@@ -97,7 +97,7 @@ typedef struct fd_set {
 
 #undef	__FD_SET
 #define __FD_SET(fd,fdsetp) \
-		/* btsl¾ÍÊÇ²âÊÔfd_setÖĞµÄµÚfdÎ»£¬½«¸ÃÎ»ÉèÖÃÎª1 */
+		/* btslå°±æ˜¯æµ‹è¯•fd_setä¸­çš„ç¬¬fdä½ï¼Œå°†è¯¥ä½è®¾ç½®ä¸º1 */
 		__asm__ __volatile__("btsl %1,%0": \
 			"=m" (*(fd_set *) (fdsetp)):"r" ((int) (fd)))
 

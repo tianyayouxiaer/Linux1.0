@@ -38,7 +38,7 @@
  * kernel variables
  */
 long tick = 1000000 / HZ;               /* timer interrupt period */
-/* ÏµÍ³µ±Ç°Ê±¼ä */
+/* ç³»ç»Ÿå½“å‰æ—¶é—´ */
 volatile struct timeval xtime;		/* The current time */
 int tickadj = 500/HZ;			/* microsecs */
 
@@ -89,8 +89,8 @@ asmlinkage int system_call(void);
 static unsigned long init_kernel_stack[1024];
 struct task_struct init_task = INIT_TASK;
 
-/* Ëü´ú±í´Ó»úÆ÷Æô¶¯Ê±ËãÆğµÄÊ±¼äµÎ´ğÊı¡£Ò²¾ÍÊÇÊ±ÖÓÖĞ¶ÏµÄ´ÎÊı
- * Õâ¸ö±äÁ¿×î³õ±»³õÊ¼»¯Îª 0£¬Ã¿´ÎÊ±ÖÓÖĞ¶ÏÊ±¶¼»á¼Ó 1¡£
+/* å®ƒä»£è¡¨ä»æœºå™¨å¯åŠ¨æ—¶ç®—èµ·çš„æ—¶é—´æ»´ç­”æ•°ã€‚ä¹Ÿå°±æ˜¯æ—¶é’Ÿä¸­æ–­çš„æ¬¡æ•°
+ * è¿™ä¸ªå˜é‡æœ€åˆè¢«åˆå§‹åŒ–ä¸º 0ï¼Œæ¯æ¬¡æ—¶é’Ÿä¸­æ–­æ—¶éƒ½ä¼šåŠ  1ã€‚
  */
 unsigned long volatile jiffies=0;
 
@@ -213,7 +213,7 @@ static unsigned long lost_ticks = 0;
  * Djikstra probably hates me.
  */
 
-/* ½ø³Ìµ÷¶Èº¯Êı
+/* è¿›ç¨‹è°ƒåº¦å‡½æ•°
  */
 asmlinkage void schedule(void)
 {
@@ -231,47 +231,47 @@ asmlinkage void schedule(void)
 	sti();
 	need_resched = 0;
 	p = &init_task;
-	/* ¸ÃÑ­»·ÊÇ½«¿ÉÒÔµ÷¶ÈÔËĞĞµÄ½ø³ÌÉèÖÃÎªÔËĞĞÌ¬£¬
-	 * µÈ´ıº¯ÊıµÄÏÂÒ»¼¶¶Î½øĞĞ¾ßÌåµÄÑ¡Ôñµ÷¶È
-	 * ÆäÖĞ»¹»á¸ù¾İ½ø³ÌÔËĞĞµÄÊ±¼äÀ´Ïò½ø³Ì·¢ËÍÏà¹ØµÄĞÅºÅ 
+	/* è¯¥å¾ªç¯æ˜¯å°†å¯ä»¥è°ƒåº¦è¿è¡Œçš„è¿›ç¨‹è®¾ç½®ä¸ºè¿è¡Œæ€ï¼Œ
+	 * ç­‰å¾…å‡½æ•°çš„ä¸‹ä¸€çº§æ®µè¿›è¡Œå…·ä½“çš„é€‰æ‹©è°ƒåº¦
+	 * å…¶ä¸­è¿˜ä¼šæ ¹æ®è¿›ç¨‹è¿è¡Œçš„æ—¶é—´æ¥å‘è¿›ç¨‹å‘é€ç›¸å…³çš„ä¿¡å· 
 	 */
 	for (;;) {
-        /* ±£Ö¤½ø³ÌÁ´±íÖ»É¨ÃèÒ»È¦ */
+        /* ä¿è¯è¿›ç¨‹é“¾è¡¨åªæ‰«æä¸€åœˆ */
 		if ((p = p->next_task) == &init_task)
 			goto confuse_gcc1;
 		if (ticks && p->it_real_value) {
-			/* Èç¹ûticksÈÃit_real_value¼õÉÙÎª0£¬ÔòÏò½ø³Ì·¢ËÍSIGALRMĞÅºÅ */
+			/* å¦‚æœticksè®©it_real_valueå‡å°‘ä¸º0ï¼Œåˆ™å‘è¿›ç¨‹å‘é€SIGALRMä¿¡å· */
 			if (p->it_real_value <= ticks) {
 				send_sig(SIGALRM, p, 1);
 				if (!p->it_real_incr) {
 					p->it_real_value = 0;
 					goto end_itimer;
 				}
-				/* Èç¹ûit_real_incr²»Îª0£¬ÔòÊ¹it_real_valueµÄÖµÔö¼Óµ½´óÓÚticksÎªÖ¹
+				/* å¦‚æœit_real_incrä¸ä¸º0ï¼Œåˆ™ä½¿it_real_valueçš„å€¼å¢åŠ åˆ°å¤§äºticksä¸ºæ­¢
 				 */
 				do {
 					p->it_real_value += p->it_real_incr;
 				} while (p->it_real_value <= ticks);
 			}
-			/* Ê¹ÓÃit_real_valueµÄÖµ¼õĞ¡ticks */
+			/* ä½¿ç”¨it_real_valueçš„å€¼å‡å°ticks */
 			p->it_real_value -= ticks;
 			if (p->it_real_value < itimer_next)
 				itimer_next = p->it_real_value;
 		}
 end_itimer:
-        /* Èç¹û½ø³ÌÊÇ·Ç¿ÉÖĞ¶Ï×´Ì¬£¬ÔòÔÚÑ¡Ôñµ÷¶ÈµÄ³ÌĞòÊ±£¬²»¿¼ÂÇ¸Ã½ø³Ì£¬
-           * Èç½ø³ÌÏİÈëÒ»ÖÖ²»¿ÉÖĞ¶ÏµÄË¯Ãß×´Ì¬£¬Ôò´ËÊ±µ÷¶È³ÌĞò²»¿Éµ÷¶È¸Ã½ø³Ì
+        /* å¦‚æœè¿›ç¨‹æ˜¯éå¯ä¸­æ–­çŠ¶æ€ï¼Œåˆ™åœ¨é€‰æ‹©è°ƒåº¦çš„ç¨‹åºæ—¶ï¼Œä¸è€ƒè™‘è¯¥è¿›ç¨‹ï¼Œ
+           * å¦‚è¿›ç¨‹é™·å…¥ä¸€ç§ä¸å¯ä¸­æ–­çš„ç¡çœ çŠ¶æ€ï¼Œåˆ™æ­¤æ—¶è°ƒåº¦ç¨‹åºä¸å¯è°ƒåº¦è¯¥è¿›ç¨‹
            */
 		if (p->state != TASK_INTERRUPTIBLE)
 			continue;
-        /* Èç¹û½ø³Ì½ÓÊÕµ½ÁËĞÅºÅ£¬ÔòÉèÖÃ½ø³ÌµÄ×´Ì¬ÎªÔËĞĞÌ¬
+        /* å¦‚æœè¿›ç¨‹æ¥æ”¶åˆ°äº†ä¿¡å·ï¼Œåˆ™è®¾ç½®è¿›ç¨‹çš„çŠ¶æ€ä¸ºè¿è¡Œæ€
            */
 		if (p->signal & ~p->blocked) {
 			p->state = TASK_RUNNING;
 			continue;
 		}
-		/* Èç¹û³¬¹ıÁË½ø³Ì±»ÖØĞÂ»½ĞÑµÄÊ±¼ä£¬Ôò½«½ø³Ì»½ĞÑ
-		 * timeoutµÄ×÷ÓÃÊÇÖ¸¼ä¸ô¶à¾Ãºó½«½ø³ÌÖØĞÂ»½ĞÑ 
+		/* å¦‚æœè¶…è¿‡äº†è¿›ç¨‹è¢«é‡æ–°å”¤é†’çš„æ—¶é—´ï¼Œåˆ™å°†è¿›ç¨‹å”¤é†’
+		 * timeoutçš„ä½œç”¨æ˜¯æŒ‡é—´éš”å¤šä¹…åå°†è¿›ç¨‹é‡æ–°å”¤é†’ 
 		 */
 		if (p->timeout && p->timeout <= jiffies) {
 			p->timeout = 0;
@@ -293,23 +293,23 @@ confuse_gcc1:
 #endif
 	c = -1;
 	next = p = &init_task;
-	/* Ñ¡ÔñÒ»¸öºÏÊÊµÄ½ø³ÌÀ´ÔËĞĞ£¬Í¨¹ıswitch_toÀ´ÇĞ»» */
+	/* é€‰æ‹©ä¸€ä¸ªåˆé€‚çš„è¿›ç¨‹æ¥è¿è¡Œï¼Œé€šè¿‡switch_toæ¥åˆ‡æ¢ */
 	for (;;) {
 		if ((p = p->next_task) == &init_task)
 			goto confuse_gcc2;
-		/* Ö»¿¼ÂÇTASK_RUNNINGÌ¬½ø³Ì£¬ÇÒ¶¯Ì¬ÓÅÏÈ¼¶±ÈÖ®Ç°µÄÒª¸ß 
+		/* åªè€ƒè™‘TASK_RUNNINGæ€è¿›ç¨‹ï¼Œä¸”åŠ¨æ€ä¼˜å…ˆçº§æ¯”ä¹‹å‰çš„è¦é«˜ 
 		 */
 		if (p->state == TASK_RUNNING && p->counter > c)
 			c = p->counter, next = p;
 	}
 confuse_gcc2:
-	/* ´Ë´¦¶¯Ì¬ÓÅÏÈ¼¶cÎª0£¬±íÊ¾ËùÓĞ½ø³ÌµÄ¶¯Ì¬ÓÅÏÈ¼¶×î¸ßÎª0 */
+	/* æ­¤å¤„åŠ¨æ€ä¼˜å…ˆçº§cä¸º0ï¼Œè¡¨ç¤ºæ‰€æœ‰è¿›ç¨‹çš„åŠ¨æ€ä¼˜å…ˆçº§æœ€é«˜ä¸º0 */
 	if (!c) {
 		for_each_task(p)
 			p->counter = (p->counter >> 1) + p->priority;
 	}
 	if(current != next)
-		kstat.context_swtch++; /* Ôö¼ÓÄÚºË½ø³ÌÇĞ»»´ÎÊı */
+		kstat.context_swtch++; /* å¢åŠ å†…æ ¸è¿›ç¨‹åˆ‡æ¢æ¬¡æ•° */
 	switch_to(next);
 	/* Now maybe reload the debug registers */
 	if(current->debugreg[7]){
@@ -346,7 +346,7 @@ void wake_up(struct wait_queue **q)
 	do {
 		if ((p = tmp->task) != NULL) {
 			if ((p->state == TASK_UNINTERRUPTIBLE) ||
-			    (p->state == TASK_INTERRUPTIBLE)) {   /*Î¨Ò»ºÍwake_up_interruptible²î±ğ*/
+			    (p->state == TASK_INTERRUPTIBLE)) {   /*å”¯ä¸€å’Œwake_up_interruptibleå·®åˆ«*/
 				p->state = TASK_RUNNING;
 				if (p->counter > current->counter)
 					need_resched = 1;
@@ -372,12 +372,12 @@ void wake_up_interruptible(struct wait_queue **q)
 		return;
 	do {
 		if ((p = tmp->task) != NULL) {
-			/* ½«µÈ´ı¶ÓÁĞÖĞ×´Ì¬ÎªTASK_INTERRUPTIBLEµÄËùÓĞ½ø³Ì×´Ì¬ÉèÖÃÎªTASK_RUNNING
-			 * ²¢µÈ´ıµ÷¶È³ÌĞòµ÷¶ÈÖ´ĞĞ
+			/* å°†ç­‰å¾…é˜Ÿåˆ—ä¸­çŠ¶æ€ä¸ºTASK_INTERRUPTIBLEçš„æ‰€æœ‰è¿›ç¨‹çŠ¶æ€è®¾ç½®ä¸ºTASK_RUNNING
+			 * å¹¶ç­‰å¾…è°ƒåº¦ç¨‹åºè°ƒåº¦æ‰§è¡Œ
 			 */
 			if (p->state == TASK_INTERRUPTIBLE) {
 				p->state = TASK_RUNNING;
-				/*Èç¹ûp½ø³ÌµÄÓÅÏÈ¼¶¸ßÓÚµ±Ç°½ø³ÌµÄÓÅÏÈ¼¶£¬ÔòÔÚÏÂÒ»¸öÊ±ÖÓ£¬ÖØĞÂµ÷¶È½ø³Ì*/
+				/*å¦‚æœpè¿›ç¨‹çš„ä¼˜å…ˆçº§é«˜äºå½“å‰è¿›ç¨‹çš„ä¼˜å…ˆçº§ï¼Œåˆ™åœ¨ä¸‹ä¸€ä¸ªæ—¶é’Ÿï¼Œé‡æ–°è°ƒåº¦è¿›ç¨‹*/
 				if (p->counter > current->counter)
 					need_resched = 1;
 			}
@@ -390,16 +390,16 @@ void wake_up_interruptible(struct wait_queue **q)
 			break;
 		}
 		tmp = tmp->next;
-	} while (tmp != *q); /*ÒòÎªµÈ´ı¶ÓÁĞÊÇÒ»¸öÈ¦*/
+	} while (tmp != *q); /*å› ä¸ºç­‰å¾…é˜Ÿåˆ—æ˜¯ä¸€ä¸ªåœˆ*/
 }
 
 void __down(struct semaphore * sem)
 {
 	struct wait_queue wait = { current, NULL };
 	add_wait_queue(&sem->wait, &wait);
-	/*ĞÅºÅÁ¿µÄ´¦Àí¹ı³ÌÊÇ²»¿ÉÒÔ±»´ò¶ÏµÄ*/
+	/*ä¿¡å·é‡çš„å¤„ç†è¿‡ç¨‹æ˜¯ä¸å¯ä»¥è¢«æ‰“æ–­çš„*/
 	current->state = TASK_UNINTERRUPTIBLE;
-	/*ĞÅºÅÁ¿Ğ¡ÓÚµÈÓÚ0Ê±£¬±íÃ÷ÒÑ¾­ÎŞ·¨ÔÚ»ñÈ¡ĞÅºÅÁ¿ÁË£¬Ö»ÄÜÈÃ³öcpu*/
+	/*ä¿¡å·é‡å°äºç­‰äº0æ—¶ï¼Œè¡¨æ˜å·²ç»æ— æ³•åœ¨è·å–ä¿¡å·é‡äº†ï¼Œåªèƒ½è®©å‡ºcpu*/
 	while (sem->count <= 0) {
 		schedule();
 		current->state = TASK_UNINTERRUPTIBLE;
@@ -408,7 +408,7 @@ void __down(struct semaphore * sem)
 	remove_wait_queue(&sem->wait, &wait);
 }
 
-/*ÒÔÌØ¶¨×´Ì¬ĞİÃß£¬²¢µ÷ÓÃscheduleº¯Êı£¬·ÅÆúcpu*/
+/*ä»¥ç‰¹å®šçŠ¶æ€ä¼‘çœ ï¼Œå¹¶è°ƒç”¨scheduleå‡½æ•°ï¼Œæ”¾å¼ƒcpu*/
 static inline void __sleep_on(struct wait_queue **p, int state)
 {
 	unsigned long flags;
@@ -437,13 +437,13 @@ void sleep_on(struct wait_queue **p)
 	__sleep_on(p,TASK_UNINTERRUPTIBLE);
 }
 
-/* next_timerÎªÄÚºËÊ±ÖÓ£¬×¢Òâ¶Ônext_timerµÄ²Ù×÷·Ç³£¾«ÇÉ£¬
- * Àı×ÓÈçÏÂ£¬4¸öÊ±ÖÓ½Úµã£¬´¥·¢Ê±¼ä·Ö±ğÎª1,2,4,5
- * ÔòexpireµÄÊµ¼ÊÖµÎª 1,1,2,1£¬Ò²¾ÍÊÇ´¥·¢Ê±¼äµÈÓÚÇ°ÃæµÄËùÓĞexpireµÄºÍ
+/* next_timerä¸ºå†…æ ¸æ—¶é’Ÿï¼Œæ³¨æ„å¯¹next_timerçš„æ“ä½œéå¸¸ç²¾å·§ï¼Œ
+ * ä¾‹å­å¦‚ä¸‹ï¼Œ4ä¸ªæ—¶é’ŸèŠ‚ç‚¹ï¼Œè§¦å‘æ—¶é—´åˆ†åˆ«ä¸º1,2,4,5
+ * åˆ™expireçš„å®é™…å€¼ä¸º 1,1,2,1ï¼Œä¹Ÿå°±æ˜¯è§¦å‘æ—¶é—´ç­‰äºå‰é¢çš„æ‰€æœ‰expireçš„å’Œ
  */
 static struct timer_list * next_timer = NULL;
 
-/* ½«Ê±ÖÓÌí¼Óµ½ÁĞ±íµ±ÖĞ */
+/* å°†æ—¶é’Ÿæ·»åŠ åˆ°åˆ—è¡¨å½“ä¸­ */
 void add_timer(struct timer_list * timer)
 {
 	unsigned long flags;
@@ -456,13 +456,13 @@ void add_timer(struct timer_list * timer)
 	save_flags(flags);
 	cli();
 	while (*p) {
-		/* timerÊÇ°´ÕÕexpires´óĞ¡ÒÀ´Î´ÓĞ¡µ½´óÅÅÁĞ */
+		/* timeræ˜¯æŒ‰ç…§expireså¤§å°ä¾æ¬¡ä»å°åˆ°å¤§æ’åˆ— */
 		if ((*p)->expires > timer->expires) {
 			(*p)->expires -= timer->expires;
 			timer->next = *p;
 			break;
 		}
-		/* Èç¹ûÃ»ÓĞÕÒµ½ºÏÊÊÎ»ÖÃ£¬ÔòexpiresÒ»Ö±¼õĞ¡ */
+		/* å¦‚æœæ²¡æœ‰æ‰¾åˆ°åˆé€‚ä½ç½®ï¼Œåˆ™expiresä¸€ç›´å‡å° */
 		timer->expires -= (*p)->expires;
 		p = &(*p)->next;
 	}
@@ -470,7 +470,7 @@ void add_timer(struct timer_list * timer)
 	restore_flags(flags);
 }
 
-/* É¾³ıÊ±ÖÓÁ´±í */
+/* åˆ é™¤æ—¶é’Ÿé“¾è¡¨ */
 int del_timer(struct timer_list * timer)
 {
 	unsigned long flags;
@@ -480,11 +480,11 @@ int del_timer(struct timer_list * timer)
 	p = &next_timer;
 	save_flags(flags);
 	cli();
-	/* É¨ÃèÒÔnext_timerÎªÊ×µÄÁ´±í */
+	/* æ‰«æä»¥next_timerä¸ºé¦–çš„é“¾è¡¨ */
 	while (*p) {
-		/* Èç¹ûÔÚnetxt_timerÁ´±íÖĞÕÒµ½¸Ã½Úµã */
+		/* å¦‚æœåœ¨netxt_timeré“¾è¡¨ä¸­æ‰¾åˆ°è¯¥èŠ‚ç‚¹ */
 		if (*p == timer) {
-			/* ÌØ±ğ×¢ÒâÕâ¾ä»°¾Í´ÓÁ´±íÖĞÉ¾³ıÁËtimer½Úµã */
+			/* ç‰¹åˆ«æ³¨æ„è¿™å¥è¯å°±ä»é“¾è¡¨ä¸­åˆ é™¤äº†timerèŠ‚ç‚¹ */
 			if ((*p = timer->next) != NULL)
 				(*p)->expires += timer->expires;
 			timer->expires += expires;
@@ -512,13 +512,13 @@ unsigned long avenrun[3] = { 0,0,0 };
 /*
  * Nr of active tasks - counted in fixed-point numbers
  */
-/* Í³¼Æ»îÔ¾½ø³Ì */
+/* ç»Ÿè®¡æ´»è·ƒè¿›ç¨‹ */
 static unsigned long count_active_tasks(void)
 {
 	struct task_struct **p;
 	unsigned long nr = 0;
 
-	/* É¨Ãè½ø³ÌÁĞ±í£¬Í³¼Æ×´Ì¬Îª¾ÍĞ÷Ì¬ºÍ½»»»×´Ì¬£¬²»¿ÉÖĞ¶Ï×´Ì¬½ø³ÌÊıÁ¿ */
+	/* æ‰«æè¿›ç¨‹åˆ—è¡¨ï¼Œç»Ÿè®¡çŠ¶æ€ä¸ºå°±ç»ªæ€å’Œäº¤æ¢çŠ¶æ€ï¼Œä¸å¯ä¸­æ–­çŠ¶æ€è¿›ç¨‹æ•°é‡ */
 	for(p = &LAST_TASK; p > &FIRST_TASK; --p)
 		if (*p && ((*p)->state == TASK_RUNNING ||
 			   (*p)->state == TASK_UNINTERRUPTIBLE ||
@@ -612,14 +612,14 @@ static void second_overflow(void)
  * disregard lost ticks for now.. We don't care enough.
  */
 
-/* Í¨¹ıdo_bottom_halfµ÷ÓÃµ½´Ë´¦£¬´¦ÀíÄÚºËÊ±ÖÓ */
+/* é€šè¿‡do_bottom_halfè°ƒç”¨åˆ°æ­¤å¤„ï¼Œå¤„ç†å†…æ ¸æ—¶é’Ÿ */
 static void timer_bh(void * unused)
 {
 	unsigned long mask;
 	struct timer_struct *tp;
 
 	cli();
-	/* Ñ­»·´¦ÀíÊ±ÖÓÁĞ±íµ±ÖĞµÄtimer,Í¬Ê±½«expiresÎª0µÄtimer´¥·¢ */
+	/* å¾ªç¯å¤„ç†æ—¶é’Ÿåˆ—è¡¨å½“ä¸­çš„timer,åŒæ—¶å°†expiresä¸º0çš„timerè§¦å‘ */
 	while (next_timer && next_timer->expires == 0) {
 		void (*fn)(unsigned long) = next_timer->function;
 		unsigned long data = next_timer->data;
@@ -630,7 +630,7 @@ static void timer_bh(void * unused)
 	}
 	sti();
 
-	/* ×¢Òâtimer_tableºÍnext_timerµÄÇø±ğ */
+	/* æ³¨æ„timer_tableå’Œnext_timerçš„åŒºåˆ« */
 	for (mask = 1, tp = timer_table+0 ; mask ; tp++,mask += mask) {
 		if (mask > timer_active)
 			break;
@@ -651,7 +651,7 @@ static void timer_bh(void * unused)
  * times.
  */
 
-/* Ê±ÖÓÖĞ¶ÏµÄ´¦Àíº¯Êı */
+/* æ—¶é’Ÿä¸­æ–­çš„å¤„ç†å‡½æ•° */
 static void do_timer(struct pt_regs * regs)
 {
 	unsigned long mask;
@@ -699,15 +699,15 @@ static void do_timer(struct pt_regs * regs)
 	else
 	    time_adjust_step = 0;
 
-        /* ÔÚÊ±ÖÓÖĞ¶ÏÖĞĞŞ¸ÄÏµÍ³µÄµ±Ç°Ê±¼ä */
+        /* åœ¨æ—¶é’Ÿä¸­æ–­ä¸­ä¿®æ”¹ç³»ç»Ÿçš„å½“å‰æ—¶é—´ */
 	if (xtime.tv_usec >= 1000000) {
 	    xtime.tv_usec -= 1000000;
 	    xtime.tv_sec++;
 	    second_overflow();
 	}
-	/* Ö»ÓĞÔÚÕâÀï²Å»áÔö¼Ójiffies±äÁ¿£¬Ò²¾ÍÊÇÃ¿¸ö½ÚÅÄÔö¼Ó1 */
+	/* åªæœ‰åœ¨è¿™é‡Œæ‰ä¼šå¢åŠ jiffieså˜é‡ï¼Œä¹Ÿå°±æ˜¯æ¯ä¸ªèŠ‚æ‹å¢åŠ 1 */
 	jiffies++;
-	/* ¼ÆËã½ø³Ì¸ºÔØ */
+	/* è®¡ç®—è¿›ç¨‹è´Ÿè½½ */
 	calc_load();
 	if ((VM_MASK & regs->eflags) || (3 & regs->cs)) {
 		current->utime++;
@@ -757,10 +757,10 @@ static void do_timer(struct pt_regs * regs)
 	itimer_ticks++;
 	if (itimer_ticks > itimer_next)
 		need_resched = 1;
-	/* ´ËÊ±¿ªÊ¼´¦Àínext_timerÁĞ±í */
+	/* æ­¤æ—¶å¼€å§‹å¤„ç†next_timeråˆ—è¡¨ */
 	if (next_timer) {
 		if (next_timer->expires) {
-			/* next_timerµÄexpires¼õĞ¡£¬µ«ÎªÊ²Ã´Ö»ÓĞµÚÒ»¸ö¼õĞ¡ÄØ? */
+			/* next_timerçš„expireså‡å°ï¼Œä½†ä¸ºä»€ä¹ˆåªæœ‰ç¬¬ä¸€ä¸ªå‡å°å‘¢? */
 			next_timer->expires--;
 			if (!next_timer->expires)
 				mark_bh(TIMER_BH);
@@ -813,7 +813,7 @@ asmlinkage int sys_getegid(void)
 	return current->egid;
 }
 
-/*¸ü¸Äµ±Ç°½ø³ÌµÄÓÅÏÈ¼¶*/
+/*æ›´æ”¹å½“å‰è¿›ç¨‹çš„ä¼˜å…ˆçº§*/
 asmlinkage int sys_nice(long increment)
 {
 	int newprio;
@@ -859,7 +859,7 @@ static void show_task(int nr,struct task_struct * p)
 }
 
 
-/* ÏÔÊ¾ËùÓĞ½ø³Ì
+/* æ˜¾ç¤ºæ‰€æœ‰è¿›ç¨‹
  */ 
 void show_state(void)
 {
@@ -872,13 +872,13 @@ void show_state(void)
 			show_task(i,task[i]);
 }
 
-/* µ÷¶ÈµÄ³õÊ¼»¯ */
+/* è°ƒåº¦çš„åˆå§‹åŒ– */
 void sched_init(void)
 {
 	int i;
 	struct desc_struct * p;
 
-	/* ³õÊ¼»¯Ê±ÖÓµÄÏÂ°ë²¿·Ö */
+	/* åˆå§‹åŒ–æ—¶é’Ÿçš„ä¸‹åŠéƒ¨åˆ† */
 	bh_base[TIMER_BH].routine = timer_bh;
 	if (sizeof(struct sigaction) != 16)
 		panic("Struct sigaction MUST be 16 bytes");

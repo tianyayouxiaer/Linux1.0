@@ -116,8 +116,8 @@ static inline char * find_first_zero_byte (char * addr, int size)
 	return res;
 }
 
-/* ·µ»Øblock_groupºÅ¿é×éÊı¾İÔÚ¸ßËÙ»º´æÖĞµÄÖ¸Õë£¬Í¬Ê±½«Êı¾İËùÔÚ
- * µÄ¸ßËÙ»º´æ¿éµÄÖ¸Õë·ÅÔÚbhµ±ÖĞ
+/* è¿”å›block_groupå·å—ç»„æ•°æ®åœ¨é«˜é€Ÿç¼“å­˜ä¸­çš„æŒ‡é’ˆï¼ŒåŒæ—¶å°†æ•°æ®æ‰€åœ¨
+ * çš„é«˜é€Ÿç¼“å­˜å—çš„æŒ‡é’ˆæ”¾åœ¨bhå½“ä¸­
  */
 static struct ext2_group_desc * get_group_desc (struct super_block * sb,
 						unsigned int block_group,
@@ -127,16 +127,16 @@ static struct ext2_group_desc * get_group_desc (struct super_block * sb,
 	unsigned long desc;
 	struct ext2_group_desc * gdp;
 
-	/* Èç¹û¿é×éºÅ´óÓÚÏµÍ³×î´ó¿é×éÊı £¬Ôò³ö´í */
+	/* å¦‚æœå—ç»„å·å¤§äºç³»ç»Ÿæœ€å¤§å—ç»„æ•° ï¼Œåˆ™å‡ºé”™ */
 	if (block_group >= sb->u.ext2_sb.s_groups_count)
 		ext2_panic (sb, "get_group_desc",
 			    "block_group >= groups_count\n"
 			    "block_group = %d, groups_count = %lu",
 			    block_group, sb->u.ext2_sb.s_groups_count);
 
-	/* »ñÈ¡´æ·Å¿é×éµÄÊı¾İ¿éµÄµÚ¼¸¿é£¬ÒòÎª´æ·Å¿é×éÃèÊö·ûµÄÊı¾İ¿éÊÇÁ¬ĞøµÄ */
+	/* è·å–å­˜æ”¾å—ç»„çš„æ•°æ®å—çš„ç¬¬å‡ å—ï¼Œå› ä¸ºå­˜æ”¾å—ç»„æè¿°ç¬¦çš„æ•°æ®å—æ˜¯è¿ç»­çš„ */
 	group_desc = block_group / EXT2_DESC_PER_BLOCK(sb);
-	/* desc±íÊ¾¿é×éÃèÊö·ûÔÚÊı¾İ¿éÄÚµÄÆ«ÒÆ */
+	/* descè¡¨ç¤ºå—ç»„æè¿°ç¬¦åœ¨æ•°æ®å—å†…çš„åç§» */
 	desc = block_group % EXT2_DESC_PER_BLOCK(sb);
 	if (!sb->u.ext2_sb.s_group_desc[group_desc])
 		ext2_panic (sb, "get_group_desc",
@@ -337,8 +337,8 @@ void ext2_free_blocks (struct super_block * sb, unsigned long block,
  * bitmap, and then for any free bit if that fails.
  */
 
-/* º¯Êı·µ»ØÒ»¸ö±»ÎÄ¼şÕæÕıÊ¹ÓÃµÄ¿ÕÏĞ¿é£¬goalÖ»ÊÇÄãÏ£ÍûÊ¹ÓÃµÄÊı¾İ¿éºÅ£¬µ«ÊÇÔÚÕæÕı·ÖÅäµÄ
- * Ê±ºò£¬Ëü²»Ò»¶¨¿ÉÓÃ£¬Õâ¸ö¿é¿ÉÄÜÒÑ¾­·ÖÅä¸ø±ğÈËÁË£¬Èç¹ûÒÑ¾­±»ÓÃ£¬ÔòÔÚgoal¸½½üÑ°ÕÒ¿ÉÓÃµÄ¿ÕÏĞ¿é
+/* å‡½æ•°è¿”å›ä¸€ä¸ªè¢«æ–‡ä»¶çœŸæ­£ä½¿ç”¨çš„ç©ºé—²å—ï¼Œgoalåªæ˜¯ä½ å¸Œæœ›ä½¿ç”¨çš„æ•°æ®å—å·ï¼Œä½†æ˜¯åœ¨çœŸæ­£åˆ†é…çš„
+ * æ—¶å€™ï¼Œå®ƒä¸ä¸€å®šå¯ç”¨ï¼Œè¿™ä¸ªå—å¯èƒ½å·²ç»åˆ†é…ç»™åˆ«äººäº†ï¼Œå¦‚æœå·²ç»è¢«ç”¨ï¼Œåˆ™åœ¨goalé™„è¿‘å¯»æ‰¾å¯ç”¨çš„ç©ºé—²å—
  */
 int ext2_new_block (struct super_block * sb, unsigned long goal,
 		    unsigned long * prealloc_count,
@@ -362,7 +362,7 @@ int ext2_new_block (struct super_block * sb, unsigned long goal,
 	}
 	lock_super (sb);
 	es = sb->u.ext2_sb.s_es;
-	/* Èç¹û¿ÕÏĞµÄ¿éºÅÉÙÓÚÔ¤ÁôµÄÊıÁ¿£¬Ôò²»ÓÃ·ÖÅä£¬³ı·ÇÄãÊÇ³¬¼¶ÓÃ»§ */
+	/* å¦‚æœç©ºé—²çš„å—å·å°‘äºé¢„ç•™çš„æ•°é‡ï¼Œåˆ™ä¸ç”¨åˆ†é…ï¼Œé™¤éä½ æ˜¯è¶…çº§ç”¨æˆ· */
 	if (es->s_free_blocks_count <= es->s_r_blocks_count && !suser()) {
 		unlock_super (sb);
 		return 0;
@@ -374,13 +374,13 @@ repeat:
 	/*
 	 * First, test whether the goal block is free.
 	 */
-	/* ÏŞ¶¨goalµÄÓĞĞ§·¶Î§ */
+	/* é™å®šgoalçš„æœ‰æ•ˆèŒƒå›´ */
 	if (goal < es->s_first_data_block || goal >= es->s_blocks_count)
 		goal = es->s_first_data_block;
-	/* »ñÈ¡goal¿éºÅËùÔÚµÄ¿é×éºÅ */
+	/* è·å–goalå—å·æ‰€åœ¨çš„å—ç»„å· */
 	i = (goal - es->s_first_data_block) / EXT2_BLOCKS_PER_GROUP(sb);
 	gdp = get_group_desc (sb, i, &bh2);
-	/* Èç¹ûgoalËùÔÚµÄ¿é×éµ±ÖĞ»¹ÓĞ¿ÕÏĞµÄ¿é */
+	/* å¦‚æœgoalæ‰€åœ¨çš„å—ç»„å½“ä¸­è¿˜æœ‰ç©ºé—²çš„å— */
 	if (gdp->bg_free_blocks_count > 0) {
 		j = ((goal - es->s_first_data_block) % EXT2_BLOCKS_PER_GROUP(sb));
 #ifdef EXT2FS_DEBUG
@@ -573,7 +573,7 @@ got_block:
 	return j;
 }
 
-/* ·µ»ØÎÄ¼şÏµÍ³ÖĞ¿ÕÏĞÊı¾İ¿éµÄÊıÁ¿ */
+/* è¿”å›æ–‡ä»¶ç³»ç»Ÿä¸­ç©ºé—²æ•°æ®å—çš„æ•°é‡ */
 unsigned long ext2_count_free_blocks (struct super_block * sb)
 {
 #ifdef EXT2FS_DEBUG

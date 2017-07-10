@@ -16,7 +16,7 @@
  * Count is not yet used: but we'll probably support reading several entries
  * at once in the future. Use count=1 in the library for future expansions.
  */
-/* ¶ÁÈ¡Ä¿Â¼ÎÄ¼þµÄÒ»¸öÄ¿Â¼ 
+/* è¯»å–ç›®å½•æ–‡ä»¶çš„ä¸€ä¸ªç›®å½• 
  */
 asmlinkage int sys_readdir(unsigned int fd, struct dirent * dirent, unsigned int count)
 {
@@ -69,10 +69,10 @@ asmlinkage int sys_lseek(unsigned int fd, off_t offset, unsigned int origin)
 	return file->f_pos;
 }
 
-/* ÏµÍ³¶Áº¯Êý 
- * fdÊÇÎÄ¼þÃèÊö·û
- * bufÊÇ´æ·Å¶ÁÈ¡Êý¾ÝµÄÄÚ´æµØÖ·
- * countÊÇ¶ÁÈ¡ÊýÁ¿
+/* ç³»ç»Ÿè¯»å‡½æ•° 
+ * fdæ˜¯æ–‡ä»¶æè¿°ç¬¦
+ * bufæ˜¯å­˜æ”¾è¯»å–æ•°æ®çš„å†…å­˜åœ°å€
+ * countæ˜¯è¯»å–æ•°é‡
  */
 asmlinkage int sys_read(unsigned int fd,char * buf,unsigned int count)
 {
@@ -94,7 +94,7 @@ asmlinkage int sys_read(unsigned int fd,char * buf,unsigned int count)
 	return file->f_op->read(inode,file,buf,count);
 }
 
-/* ÏµÍ³Ð´º¯Êý */
+/* ç³»ç»Ÿå†™å‡½æ•° */
 asmlinkage int sys_write(unsigned int fd,char * buf,unsigned int count)
 {
 	int error;

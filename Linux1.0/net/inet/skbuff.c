@@ -45,10 +45,10 @@
  *	Resource tracking variables
  */
  
-/* ÏµÍ³ÖĞsk_buffÕ¼ÓÃµÄÄÚ´æ´ó´óĞ¡
+/* ç³»ç»Ÿä¸­sk_buffå ç”¨çš„å†…å­˜å¤§å¤§å°
  */
 volatile unsigned long net_memory=0;
-/* ÏµÍ³ÖĞsk_buffµÄÊıÁ¿
+/* ç³»ç»Ÿä¸­sk_buffçš„æ•°é‡
  */
 volatile unsigned long net_skbcount=0;
 
@@ -57,8 +57,8 @@ volatile unsigned long net_skbcount=0;
  */
 
 
-/* ¶Ôstruct sk_buff½øĞĞ¼ì²éµÄÒ»¸öº¯Êı£¬ÆäÖĞµÄline´ú±íÎÄ¼şÖĞµÄĞĞ£¬
- * file´ú±íÎÄ¼şÃû³Æ 
+/* å¯¹struct sk_buffè¿›è¡Œæ£€æŸ¥çš„ä¸€ä¸ªå‡½æ•°ï¼Œå…¶ä¸­çš„lineä»£è¡¨æ–‡ä»¶ä¸­çš„è¡Œï¼Œ
+ * fileä»£è¡¨æ–‡ä»¶åç§° 
  */
 void skb_check(struct sk_buff *skb, int line, char *file)
 {
@@ -88,7 +88,7 @@ void skb_check(struct sk_buff *skb, int line, char *file)
  *	Insert an sk_buff at the start of a list.
  */
 
-/* ½«newskÌí¼Óµ½listÊ×²¿µ±ÖĞ£¬²¢ÇÒÈÃnewsk×÷ÎªÁ´±íÊ×²¿ */
+/* å°†newskæ·»åŠ åˆ°listé¦–éƒ¨å½“ä¸­ï¼Œå¹¶ä¸”è®©newskä½œä¸ºé“¾è¡¨é¦–éƒ¨ */
 void skb_queue_head(struct sk_buff *volatile* list,struct sk_buff *newsk)
 {
 	unsigned long flags;
@@ -98,7 +98,7 @@ void skb_queue_head(struct sk_buff *volatile* list,struct sk_buff *newsk)
 		printk("Suspicious queue head: sk_buff on list!\n");
 	save_flags(flags);
 	cli();
-	/* ÉèÖÃĞÂsk_buffµÄÍ·²¿£¬ËùÓĞµÄsk_buffÖĞµÄlist¶¼Ö¸ÏòÍ¬Ò»¸öÍ·²¿ */
+	/* è®¾ç½®æ–°sk_buffçš„å¤´éƒ¨ï¼Œæ‰€æœ‰çš„sk_buffä¸­çš„listéƒ½æŒ‡å‘åŒä¸€ä¸ªå¤´éƒ¨ */
 	newsk->list=list;
 
 	newsk->next=*list;
@@ -118,7 +118,7 @@ void skb_queue_head(struct sk_buff *volatile* list,struct sk_buff *newsk)
 /*
  *	Insert an sk_buff at the end of a list.
  */
-/* Ìí¼Óµ½listµÄÎ²²¿ */
+/* æ·»åŠ åˆ°listçš„å°¾éƒ¨ */
 void skb_queue_tail(struct sk_buff *volatile* list, struct sk_buff *newsk)
 {
 	unsigned long flags;
@@ -130,7 +130,7 @@ void skb_queue_tail(struct sk_buff *volatile* list, struct sk_buff *newsk)
 	save_flags(flags);
 	cli();
 
-	/*ÉèÖÃnewskÊ×²¿ */
+	/*è®¾ç½®newské¦–éƒ¨ */
 	newsk->list=list;
 	if(*list)
 	{
@@ -156,7 +156,7 @@ void skb_queue_tail(struct sk_buff *volatile* list, struct sk_buff *newsk)
  *	so you can grab read and free buffers as another process adds them.
  */
 
-/* ½«listÎª¶ÓÊ×µÄË«Ïò¶ÓÁĞÖĞµÄµÚÒ»¸ö¸øÈ¡³ö
+/* å°†listä¸ºé˜Ÿé¦–çš„åŒå‘é˜Ÿåˆ—ä¸­çš„ç¬¬ä¸€ä¸ªç»™å–å‡º
  */
 struct sk_buff *skb_dequeue(struct sk_buff *volatile* list)
 {
@@ -173,7 +173,7 @@ struct sk_buff *skb_dequeue(struct sk_buff *volatile* list)
 	}
 
 	result=*list;
-	/* Èç¹ûÖ»ÓĞÒ»¸ö½Úµã */
+	/* å¦‚æœåªæœ‰ä¸€ä¸ªèŠ‚ç‚¹ */
 	if(result->next==result)
 		*list=NULL;
 	else
@@ -190,7 +190,7 @@ struct sk_buff *skb_dequeue(struct sk_buff *volatile* list)
 		printk("Dequeued packet has invalid list pointer\n");
 
 	result->list=0;
-	/* ¶Ï¿ªË«ÏòÁ¬½Ó */
+	/* æ–­å¼€åŒå‘è¿æ¥ */
 	result->next=0;
 	result->prev=0;
 	return(result);
@@ -200,7 +200,7 @@ struct sk_buff *skb_dequeue(struct sk_buff *volatile* list)
  *	Insert a packet before another one in a list.
  */
 
-/* ½«newsk²åÈëµ½oldµÄÇ°Ãæ */
+/* å°†newskæ’å…¥åˆ°oldçš„å‰é¢ */
 void skb_insert(struct sk_buff *old, struct sk_buff *newsk)
 {
 	unsigned long flags;
@@ -228,7 +228,7 @@ void skb_insert(struct sk_buff *old, struct sk_buff *newsk)
  *	Place a packet after a given packet in a list.
  */
 
-/* ½«newskÌí¼Óµ½oldµÄºóÃæ */
+/* å°†newskæ·»åŠ åˆ°oldçš„åé¢ */
 void skb_append(struct sk_buff *old, struct sk_buff *newsk)
 {
 	unsigned long flags;
@@ -259,7 +259,7 @@ void skb_append(struct sk_buff *old, struct sk_buff *newsk)
  *	_FIRST_.
  */
 
-/* ½«skb´ÓskbÁ´±íÖĞÉ¾³ı */
+/* å°†skbä»skbé“¾è¡¨ä¸­åˆ é™¤ */
 void skb_unlink(struct sk_buff *skb)
 {
 	unsigned long flags;
@@ -268,16 +268,16 @@ void skb_unlink(struct sk_buff *skb)
 
 	IS_SKB(skb);
 
-	/* ÅĞ¶Ï¶ÓÁĞµÄÊ×²¿ÊÇ·ñÎªNULL */
+	/* åˆ¤æ–­é˜Ÿåˆ—çš„é¦–éƒ¨æ˜¯å¦ä¸ºNULL */
 	if(skb->list)
 	{
 		skb->next->prev=skb->prev;
 		skb->prev->next=skb->next;
-		/* Èç¹û×Ô¼ºÊÇÊ×²¿ */
+		/* å¦‚æœè‡ªå·±æ˜¯é¦–éƒ¨ */
 		if(*skb->list==skb)
 		{
-			/* Èç¹û¶ÓÁĞÖĞÖ»ÓĞskbÒ»¸ö£¬ÔòskbµÄlistÒªÉèÖÃÎªNULL,
-			 * ·ñÔò¾Í½«skbµÄÏÂÒ»¸ö×÷Îª¶ÓÊ× 
+			/* å¦‚æœé˜Ÿåˆ—ä¸­åªæœ‰skbä¸€ä¸ªï¼Œåˆ™skbçš„listè¦è®¾ç½®ä¸ºNULL,
+			 * å¦åˆ™å°±å°†skbçš„ä¸‹ä¸€ä¸ªä½œä¸ºé˜Ÿé¦– 
 			 */
 			if(skb->next==skb)
 				*skb->list=NULL;
@@ -300,10 +300,10 @@ void skb_unlink(struct sk_buff *skb)
 void skb_new_list_head(struct sk_buff *volatile* list)
 {
 	struct sk_buff *skb=skb_peek(list);
-	/* Èç¹û¶ÓÊ×Îª¿Õ£¬Ôò²»×öÈÎºÎ´¦Àí */
+	/* å¦‚æœé˜Ÿé¦–ä¸ºç©ºï¼Œåˆ™ä¸åšä»»ä½•å¤„ç† */
 	if(skb!=NULL)
 	{
-	    /* ½«¶ÓÖĞËùÓĞ½Úµã¸ø¼ì²éÒ»±é£¬²¢ÉèÖÃ¶ÓÊ×Îªlist */
+	    /* å°†é˜Ÿä¸­æ‰€æœ‰èŠ‚ç‚¹ç»™æ£€æŸ¥ä¸€éï¼Œå¹¶è®¾ç½®é˜Ÿé¦–ä¸ºlist */
 		do
 		{
 			IS_SKB(skb);
@@ -321,7 +321,7 @@ void skb_new_list_head(struct sk_buff *volatile* list)
  *	type system cli() peek the buffer copy the data and sti();
  */
 
-/* º¯Êı×÷ÓÃºÜ¼òµ¥£¬¾ÍÊÇÈ¡³öÒ»¸öÖ¸Ïòsk_buffµÄÖ¸Õë */
+/* å‡½æ•°ä½œç”¨å¾ˆç®€å•ï¼Œå°±æ˜¯å–å‡ºä¸€ä¸ªæŒ‡å‘sk_buffçš„æŒ‡é’ˆ */
 struct sk_buff *skb_peek(struct sk_buff *volatile* list)
 {
 	return *list;
@@ -398,8 +398,8 @@ struct sk_buff *skb_peek_copy(struct sk_buff *volatile* list)
  *	not need to like protocols and sockets.
  */
 
-/* ½«skbÊÍ·Å£¬Í¨¹ıskbÖĞskÀ´½øĞĞ£¬
- * rw±íÊ¾¸ÃÊÍ·ÅµÄskbÊÇ¶Á»¹ÊÇĞ´µÄ»º³å¿Õ¼ä£¬¶ÔÓ¦µÄ¸ü¸Ä»º´æ¿Õ¼äµÄ´óĞ¡ 
+/* å°†skbé‡Šæ”¾ï¼Œé€šè¿‡skbä¸­skæ¥è¿›è¡Œï¼Œ
+ * rwè¡¨ç¤ºè¯¥é‡Šæ”¾çš„skbæ˜¯è¯»è¿˜æ˜¯å†™çš„ç¼“å†²ç©ºé—´ï¼Œå¯¹åº”çš„æ›´æ”¹ç¼“å­˜ç©ºé—´çš„å¤§å° 
  */
 void kfree_skb(struct sk_buff *skb, int rw)
 {
@@ -450,7 +450,7 @@ void kfree_skb(struct sk_buff *skb, int rw)
  *	fields and also do memory statistics to find all the [BEEP] leaks.
  */
 
-/* kmallocÒ»¸ösk_buf£¬²¢³õÊ¼»¯sk_bufÊı¾İ */
+/* kmallocä¸€ä¸ªsk_bufï¼Œå¹¶åˆå§‹åŒ–sk_bufæ•°æ® */
 struct sk_buff *alloc_skb(unsigned int size,int priority)
 {
 	struct sk_buff *skb;
@@ -474,7 +474,7 @@ struct sk_buff *alloc_skb(unsigned int size,int priority)
 	net_memory+=size;
 	net_skbcount++;
 	skb->magic_debug_cookie=SK_GOOD_SKB;
-       /* ³õÊ¼»¯Ê¹ÓÃskbµÄ½ø³ÌÊıÎª0 */
+       /* åˆå§‹åŒ–ä½¿ç”¨skbçš„è¿›ç¨‹æ•°ä¸º0 */
 	skb->users=0;   
 	return skb;
 }
@@ -483,7 +483,7 @@ struct sk_buff *alloc_skb(unsigned int size,int priority)
  *	Free an skbuff by memory
  */
 
-/* ÊÍ·ÅkmallocÉêÇëµÄÄÚ´æ
+/* é‡Šæ”¾kmallocç”³è¯·çš„å†…å­˜
  */
 void kfree_skbmem(void *mem,unsigned size)
 {

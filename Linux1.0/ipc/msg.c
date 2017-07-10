@@ -23,10 +23,10 @@ static int msghdrs = 0;
 static unsigned short msg_seq = 0;
 static int used_queues = 0;
 static int max_msqid = 0;
-/* ÏûÏ¢µÄÈ«¾ÖµÈ´ı¶ÓÁĞ */
+/* æ¶ˆæ¯çš„å…¨å±€ç­‰å¾…é˜Ÿåˆ— */
 static struct wait_queue *msg_lock = NULL;
 
-/* ÏûÏ¢³õÊ¼»¯ */
+/* æ¶ˆæ¯åˆå§‹åŒ– */
 void msg_init (void)
 {
 	int id;
@@ -209,7 +209,7 @@ int sys_msgrcv (int msqid, struct msgbuf *msgp, int msgsz, long msgtyp,
 	return -1;
 }
 
-/* ÕÒµ½ÎªkeyµÄÏûÏ¢ */
+/* æ‰¾åˆ°ä¸ºkeyçš„æ¶ˆæ¯ */
 static int findkey (key_t key)
 {
 	int id;
@@ -233,7 +233,7 @@ static int newque (key_t key, int msgflg)
 	struct ipc_perm *ipcp;
 
 	for (id=0; id < MSGMNI; id++) 
-		/* ÕÒµ½Ò»¸ö¿ÉÓÃµÄ */
+		/* æ‰¾åˆ°ä¸€ä¸ªå¯ç”¨çš„ */
 		if (msgque[id] == IPC_UNUSED) {
 			msgque[id] = (struct msqid_ds *) IPC_NOID;
 			goto found;
@@ -265,7 +265,7 @@ found:
 		max_msqid = id;
 	msgque[id] = msq;
 	used_queues++;
-	/* ºÍ¹²ÏíÄÚ´æÀïÃæµÀÀí²î²»¶à */
+	/* å’Œå…±äº«å†…å­˜é‡Œé¢é“ç†å·®ä¸å¤š */
 	if (msg_lock)
 		wake_up (&msg_lock);
 	return (int) msg_seq * MSGMNI + id;

@@ -49,36 +49,36 @@ struct new_stat {
 #define S_IFBLK  0060000
 #define S_IFDIR  0040000
 #define S_IFCHR  0020000
-#define S_IFIFO  0010000                         /* ÓĞÃû¹ÜµÀÎÄ¼ş */
-#define S_ISUID  0004000		        /* u+s¿ÉÒÔÈÃÓÃ»§ÔÚÖ´ĞĞÕâ¸ö¶ş½øÖÆ³ÌĞòµÄÊ±ºò£¬
-								  * effective id±äÎªÕâ¸öÎÄ¼şµÄowner user
+#define S_IFIFO  0010000                         /* æœ‰åç®¡é“æ–‡ä»¶ */
+#define S_ISUID  0004000		        /* u+så¯ä»¥è®©ç”¨æˆ·åœ¨æ‰§è¡Œè¿™ä¸ªäºŒè¿›åˆ¶ç¨‹åºçš„æ—¶å€™ï¼Œ
+								  * effective idå˜ä¸ºè¿™ä¸ªæ–‡ä»¶çš„owner user
 								  */
 #define S_ISGID  0002000
 #define S_ISVTX  0001000
 
 #define S_ISLNK(m)	(((m) & S_IFMT) == S_IFLNK)
-#define S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)  /* ÊÇ·ñÒ»¸ö³£¹æÎÄ¼ş */
-#define S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)    /* ÊÇ·ñÒ»¸öÄ¿Â¼ */
-#define S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)  /* ÊÇ·ñÒ»¸ö×Ö·ûÎÄ¼ş */
-#define S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)   /* ÊÇ·ñÒ»¸ö¿éÎÄ¼ş */
-/* ÅĞ¶ÏÊÇ·ñÓĞÃû¹ÜµÀÎÄ¼ş£¬ÓĞÃû¹ÜµÀµÄÃû×Ö´æÔÚÓÚÎÄ¼şÏµÍ³µ±ÖĞ£¬¶øÄÚÈİ´æÔÚÓÚÄÚ´æµ±ÖĞ */
+#define S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)  /* æ˜¯å¦ä¸€ä¸ªå¸¸è§„æ–‡ä»¶ */
+#define S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)    /* æ˜¯å¦ä¸€ä¸ªç›®å½• */
+#define S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)  /* æ˜¯å¦ä¸€ä¸ªå­—ç¬¦æ–‡ä»¶ */
+#define S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)   /* æ˜¯å¦ä¸€ä¸ªå—æ–‡ä»¶ */
+/* åˆ¤æ–­æ˜¯å¦æœ‰åç®¡é“æ–‡ä»¶ï¼Œæœ‰åç®¡é“çš„åå­—å­˜åœ¨äºæ–‡ä»¶ç³»ç»Ÿå½“ä¸­ï¼Œè€Œå†…å®¹å­˜åœ¨äºå†…å­˜å½“ä¸­ */
 #define S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)    
 #define S_ISSOCK(m)	(((m) & S_IFMT) == S_IFSOCK)
 
-#define S_IRWXU 00700     /* ÓÃ»§×Ô¼ºµÄrwxÈ¨ÏŞ */
-#define S_IRUSR 00400     /* ÓÃ»§ÊÇ·ñ¿É¶Á */
-#define S_IWUSR 00200     /* ÓÃ»§ÊÇ·ñ¿ÉĞ´ */
-#define S_IXUSR 00100     /* ÓÃ»§ÊÇ·ñ¿ÉÖ´ĞĞ */
+#define S_IRWXU 00700     /* ç”¨æˆ·è‡ªå·±çš„rwxæƒé™ */
+#define S_IRUSR 00400     /* ç”¨æˆ·æ˜¯å¦å¯è¯» */
+#define S_IWUSR 00200     /* ç”¨æˆ·æ˜¯å¦å¯å†™ */
+#define S_IXUSR 00100     /* ç”¨æˆ·æ˜¯å¦å¯æ‰§è¡Œ */
 
-#define S_IRWXG 00070     /* ÓÃ»§ËùÔÚ×éµÄrwxÈ¨ÏŞ */
-#define S_IRGRP 00040     /* ÓÃ»§ËùÔÚ×éµÄrÈ¨ÏŞ */
-#define S_IWGRP 00020     /* ÓÃ»§ËùÔÚ×éµÄwÈ¨ÏŞ */
-#define S_IXGRP 00010     /* ÓÃ»§ËùÔÚ×éµÄxÈ¨ÏŞ */
+#define S_IRWXG 00070     /* ç”¨æˆ·æ‰€åœ¨ç»„çš„rwxæƒé™ */
+#define S_IRGRP 00040     /* ç”¨æˆ·æ‰€åœ¨ç»„çš„ræƒé™ */
+#define S_IWGRP 00020     /* ç”¨æˆ·æ‰€åœ¨ç»„çš„wæƒé™ */
+#define S_IXGRP 00010     /* ç”¨æˆ·æ‰€åœ¨ç»„çš„xæƒé™ */
 
-#define S_IRWXO 00007     /* ÆäËûÓÃ»§µÄrwxÈ¨ÏŞ */
-#define S_IROTH 00004     /* ÆäËûÓÃ»§µÄrÈ¨ÏŞ */
-#define S_IWOTH 00002     /* ÆäËûÓÃ»§µÄwÈ¨ÏŞ */
-#define S_IXOTH 00001     /* ÆäËûÓÃ»§µÄxÈ¨ÏŞ */
+#define S_IRWXO 00007     /* å…¶ä»–ç”¨æˆ·çš„rwxæƒé™ */
+#define S_IROTH 00004     /* å…¶ä»–ç”¨æˆ·çš„ræƒé™ */
+#define S_IWOTH 00002     /* å…¶ä»–ç”¨æˆ·çš„wæƒé™ */
+#define S_IXOTH 00001     /* å…¶ä»–ç”¨æˆ·çš„xæƒé™ */
 
 #ifdef __KERNEL__
 #define S_IRWXUGO	(S_IRWXU|S_IRWXG|S_IRWXO)

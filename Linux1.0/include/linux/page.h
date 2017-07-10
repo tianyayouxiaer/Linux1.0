@@ -10,11 +10,11 @@
 			/* number of bits that fit into a memory pointer */
 #define BITS_PER_PTR			(8*sizeof(unsigned long))
 			/* to mask away the intra-page address bits */
-#define PAGE_MASK			(~(PAGE_SIZE-1))           /* ~ÊÇ°´Î»È¡·´*/
+#define PAGE_MASK			(~(PAGE_SIZE-1))           /* ~æ˜¯æŒ‰ä½å–å*/
 			/* to align the pointer to the (next) page boundary */
-#define PAGE_ALIGN(addr)		(((addr)+PAGE_SIZE-1)&PAGE_MASK)   //½«µØÖ·ÓÃÒ³¶ÔÆë
+#define PAGE_ALIGN(addr)		(((addr)+PAGE_SIZE-1)&PAGE_MASK)   //å°†åœ°å€ç”¨é¡µå¯¹é½
 			/* to align the pointer to a pointer address */
-#define PTR_MASK			(~(sizeof(void*)-1))        //½«Ö¸ÕëµØÖ·¶ÔÆë£¬¼´µØÖ·×îºóÁ½Î»Îª0
+#define PTR_MASK			(~(sizeof(void*)-1))        //å°†æŒ‡é’ˆåœ°å€å¯¹é½ï¼Œå³åœ°å€æœ€åä¸¤ä½ä¸º0
 
 					/* sizeof(void*)==1<<SIZEOF_PTR_LOG2 */
 					/* 64-bit machines, beware!  SRB. */

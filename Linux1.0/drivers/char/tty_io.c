@@ -1816,7 +1816,7 @@ static struct tty_ldisc tty_ldisc_N_TTY = {
 	copy_to_cooked		/* handler */
 };
 
-/* ÖÕ¶ËÉè±¸³õÊ¼»¯ */	
+/* ç»ˆç«¯è®¾å¤‡åˆå§‹åŒ– */	
 long tty_init(long kmem_start)
 {
 	int i;

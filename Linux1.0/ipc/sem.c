@@ -17,18 +17,18 @@ static int newary (key_t, int, int);
 static int findkey (key_t key);
 static void freeary (int id);
 
-/* ĞÅºÅÁ¿Êı×é×î´óÎªSEMMNI */
+/* ä¿¡å·é‡æ•°ç»„æœ€å¤§ä¸ºSEMMNI */
 static struct semid_ds *semary[SEMMNI];
-/*  ×¢Òânewaryº¯ÊıÖĞ¶Ôused_semsµÄ²Ù×÷ */
+/*  æ³¨æ„newaryå‡½æ•°ä¸­å¯¹used_semsçš„æ“ä½œ */
 static int used_sems = 0, used_semids = 0;                    
-static struct wait_queue *sem_lock = NULL; /* µÈ´ıÊ¹ÓÃĞÅºÅÁ¿µÄÒ»¸ö¶ÓÁĞ */
-/* ±ê¼ÇÏµÍ³ÖĞÒÑÊ¹ÓÃµÄ×î´óĞÅºÅÁ¿ID£¬¿ÉÒÔÔö´óÒ²¿ÉÒÔ¼õĞ¡µ«²»»á³¬¹ıSEMMNI */
+static struct wait_queue *sem_lock = NULL; /* ç­‰å¾…ä½¿ç”¨ä¿¡å·é‡çš„ä¸€ä¸ªé˜Ÿåˆ— */
+/* æ ‡è®°ç³»ç»Ÿä¸­å·²ä½¿ç”¨çš„æœ€å¤§ä¿¡å·é‡IDï¼Œå¯ä»¥å¢å¤§ä¹Ÿå¯ä»¥å‡å°ä½†ä¸ä¼šè¶…è¿‡SEMMNI */
 static int max_semid = 0;				
 
-static unsigned short sem_seq = 0;     /* ĞÅºÅÁ¿ĞòÁĞºÅ */
+static unsigned short sem_seq = 0;     /* ä¿¡å·é‡åºåˆ—å· */
 
 
-/* ĞÅºÅÁ¿Í¨ĞÅ³õÊ¼»¯ */
+/* ä¿¡å·é‡é€šä¿¡åˆå§‹åŒ– */
 void sem_init (void)
 {
 	int i=0;
@@ -40,9 +40,9 @@ void sem_init (void)
 	return;
 }
 
-/* Ñ°ÕÒÎªkeyµÄĞÅºÅÁ¿µÄË÷Òı£¬²¢·µ»ØË÷Òı£¬
- * ×¢ÒâÃ»ÓĞ±»Ê¹ÓÃµÄĞÅºÅÁ¿²»ÔÚ²éÕÒÖ®ÁĞ
- * Èç¹ûĞÅºÅÁ¿ÕıºÃÊÇIPC_NOID,Ôò½ø³Ì½øÈë²»¿ÉÖĞ¶ÏµÄË¯Ãß
+/* å¯»æ‰¾ä¸ºkeyçš„ä¿¡å·é‡çš„ç´¢å¼•ï¼Œå¹¶è¿”å›ç´¢å¼•ï¼Œ
+ * æ³¨æ„æ²¡æœ‰è¢«ä½¿ç”¨çš„ä¿¡å·é‡ä¸åœ¨æŸ¥æ‰¾ä¹‹åˆ—
+ * å¦‚æœä¿¡å·é‡æ­£å¥½æ˜¯IPC_NOID,åˆ™è¿›ç¨‹è¿›å…¥ä¸å¯ä¸­æ–­çš„ç¡çœ 
  */
 static int findkey (key_t key)
 {
@@ -60,7 +60,7 @@ static int findkey (key_t key)
 	return -1;
 }
 
-/* ĞÂ½¨Ò»¸öĞÅºÅÁ¿¼¯£¬¸Ã¼¯ÖĞ°üº¬nsems¸öĞÅºÅÁ¿ */
+/* æ–°å»ºä¸€ä¸ªä¿¡å·é‡é›†ï¼Œè¯¥é›†ä¸­åŒ…å«nsemsä¸ªä¿¡å·é‡ */
 static int newary (key_t key, int nsems, int semflg)
 {
 	int id;
@@ -70,10 +70,10 @@ static int newary (key_t key, int nsems, int semflg)
 
 	if (!nsems)
 		return -EINVAL;
-	/*ĞÅºÅÁ¿µÄ×ÜÊı²»ÄÜ³¬¹ıSEMMNS*/
+	/*ä¿¡å·é‡çš„æ€»æ•°ä¸èƒ½è¶…è¿‡SEMMNS*/
 	if (used_sems + nsems > SEMMNS)
 		return -ENOSPC;
-	/* ÕÒµ½Ò»¸ö»¹Ã»ÓĞ±»Ê¹ÓÃµÄĞÅºÅÁ¿½á¹¹ */
+	/* æ‰¾åˆ°ä¸€ä¸ªè¿˜æ²¡æœ‰è¢«ä½¿ç”¨çš„ä¿¡å·é‡ç»“æ„ */
 	for (id=0; id < SEMMNI; id++) 
 		if (semary[id] == IPC_UNUSED) {
 			semary[id] = (struct semid_ds *) IPC_NOID;
@@ -81,7 +81,7 @@ static int newary (key_t key, int nsems, int semflg)
 		}
 	return -ENOSPC;
 found:
-	/* ¼ÆËãĞèÒªÊ¹ÓÃÄÚ´æµÄ´óĞ¡ */
+	/* è®¡ç®—éœ€è¦ä½¿ç”¨å†…å­˜çš„å¤§å° */
 	size = sizeof (*sma) + nsems * sizeof (struct sem);
 	used_sems += nsems;
 	sma = (struct semid_ds *) kmalloc (size, GFP_KERNEL);
@@ -93,14 +93,14 @@ found:
 		return -ENOMEM;
 	}
 	memset (sma, 0, size);
-	/* ×¢ÒâÊ¹ÓÃÁËÁ¬ĞøÄÚ´æÌØĞÔ 0ÕıºÃÊÇÒ»¸östruct semid_ds£¬1ÔòÊÇºóĞøÄÚ´æ*/
+	/* æ³¨æ„ä½¿ç”¨äº†è¿ç»­å†…å­˜ç‰¹æ€§ 0æ­£å¥½æ˜¯ä¸€ä¸ªstruct semid_dsï¼Œ1åˆ™æ˜¯åç»­å†…å­˜*/
 	sma->sem_base = (struct sem *) &sma[1];
 	ipcp = &sma->sem_perm;
 	ipcp->mode = (semflg & S_IRWXUGO);
 	ipcp->key = key;
 	ipcp->cuid = ipcp->uid = current->euid;
 	ipcp->gid = ipcp->cgid = current->egid;
-	ipcp->seq = sem_seq;                /* ×¢ÒâÕâ¸öĞòÁĞºÅºÍ·µ»ØÖµ¹ØÏµ */
+	ipcp->seq = sem_seq;                /* æ³¨æ„è¿™ä¸ªåºåˆ—å·å’Œè¿”å›å€¼å…³ç³» */
 	sma->eventn = sma->eventz = NULL;
 	sma->sem_nsems = nsems;
 	sma->sem_ctime = CURRENT_TIME;
@@ -110,11 +110,11 @@ found:
 	semary[id] = sma;
 	if (sem_lock)
 		wake_up (&sem_lock);
-	/* ÎªÉ¶ÕâÃ´·µ»Ø? */
+	/* ä¸ºå•¥è¿™ä¹ˆè¿”å›? */
 	return (int) sem_seq * SEMMNI + id;
 }
 
-/* ´ÓÏµÍ³ÖĞ»ñÈ¡Ò»¸öĞÅºÅÁ¿ */
+/* ä»ç³»ç»Ÿä¸­è·å–ä¸€ä¸ªä¿¡å·é‡ */
 int sys_semget (key_t key, int nsems, int semflg)
 {
 	int id;
@@ -125,7 +125,7 @@ int sys_semget (key_t key, int nsems, int semflg)
 	if (key == IPC_PRIVATE) 
 		return newary(key, nsems, semflg);
 	if ((id = findkey (key)) == -1) {  /* key not used */
-		/* ¶ÔÓ¦keyµÄĞÅºÅÁ¿Ã»ÓĞÕÒµ½£¬ÓÖ²»ÊÇ´´½¨±ê¼ÇÔò³ö´í£¬·ñÔò´´½¨Ò»¸öĞÂµÄ */
+		/* å¯¹åº”keyçš„ä¿¡å·é‡æ²¡æœ‰æ‰¾åˆ°ï¼Œåˆä¸æ˜¯åˆ›å»ºæ ‡è®°åˆ™å‡ºé”™ï¼Œå¦åˆ™åˆ›å»ºä¸€ä¸ªæ–°çš„ */
 		if (!(semflg & IPC_CREAT))
 			return -ENOENT;
 		return newary(key, nsems, semflg);
@@ -137,7 +137,7 @@ int sys_semget (key_t key, int nsems, int semflg)
 		return -EINVAL;
 	if (ipcperms(&sma->sem_perm, semflg))
 		return -EACCES;
-	/* ºÍnewary·µ»ØÁªÏµ */
+	/* å’Œnewaryè¿”å›è”ç³» */
 	return sma->sem_perm.seq*SEMMNI + id;
 } 
 
@@ -149,17 +149,17 @@ static void freeary (int id)
 	sma->sem_perm.seq++;
 	sem_seq++;
 	used_sems -= sma->sem_nsems;
-	/* Èç¹ûidÕıºÃÊÇ×î´óĞÅºÅÁ¿idÔò£¬Ôò»áÒÀ´ÎÏòÏÂÉ¨Ãè£¬
-	 * Èç¹ûÏÂÃæsemargÎªIPC_UNUSED£¬Ôò»á¼ÌĞø¼õĞ¡
+	/* å¦‚æœidæ­£å¥½æ˜¯æœ€å¤§ä¿¡å·é‡idåˆ™ï¼Œåˆ™ä¼šä¾æ¬¡å‘ä¸‹æ‰«æï¼Œ
+	 * å¦‚æœä¸‹é¢semargä¸ºIPC_UNUSEDï¼Œåˆ™ä¼šç»§ç»­å‡å°
 	 */
 	if (id == max_semid)
 		while (max_semid && (semary[--max_semid] == IPC_UNUSED));
 	semary[id] = (struct semid_ds *) IPC_UNUSED;
 	used_semids--;
-	/* Õâ¸ö²Ù×÷»áÒıÆğÊ²Ã´ºó¹û? ,ºÍsem_exitº¯Êı×îºó´¦ÀíÁªÏµ */
+	/* è¿™ä¸ªæ“ä½œä¼šå¼•èµ·ä»€ä¹ˆåæœ? ,å’Œsem_exitå‡½æ•°æœ€åå¤„ç†è”ç³» */
 	for (un=sma->undo; un; un=un->id_next)
 	        un->semadj = 0;
-	/*Èç¹ûĞÅºÅÁ¿¼¯ÖĞ»¹ÓĞµÈ´ı¶ÓÁĞ£¬Ôò»½ĞÑµÈ´ı¶ÓÁĞ */
+	/*å¦‚æœä¿¡å·é‡é›†ä¸­è¿˜æœ‰ç­‰å¾…é˜Ÿåˆ—ï¼Œåˆ™å”¤é†’ç­‰å¾…é˜Ÿåˆ— */
 	while (sma->eventz || sma->eventn) {
 		if (sma->eventz)
 			wake_up (&sma->eventz);
@@ -171,7 +171,7 @@ static void freeary (int id)
 	return;
 }
 
-/* ¶ÔĞÅºÅ¼¯µÄ²Ù×÷ */
+/* å¯¹ä¿¡å·é›†çš„æ“ä½œ */
 int sys_semctl (int semid, int semnum, int cmd, void *arg)
 {
 	int i, id, val = 0;
@@ -214,7 +214,7 @@ int sys_semctl (int semid, int semnum, int cmd, void *arg)
 	}
 
 	case SEM_STAT:
-		/* »ñÈ¡ËùÔÚĞÅºÅ¼¯µÄĞÅÏ¢ */
+		/* è·å–æ‰€åœ¨ä¿¡å·é›†çš„ä¿¡æ¯ */
 		if (!arg || ! (buf = (struct semid_ds *) get_fs_long((int *) arg)))
 			return -EFAULT;
 		i = verify_area (VERIFY_WRITE, buf, sizeof (*sma));
@@ -364,10 +364,10 @@ int sys_semctl (int semid, int semnum, int cmd, void *arg)
 	return 0;
 }
 
-/* º¯Êı·µ»ØĞÅºÅÁ¿µÄÖµ
- * semidĞÅºÅÁ¿¼¶±êÊ¶·û
- * tsops½øĞĞ²Ù×÷µÄĞÅºÅÁ¿¼¯½á¹¹ÌåÊı×éµÄÊ×µØÖ·
- * nsops½øĞĞ²Ù×÷ĞÅºÅÁ¿µÄ¸öÊı£¬¼´sops½á¹¹±äÁ¿µÄ¸öÊı£¬Ğè´óÓÚ»òµÈÓÚ1
+/* å‡½æ•°è¿”å›ä¿¡å·é‡çš„å€¼
+ * semidä¿¡å·é‡çº§æ ‡è¯†ç¬¦
+ * tsopsè¿›è¡Œæ“ä½œçš„ä¿¡å·é‡é›†ç»“æ„ä½“æ•°ç»„çš„é¦–åœ°å€
+ * nsopsè¿›è¡Œæ“ä½œä¿¡å·é‡çš„ä¸ªæ•°ï¼Œå³sopsç»“æ„å˜é‡çš„ä¸ªæ•°ï¼Œéœ€å¤§äºæˆ–ç­‰äº1
  */
 int sys_semop (int semid, struct sembuf *tsops, unsigned nsops)
 {
@@ -384,47 +384,47 @@ int sys_semop (int semid, struct sembuf *tsops, unsigned nsops)
 		return -E2BIG;
 	if (!tsops) 
 		return -EFAULT;
-	/* ½«Êı¾İ´Ótsops´Ó¸´ÖÆµ½sopsÖĞ */
+	/* å°†æ•°æ®ä»tsopsä»å¤åˆ¶åˆ°sopsä¸­ */
 	memcpy_fromfs (sops, tsops, nsops * sizeof(*tsops));  
-	/* ×¢ÒâĞÅºÅ¼¯µÄid²»ÊÇÔÚSEMMNI·¶Î§£¬SEMMNIÖ»ÊÇĞÅºÅ¼¯Êı×é·¶Î§ */
+	/* æ³¨æ„ä¿¡å·é›†çš„idä¸æ˜¯åœ¨SEMMNIèŒƒå›´ï¼ŒSEMMNIåªæ˜¯ä¿¡å·é›†æ•°ç»„èŒƒå›´ */
 	id = semid % SEMMNI;
-	/* Ê×ÏÈĞÅºÅ¼¯ÒªÊÇ¿ÉÓÃµÄ */
+	/* é¦–å…ˆä¿¡å·é›†è¦æ˜¯å¯ç”¨çš„ */
 	if ((sma = semary[id]) == IPC_UNUSED || sma == IPC_NOID)
 		return -EINVAL;
-	/* ÏÈÉ¨ÃèÒ»±éËùÓĞµÄĞÅºÅ²Ù×÷£¬×öÒ»¸ö»ù±¾Í³¼Æ£¬·½±ãºóĞø´¦Àí */
+	/* å…ˆæ‰«æä¸€éæ‰€æœ‰çš„ä¿¡å·æ“ä½œï¼Œåšä¸€ä¸ªåŸºæœ¬ç»Ÿè®¡ï¼Œæ–¹ä¾¿åç»­å¤„ç† */
 	for (i=0; i<nsops; i++) { 
 		sop = &sops[i];
-		/* Èç¹û³¬¹ıĞÅºÅ¼¯ÖĞµÄĞÅºÅÊıÁ¿£¬Ôò·µ»ØÊ§°Ü */
+		/* å¦‚æœè¶…è¿‡ä¿¡å·é›†ä¸­çš„ä¿¡å·æ•°é‡ï¼Œåˆ™è¿”å›å¤±è´¥ */
 		if (sop->sem_num > sma->sem_nsems)
 			return -EFBIG;
 		if (sop->sem_flg & SEM_UNDO)
 			undos++;
 		if (sop->sem_op) {
 			alter++;
-			/* ´ú±íÓĞ½ø³ÌÊÍ·Å×ÊÔ´£¬ÔÚº¯Êı·µ»ØµÄµØ·½Òª»½ĞÑµÈ´ı×ÊÔ´µÄ½ø³Ì¶ÓÁĞ */
+			/* ä»£è¡¨æœ‰è¿›ç¨‹é‡Šæ”¾èµ„æºï¼Œåœ¨å‡½æ•°è¿”å›çš„åœ°æ–¹è¦å”¤é†’ç­‰å¾…èµ„æºçš„è¿›ç¨‹é˜Ÿåˆ— */
 			if (sop->sem_op > 0)
 				semncnt ++;
 		}
 	}
-	/* ÅĞ¶Ï¸ÃĞÅºÅ¼¯ÊÇ·ñ¿ÉÒÔ±»²Ù×÷ */
+	/* åˆ¤æ–­è¯¥ä¿¡å·é›†æ˜¯å¦å¯ä»¥è¢«æ“ä½œ */
 	if (ipcperms(&sma->sem_perm, alter ? S_IWUGO : S_IRUGO))
 		return -EACCES;
 	/* 
 	 * ensure every sop with undo gets an undo structure 
 	 */
-	/* ½«ËùÓĞµÄundo²Ù×÷Ìí¼Óµ½½ø³ÌµÄsemunÁ´±íµ±ÖĞ£¬
-	 * Í¬Ê±½«undo²Ù×÷Ìí¼Óµ½ĞÅºÅ¼¯µÄundoÁ´±íµ±ÖĞ
+	/* å°†æ‰€æœ‰çš„undoæ“ä½œæ·»åŠ åˆ°è¿›ç¨‹çš„semuné“¾è¡¨å½“ä¸­ï¼Œ
+	 * åŒæ—¶å°†undoæ“ä½œæ·»åŠ åˆ°ä¿¡å·é›†çš„undoé“¾è¡¨å½“ä¸­
 	 */
 	if (undos) {
 		for (i=0; i<nsops; i++) {
-			/* Èç¹û²»ÊÇSEM_UNDOÔò¼ÌĞø´¦ÀíÏÂÒ»¸ö */
+			/* å¦‚æœä¸æ˜¯SEM_UNDOåˆ™ç»§ç»­å¤„ç†ä¸‹ä¸€ä¸ª */
 			if (!(sops[i].sem_flg & SEM_UNDO))
 				continue;
 			for (un = current->semun; un; un = un->proc_next) 
 				if ((un->semid == semid) && 
 				    (un->sem_num == sops[i].sem_num))
 					break;
-			/* Èç¹û¸Ã½ÚµãÒÑ¾­ÔÚ½ø³ÌµÄsemunÁ´±íµ±ÖĞ£¬Ôò²»ĞèÒªÔÙ×ö´¦Àí */
+			/* å¦‚æœè¯¥èŠ‚ç‚¹å·²ç»åœ¨è¿›ç¨‹çš„semuné“¾è¡¨å½“ä¸­ï¼Œåˆ™ä¸éœ€è¦å†åšå¤„ç† */
 			if (un)
 				continue;
 			un = (struct sem_undo *) 
@@ -444,14 +444,14 @@ int sys_semop (int semid, struct sembuf *tsops, unsigned nsops)
  slept:
 	if (sma->sem_perm.seq != semid / SEMMNI) 
 		return -EIDRM;
-	/* ÒÀ´Î´¦ÀíÒª²Ù×÷µÄĞÅºÅÁ¿ */
+	/* ä¾æ¬¡å¤„ç†è¦æ“ä½œçš„ä¿¡å·é‡ */
 	for (i=0; i<nsops; i++) {
 		sop = &sops[i];
 		curr = &sma->sem_base[sop->sem_num];
-		/* Èç¹û³¬¹ıĞÅºÅÖµµÄ×î´óÖµ£¬Ôò·µ»Ø·¶Î§´íÎó */
+		/* å¦‚æœè¶…è¿‡ä¿¡å·å€¼çš„æœ€å¤§å€¼ï¼Œåˆ™è¿”å›èŒƒå›´é”™è¯¯ */
 		if (sop->sem_op + curr->semval > SEMVMX)
 			return -ERANGE;
-		/* Èç¹ûsem_opÎª0,Ôò¸Ã½ø³ÌÏ£ÍûµÈ´ı¸ÃĞÅºÅÖµÎª0 */
+		/* å¦‚æœsem_opä¸º0,åˆ™è¯¥è¿›ç¨‹å¸Œæœ›ç­‰å¾…è¯¥ä¿¡å·å€¼ä¸º0 */
 		if (!sop->sem_op && curr->semval) { 
 			if (sop->sem_flg & IPC_NOWAIT)
 				return -EAGAIN;
@@ -462,7 +462,7 @@ int sys_semop (int semid, struct sembuf *tsops, unsigned nsops)
 			curr->semzcnt--;
 			goto slept;
 		}
-		/* Èç¹ûÒª¼õÉÙµÄĞÅºÅÖµĞ¡ÓÚ0£¬Ò²¾ÍÊÇ×ÊÔ´²»¹»ÓÃ£¬Ôò½ø³ÌµÈ´ı */
+		/* å¦‚æœè¦å‡å°‘çš„ä¿¡å·å€¼å°äº0ï¼Œä¹Ÿå°±æ˜¯èµ„æºä¸å¤Ÿç”¨ï¼Œåˆ™è¿›ç¨‹ç­‰å¾… */
 		if ((sop->sem_op + curr->semval < 0) ) { 
 			if (sop->sem_flg & IPC_NOWAIT)
 				return -EAGAIN;
@@ -479,13 +479,13 @@ int sys_semop (int semid, struct sembuf *tsops, unsigned nsops)
 		sop = &sops[i];
 		curr = &sma->sem_base[sop->sem_num];
 		curr->sempid = current->pid;
-		/* ´ËÊ±ĞÅºÅÖµÕıºÃÊÇ0£¬Ôò»½ĞÑµÈ´ıĞÅºÅÖµÎª0µÄµÈ´ı¶ÓÁĞ */
+		/* æ­¤æ—¶ä¿¡å·å€¼æ­£å¥½æ˜¯0ï¼Œåˆ™å”¤é†’ç­‰å¾…ä¿¡å·å€¼ä¸º0çš„ç­‰å¾…é˜Ÿåˆ— */
 		if (!(curr->semval += sop->sem_op))
 			semzcnt++;
 		if (!(sop->sem_flg & SEM_UNDO))
 			continue;
-		/* º¯Êı¸Õ¿ªÊ¼µÄforÑ­»·½ö½öÊÇ½«undoĞÅºÅÌí¼Óµ½ÁË½ø³ÌµÄsemun
-		 * ¶ÓÁĞµ±ÖĞ£¬²¢Ã»ÓĞ¶ÔundoµÄsemadj×ö´¦Àí¡£
+		/* å‡½æ•°åˆšå¼€å§‹çš„forå¾ªç¯ä»…ä»…æ˜¯å°†undoä¿¡å·æ·»åŠ åˆ°äº†è¿›ç¨‹çš„semun
+		 * é˜Ÿåˆ—å½“ä¸­ï¼Œå¹¶æ²¡æœ‰å¯¹undoçš„semadjåšå¤„ç†ã€‚
 		 */
 		for (un = current->semun; un; un = un->proc_next) 
 			if ((un->semid == semid) && 
@@ -495,16 +495,16 @@ int sys_semop (int semid, struct sembuf *tsops, unsigned nsops)
 			printk ("semop : no undo for op %d\n", i);
 			continue;
 		}
-		/* ÕÒµ½ÁËundo½ÚµãÔòµ÷ÕûsemadjµÄÖµ£¬
-		 * Èç¹ûÊÇÊÍ·ÅÁË×ÊÔ´Ôò sem_op > 0,
-		 * ÔòsemadjÊÇ¸ºµÄ
+		/* æ‰¾åˆ°äº†undoèŠ‚ç‚¹åˆ™è°ƒæ•´semadjçš„å€¼ï¼Œ
+		 * å¦‚æœæ˜¯é‡Šæ”¾äº†èµ„æºåˆ™ sem_op > 0,
+		 * åˆ™semadjæ˜¯è´Ÿçš„
 		 */
 		un->semadj -= sop->sem_op;
 	}
 	sma->sem_otime = CURRENT_TIME; 
     if (semncnt && sma->eventn)
 		wake_up(&sma->eventn);
-	/* Èç¹ûÓĞµÈ´ıĞÅºÅÖµÎª0µÄ½ø³ÌÔò»½ĞÑµÈ´ı¶ÓÁĞ */
+	/* å¦‚æœæœ‰ç­‰å¾…ä¿¡å·å€¼ä¸º0çš„è¿›ç¨‹åˆ™å”¤é†’ç­‰å¾…é˜Ÿåˆ— */
 	if (semzcnt && sma->eventz)
 		wake_up(&sma->eventz);
 	return curr->semval;
@@ -515,8 +515,8 @@ int sys_semop (int semid, struct sembuf *tsops, unsigned nsops)
  * undo structures are not freed when semaphore arrays are destroyed
  * so some of them may be out of date.
  */
-/* ½ø³ÌÍË³öÊ±£¬»á¶Ô½ø³ÌÕ¼ÓĞµÄĞÅºÅÁ¿×ÊÔ´½øĞĞÊÍ·Å£¬
- * ·ÀÖ¹ÆäËû½ø³ÌÎŞ·¨Ê¹ÓÃÒÑ¾­ÍË³öµÄ½ø³ÌÃ»ÓĞÊÍ·ÅµÄ×ÊÔ´
+/* è¿›ç¨‹é€€å‡ºæ—¶ï¼Œä¼šå¯¹è¿›ç¨‹å æœ‰çš„ä¿¡å·é‡èµ„æºè¿›è¡Œé‡Šæ”¾ï¼Œ
+ * é˜²æ­¢å…¶ä»–è¿›ç¨‹æ— æ³•ä½¿ç”¨å·²ç»é€€å‡ºçš„è¿›ç¨‹æ²¡æœ‰é‡Šæ”¾çš„èµ„æº
  */
 void sem_exit (void)
 {
@@ -524,43 +524,43 @@ void sem_exit (void)
 	struct semid_ds *sma;
 	struct sem *sem = NULL;
 
-	/* Ñ­»·´¦Àíµ±Ç°½ø³ÌµÄundoĞÅºÅÁ´±í£¬ĞÅºÅ¿ÉÄÜÊÇ¶à¸öĞÅºÅ¼¯ÖĞµÄ²»Í¬ĞÅºÅ */
+	/* å¾ªç¯å¤„ç†å½“å‰è¿›ç¨‹çš„undoä¿¡å·é“¾è¡¨ï¼Œä¿¡å·å¯èƒ½æ˜¯å¤šä¸ªä¿¡å·é›†ä¸­çš„ä¸åŒä¿¡å· */
 	for (up = &current->semun; (u = *up); *up = u->proc_next, kfree(u)) {
-		/* »ñÈ¡undoĞÅºÅËùÔÚµÄĞÅºÅ¼¯ */
+		/* è·å–undoä¿¡å·æ‰€åœ¨çš„ä¿¡å·é›† */
 		sma = semary[u->semid % SEMMNI];
 		if (sma == IPC_UNUSED || sma == IPC_NOID) 
 			continue;
 		if (sma->sem_perm.seq != u->semid / SEMMNI)
 			continue;
-		/* È»ºóÔÚĞÅºÅ¼¯ÖĞµÄundoÁ´±íÖĞ²éÕÒµ±Ç°½ø³ÌµÄsemunÁ´ÖĞµÄundo½Úµã */
+		/* ç„¶ååœ¨ä¿¡å·é›†ä¸­çš„undoé“¾è¡¨ä¸­æŸ¥æ‰¾å½“å‰è¿›ç¨‹çš„semuné“¾ä¸­çš„undoèŠ‚ç‚¹ */
 		for (unp = &sma->undo; (un = *unp); unp = &un->id_next) {
 			if (u == un) 
 				goto found;
 		}
-		/* Ã»ÕÒµ½Ôò±¨´í£¬ÒòÎªÃ¿¸öundoµÄĞÅºÅ±ØĞëÔÚĞÅºÅ¼¯ÖĞ±»ÕÒµ½ */
+		/* æ²¡æ‰¾åˆ°åˆ™æŠ¥é”™ï¼Œå› ä¸ºæ¯ä¸ªundoçš„ä¿¡å·å¿…é¡»åœ¨ä¿¡å·é›†ä¸­è¢«æ‰¾åˆ° */
 		printk ("sem_exit undo list error id=%d\n", u->semid);
 		break;
 found:
-		/* ¸ü¸ÄĞÅºÅÖĞundoÁ´±íµÄ¹ØÏµ£¬Ò²¾ÍÊÇÉ¾³ıunÕâ¸öundo½Úµã */
+		/* æ›´æ”¹ä¿¡å·ä¸­undoé“¾è¡¨çš„å…³ç³»ï¼Œä¹Ÿå°±æ˜¯åˆ é™¤unè¿™ä¸ªundoèŠ‚ç‚¹ */
 		*unp = un->id_next;
-		/* ÒòÎª×îºóÒ»´ÎĞÅºÅÁ¿µÄÖµÎª0£¬ËùÒÔ²»ĞèÒª´¦Àí */
+		/* å› ä¸ºæœ€åä¸€æ¬¡ä¿¡å·é‡çš„å€¼ä¸º0ï¼Œæ‰€ä»¥ä¸éœ€è¦å¤„ç† */
 		if (!un->semadj)
 			continue;
 		while (1) {
-			/* ×¢ÒâºÍnewaryÖĞ·µ»ØÖµ¹ØÏµ */
+			/* æ³¨æ„å’Œnewaryä¸­è¿”å›å€¼å…³ç³» */
 			if (sma->sem_perm.seq != un->semid / SEMMNI)
 				break;
 			sem = &sma->sem_base[un->sem_num];
-			/* ½ø³ÌÍË³öÊ±½«ĞÅºÅÕ¼ÓÃµÄ×ÊÔ´¸øÊÍ·Åµô */
+			/* è¿›ç¨‹é€€å‡ºæ—¶å°†ä¿¡å·å ç”¨çš„èµ„æºç»™é‡Šæ”¾æ‰ */
 			if (sem->semval + un->semadj >= 0) {
 				sem->semval += un->semadj;
 				sem->sempid = current->pid;
 				sma->sem_otime = CURRENT_TIME;
-				/*Èç¹ûÊÍ·ÅÁË×ÊÔ´£¬ÇÒÈÔÓĞµÈ´ı×ÊÔ´µÄ½ø³Ì¶ÓÁĞ£¬Ôò»½ĞÑ¶ÓÁĞ*/
+				/*å¦‚æœé‡Šæ”¾äº†èµ„æºï¼Œä¸”ä»æœ‰ç­‰å¾…èµ„æºçš„è¿›ç¨‹é˜Ÿåˆ—ï¼Œåˆ™å”¤é†’é˜Ÿåˆ—*/
 				if (un->semadj > 0 && sma->eventn)
 					wake_up (&sma->eventn);
-				/* Èç¹ûµ±Ç°½ø³ÌÖĞĞÅºÅÁ¿µÄÖµµÈÓÚ0£¬
-				 * ÇÒ´æÔÚµÈ´ıĞÅºÅÖµÎª0µÄµÈ´ı¶ÓÁĞ£¬Ôò»½ĞÑµÈ´ı¶ÓÁĞ
+				/* å¦‚æœå½“å‰è¿›ç¨‹ä¸­ä¿¡å·é‡çš„å€¼ç­‰äº0ï¼Œ
+				 * ä¸”å­˜åœ¨ç­‰å¾…ä¿¡å·å€¼ä¸º0çš„ç­‰å¾…é˜Ÿåˆ—ï¼Œåˆ™å”¤é†’ç­‰å¾…é˜Ÿåˆ—
 				 */
 				if (!sem->semval && sma->eventz)
 					wake_up (&sma->eventz);
@@ -569,12 +569,12 @@ found:
 			if (current->signal & ~current->blocked)
 				break;
 			sem->semncnt++;
-			/* ÒâÎ¶×ÅµÈ´ı´¦Àí¸ÃĞÅºÅµÄ½ø³Ì¶àÁËÒ»¸ö */
+			/* æ„å‘³ç€ç­‰å¾…å¤„ç†è¯¥ä¿¡å·çš„è¿›ç¨‹å¤šäº†ä¸€ä¸ª */
 			interruptible_sleep_on (&sma->eventn);
 			sem->semncnt--;
 		}
 	}
-	/* ÉèÖÃ½ø³ÌµÄundoĞÅºÅÁ´Îª¿Õ */
+	/* è®¾ç½®è¿›ç¨‹çš„undoä¿¡å·é“¾ä¸ºç©º */
 	current->semun = NULL;
 	return;
 }

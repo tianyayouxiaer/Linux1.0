@@ -17,24 +17,24 @@ enum {
 	TIMER_BH = 0,
 	CONSOLE_BH,
 	SERIAL_BH,
-	TTY_BH,                 /* ÖÕ¶Ë */
+	TTY_BH,                 /* ç»ˆç«¯ */
 	INET_BH,
-	KEYBOARD_BH    /* ¼üÅÌ */
+	KEYBOARD_BH    /* é”®ç›˜ */
 };
 
-/* orlÎ»»òÔËËã£¬½«µÚnrÎ»ÖÃÎª1 */
+/* orlä½æˆ–è¿ç®—ï¼Œå°†ç¬¬nrä½ç½®ä¸º1 */
 extern inline void mark_bh(int nr)
 {
 	__asm__ __volatile__("orl %1,%0":"=m" (bh_active):"ir" (1<<nr));
 }
 
-/* andlÎ»ÓëÔËËã£¬½«µÚnrÎ»ÖÃ0 */
+/* andlä½ä¸è¿ç®—ï¼Œå°†ç¬¬nrä½ç½®0 */
 extern inline void disable_bh(int nr)
 {
 	__asm__ __volatile__("andl %1,%0":"=m" (bh_mask):"ir" (~(1<<nr)));
 }
 
-/* ½ûÓÃÖĞ¶ÏÏÂ°ë²¿·Ö */
+/* ç¦ç”¨ä¸­æ–­ä¸‹åŠéƒ¨åˆ† */
 extern inline void enable_bh(int nr)
 {
 	__asm__ __volatile__("orl %1,%0":"=m" (bh_mask):"ir" (1<<nr));

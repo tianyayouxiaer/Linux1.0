@@ -24,17 +24,17 @@
 struct ext2_sb_info {
 	unsigned long s_frag_size;	/* Size of a fragment in bytes */
 	unsigned long s_frags_per_block;/* Number of fragments per block */
-	unsigned long s_inodes_per_block;/* Number of inodes per block */ /* Ã¿¸öÊı¾İ¿éÖĞ¿ÉÒÔ´æ·ÅµÄinode¸öÊı */
+	unsigned long s_inodes_per_block;/* Number of inodes per block */ /* æ¯ä¸ªæ•°æ®å—ä¸­å¯ä»¥å­˜æ”¾çš„inodeä¸ªæ•° */
 	unsigned long s_frags_per_group;/* Number of fragments in a group */
 	unsigned long s_blocks_per_group;/* Number of blocks in a group */
 	unsigned long s_inodes_per_group;/* Number of inodes in a group */
 	unsigned long s_itb_per_group;	/* Number of inode table blocks per group */
-	unsigned long s_desc_per_block;	/* Number of group descriptors per block */ /* Ã¿¿é×éÃèÊö·ûµÄÊıÁ¿ */
+	unsigned long s_desc_per_block;	/* Number of group descriptors per block */ /* æ¯å—ç»„æè¿°ç¬¦çš„æ•°é‡ */
 	unsigned long s_groups_count;	/* Number of groups in the fs */
-	struct buffer_head * s_sbh;	/* Buffer containing the super block */ /* ³¬¼¶¿é¶ÔÓ¦µÄ¸ßËÙ»º´æ */
+	struct buffer_head * s_sbh;	/* Buffer containing the super block */ /* è¶…çº§å—å¯¹åº”çš„é«˜é€Ÿç¼“å­˜ */
 	struct ext2_super_block * s_es;	/* Pointer to the super block in the buffer */
-	/* Ö¸Ïò×éÃèÊö·ûÔÚ¸ßËÙ»º´æÖĞµÄµØÖ·£¬²¢ÇÒ×ö¶àÖ»ÓĞ8¿é¸ßËÙ»º´æÀ´´æ·Å×éÃèÊö·û£¬
-	 * ÄÇÃ´Ö§³ÖµÄ×î´óµÄ×éÃèÊö·ûµÄÊıÁ¿Îª8*Ã¿¿é¸ßËÙ»º´æÖĞ×éÃèÊö·ûµÄ¸öÊı
+	/* æŒ‡å‘ç»„æè¿°ç¬¦åœ¨é«˜é€Ÿç¼“å­˜ä¸­çš„åœ°å€ï¼Œå¹¶ä¸”åšå¤šåªæœ‰8å—é«˜é€Ÿç¼“å­˜æ¥å­˜æ”¾ç»„æè¿°ç¬¦ï¼Œ
+	 * é‚£ä¹ˆæ”¯æŒçš„æœ€å¤§çš„ç»„æè¿°ç¬¦çš„æ•°é‡ä¸º8*æ¯å—é«˜é€Ÿç¼“å­˜ä¸­ç»„æè¿°ç¬¦çš„ä¸ªæ•°
 	 */
 	struct buffer_head * s_group_desc[EXT2_MAX_GROUP_DESC];
 	unsigned short s_loaded_inode_bitmaps;

@@ -27,25 +27,25 @@
 
 #ifdef _LINUX_UN_H
 
-/* UNIXÓòĞ­ÒéÊı¾İ */
+/* UNIXåŸŸåè®®æ•°æ® */
 struct unix_proto_data {
-        /* ³õÊ¼»¯·ÖÅäµÄÊ±ºò¸Ã±äÁ¿Îª-1 */
+        /* åˆå§‹åŒ–åˆ†é…çš„æ—¶å€™è¯¥å˜é‡ä¸º-1 */
 	int		refcnt;		/* cnt of reference 0=free	*/
 					/* -1=not initialised	-bgm	*/
-        /*  server¶ÔÓ¦µÄÌ×½Ó×Ö */
+        /*  serverå¯¹åº”çš„å¥—æ¥å­— */
 	struct socket	*socket;	/* socket we're bound to	*/
 	int		protocol;
-	struct sockaddr_un	sockaddr_un;        /* °ó¶¨µÄµØÖ· */
-	short		sockaddr_len;	/* >0 if name bound		*/  /* Éè¶¨°ó¶¨µØÖ·³¤¶È */
-	char		*buf;   /* Ò»Ò³µÄ»º³å´óĞ¡ */
-        /* ±ê¼Ç»º´æÖĞÊı¾İµÄÆğÊ¼Î»ÖÃºÍ½áÊøÎ»ÖÃ£¬
-          * À´È·¶¨»¹Ã»´¦ÀíµÄÊı¾İÓĞ¶àÉÙ£¬ÒÔ¼°Ê£Óà¿Õ¼äµÄ´óĞ¡ 
+	struct sockaddr_un	sockaddr_un;        /* ç»‘å®šçš„åœ°å€ */
+	short		sockaddr_len;	/* >0 if name bound		*/  /* è®¾å®šç»‘å®šåœ°å€é•¿åº¦ */
+	char		*buf;   /* ä¸€é¡µçš„ç¼“å†²å¤§å° */
+        /* æ ‡è®°ç¼“å­˜ä¸­æ•°æ®çš„èµ·å§‹ä½ç½®å’Œç»“æŸä½ç½®ï¼Œ
+          * æ¥ç¡®å®šè¿˜æ²¡å¤„ç†çš„æ•°æ®æœ‰å¤šå°‘ï¼Œä»¥åŠå‰©ä½™ç©ºé—´çš„å¤§å° 
           */
 	int		bp_head, bp_tail;     
-	struct inode	*inode;                /* Á¬½Ó¶ÔÓ¦µÄinode */
-	struct unix_proto_data	*peerupd;  /* Á¬½Ó³É¹¦ºóÉèÖÃ¶ÔµÈµÄĞ­ÒéÊı¾İ */
+	struct inode	*inode;                /* è¿æ¥å¯¹åº”çš„inode */
+	struct unix_proto_data	*peerupd;  /* è¿æ¥æˆåŠŸåè®¾ç½®å¯¹ç­‰çš„åè®®æ•°æ® */
 	struct wait_queue *wait;	/* Lock across page faults (FvK) */
-	int		lock_flag;            /* ÊÇ·ñËø×¡±ê¼Ç */
+	int		lock_flag;            /* æ˜¯å¦é”ä½æ ‡è®° */
 };
 
 extern struct unix_proto_data unix_datas[NSOCKETS];

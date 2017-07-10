@@ -53,8 +53,8 @@ asmlinkage int sys_brk(unsigned long);
 
 extern void shm_exit (void);
 
-/* ´ò¿ªinode£¬Í¬Ê±¸øÔö¼ÓÒ»¸öfileÖ¸ÕëºÍÒ»¸öÎÄ¼şÃèÊö·û
-  * Ïàµ±ÓÚdupº¯Êı¹¦ÄÜ°É 
+/* æ‰“å¼€inodeï¼ŒåŒæ—¶ç»™å¢åŠ ä¸€ä¸ªfileæŒ‡é’ˆå’Œä¸€ä¸ªæ–‡ä»¶æè¿°ç¬¦
+  * ç›¸å½“äºdupå‡½æ•°åŠŸèƒ½å§ 
   */
 int open_inode(struct inode * inode, int mode)
 {
@@ -316,7 +316,7 @@ unsigned long * create_tables(char * p,int argc,int envc,int ibcs)
 /*
  * count() counts the number of arguments/envelopes
  */
-/* »ñÈ¡²ÎÊı»ò»·¾³±äÁ¿µÄ¸öÊı
+/* è·å–å‚æ•°æˆ–ç¯å¢ƒå˜é‡çš„ä¸ªæ•°
  */
 static int count(char ** argv)
 {
@@ -410,9 +410,9 @@ unsigned long change_ldt(unsigned long text_size,unsigned long * page)
 	for (i=MAX_ARG_PAGES-1 ; i>=0 ; i--) {
 		data_base -= PAGE_SIZE;
 		if (page[i]) {
-                        /* Ôö¼Ó½ø³Ì×¤ÁôÔÚÄÚ´æÖĞµÄÎïÀíÒ³ÊıÁ¿ */
+                        /* å¢åŠ è¿›ç¨‹é©»ç•™åœ¨å†…å­˜ä¸­çš„ç‰©ç†é¡µæ•°é‡ */
 			current->rss++;
-                        /* ´Ë´¦ËµÃ÷£¬ÔÚÕ»¿ªÊ¼Ç°»¹ÓĞÒ»Ğ¡¶ÎºÍ½ø³ÌÏà¹ØµÄÊı¾İ */
+                        /* æ­¤å¤„è¯´æ˜ï¼Œåœ¨æ ˆå¼€å§‹å‰è¿˜æœ‰ä¸€å°æ®µå’Œè¿›ç¨‹ç›¸å…³çš„æ•°æ® */
 			put_dirty_page(current,page[i],data_base);
 		}
 	}
@@ -425,7 +425,7 @@ unsigned long change_ldt(unsigned long text_size,unsigned long * page)
  * without bmap support.
  */
 
-/* ´Ó¿ÉÖ´ĞĞÎÄ¼şµÄoffset´¦¿ªÊ¼¶ÁÈ¡count¸ö×Ö½Úµ½µØÖ·addr´¦
+/* ä»å¯æ‰§è¡Œæ–‡ä»¶çš„offsetå¤„å¼€å§‹è¯»å–countä¸ªå­—èŠ‚åˆ°åœ°å€addrå¤„
  */
 int read_exec(struct inode *inode, unsigned long offset,
 	char * addr, unsigned long count)
@@ -471,7 +471,7 @@ end_readexec:
  * that a new one can be started
  */
 
-/* ÇåÀí¾É½ø³ÌµÄ×ÊÔ´ */
+/* æ¸…ç†æ—§è¿›ç¨‹çš„èµ„æº */
 void flush_old_exec(struct linux_binprm * bprm)
 {
 	int i;
@@ -489,10 +489,10 @@ void flush_old_exec(struct linux_binprm * bprm)
 				current->comm[i++] = ch;
 	}
 	current->comm[i] = '\0';
-        /* ÇåÀí¹²ÏíÄÚ´æ */
+        /* æ¸…ç†å…±äº«å†…å­˜ */
 	if (current->shm)
 		shm_exit();
-        /* ÊÍ·Å¾Í½ø³Ì¿ÉÖ´ĞĞÎÄ¼şµÄinode */
+        /* é‡Šæ”¾å°±è¿›ç¨‹å¯æ‰§è¡Œæ–‡ä»¶çš„inode */
 	if (current->executable) {
 		iput(current->executable);
 		current->executable = NULL;
@@ -502,7 +502,7 @@ void flush_old_exec(struct linux_binprm * bprm)
 	mpnt = current->mmap;
 	current->mmap = NULL;
 	current->stk_vma = NULL;
-        /* ÇåÀíÍ¨¹ımmapº¯ÊıµÃµ½µÄĞéÄâµØÖ·¿Õ¼ä */
+        /* æ¸…ç†é€šè¿‡mmapå‡½æ•°å¾—åˆ°çš„è™šæ‹Ÿåœ°å€ç©ºé—´ */
 	while (mpnt) {
 		mpnt1 = mpnt->vm_next;
 		if (mpnt->vm_ops && mpnt->vm_ops->close)
@@ -529,7 +529,7 @@ void flush_old_exec(struct linux_binprm * bprm)
 	if (bprm->e_uid != current->euid || bprm->e_gid != current->egid || 
 	    !permission(bprm->inode,MAY_READ))
 		current->dumpable = 0;
-        /* ÇåÀí½ø³ÌµÄĞÅºÅ */
+        /* æ¸…ç†è¿›ç¨‹çš„ä¿¡å· */
 	current->signal = 0;
 	for (i=0 ; i<32 ; i++) {
 		current->sigaction[i].sa_mask = 0;
@@ -537,12 +537,12 @@ void flush_old_exec(struct linux_binprm * bprm)
 		if (current->sigaction[i].sa_handler != SIG_IGN)
 			current->sigaction[i].sa_handler = NULL;
 	}
-        /* ¹Ø±Õclose_on_exec¼¯ºÏÖĞµÄÎÄ¼ş */
+        /* å…³é—­close_on_execé›†åˆä¸­çš„æ–‡ä»¶ */
 	for (i=0 ; i<NR_OPEN ; i++)
 		if (FD_ISSET(i,&current->close_on_exec))
 			sys_close(i);
 	FD_ZERO(&current->close_on_exec);
-        /* ÇåÀíÓÃ»§Ì¬½ø³ÌÒ³±í */
+        /* æ¸…ç†ç”¨æˆ·æ€è¿›ç¨‹é¡µè¡¨ */
 	clear_page_tables(current);
 	if (last_task_used_math == current)
 		last_task_used_math = NULL;
@@ -553,7 +553,7 @@ void flush_old_exec(struct linux_binprm * bprm)
 /*
  * sys_execve() executes a new program.
  */
-/* execveº¯ÊıµÄÊµ¼ÊÖ´ĞĞº¯Êı
+/* execveå‡½æ•°çš„å®é™…æ‰§è¡Œå‡½æ•°
  */
 static int do_execve(char * filename, char ** argv, char ** envp, struct pt_regs * regs)
 {
@@ -564,13 +564,13 @@ static int do_execve(char * filename, char ** argv, char ** envp, struct pt_regs
 	int retval;
 	int sh_bang = 0;
 
-        /* Èç¹û´úÂë¶Î²»ÕıÈ·£¬Ôò·µ»Ø */
+        /* å¦‚æœä»£ç æ®µä¸æ­£ç¡®ï¼Œåˆ™è¿”å› */
 	if (regs->cs != USER_CS)
 		return -EINVAL;
 	bprm.p = PAGE_SIZE*MAX_ARG_PAGES-4;
 	for (i=0 ; i<MAX_ARG_PAGES ; i++)	/* clear page-table */
 		bprm.page[i] = 0;
-	/*¡¡»ñÈ¡Â·¾¶¶ÔÓ¦µÄÎÄ¼şµÄ£é£î£ï£ä£å¡¡*/
+	/*ã€€è·å–è·¯å¾„å¯¹åº”çš„æ–‡ä»¶çš„ï½‰ï½ï½ï½„ï½…ã€€*/
 	retval = open_namei(filename, 0, 0, &bprm.inode, NULL);
 	if (retval)
 		return retval;
@@ -592,7 +592,7 @@ restart_interp:
 		goto exec_error2;
 	}
 	i = bprm.inode->i_mode;
-    /* Èç¹û¿ÉÖ´ĞĞÎÄ¼şÉèÖÃÁËS_ISUID£¬Ôò½ø³ÌµÄeuid±ØĞëÊÇ¿ÉÖ´ĞĞÎÄ¼şµÄÊôÖ÷ */
+    /* å¦‚æœå¯æ‰§è¡Œæ–‡ä»¶è®¾ç½®äº†S_ISUIDï¼Œåˆ™è¿›ç¨‹çš„euidå¿…é¡»æ˜¯å¯æ‰§è¡Œæ–‡ä»¶çš„å±ä¸» */
 	if (IS_NOSUID(bprm.inode) && (((i & S_ISUID) && bprm.inode->i_uid != current->
 	    euid) || ((i & S_ISGID) && !in_group_p(bprm.inode->i_gid))) &&
 	    !suser()) {
@@ -619,7 +619,7 @@ restart_interp:
 	memset(bprm.buf,0,sizeof(bprm.buf));
 	old_fs = get_fs();
 	set_fs(get_ds());
-        /* ´Ë´¦ÊÇ¶ÁÈ¡¿ÉÖ´ĞĞÎÄ¼şµÄ¸ñÊ½ */
+        /* æ­¤å¤„æ˜¯è¯»å–å¯æ‰§è¡Œæ–‡ä»¶çš„æ ¼å¼ */
 	retval = read_exec(bprm.inode,0,bprm.buf,128);
 	set_fs(old_fs);
 	if (retval < 0)
@@ -713,10 +713,10 @@ restart_interp:
 		if (!fn)
 			break;
 		retval = fn(&bprm, regs);
-		/* Èç¹û¼ÓÔØÊ§°ÜÔò¼ÌĞøÊ¹ÓÃÆäËûµÄ¼ÓÔØ·½Ê½ */
+		/* å¦‚æœåŠ è½½å¤±è´¥åˆ™ç»§ç»­ä½¿ç”¨å…¶ä»–çš„åŠ è½½æ–¹å¼ */
 		if (retval == 0) {
 			iput(bprm.inode);
-			current->did_exec = 1; /* µ±Ç°½ø³ÌÖ´ĞĞ¹ıexecveº¯Êı */
+			current->did_exec = 1; /* å½“å‰è¿›ç¨‹æ‰§è¡Œè¿‡execveå‡½æ•° */
 			return 0;
 		}
 		fmt++;
@@ -732,7 +732,7 @@ exec_error1:
 /*
  * sys_execve() executes a new program.
  */
-/* execveº¯Êı×åÏµÍ³µ÷ÓÃ
+/* execveå‡½æ•°æ—ç³»ç»Ÿè°ƒç”¨
  */
 asmlinkage int sys_execve(struct pt_regs regs)
 {
@@ -769,7 +769,7 @@ extern int load_coff_library(int fd);
 #endif
 
 /* Here are the actual binaries that will be accepted  */
-/* linuxÖĞ²»Í¬¿ÉÖ´ĞĞÎÄ¼ş¸ñÊ½µÄ¼ÓÔØº¯Êı */
+/* linuxä¸­ä¸åŒå¯æ‰§è¡Œæ–‡ä»¶æ ¼å¼çš„åŠ è½½å‡½æ•° */
 struct linux_binfmt formats[] = {
 	{load_aout_binary, load_aout_library},
 #ifdef CONFIG_BINFMT_ELF
@@ -785,7 +785,7 @@ struct linux_binfmt formats[] = {
  * These are the functions used to load a.out style executables and shared
  * libraries.  There is no binary dependent code anywhere else.
  */
-/* ¼ÓÔØa.out¸ñÊ½µÄ¶ş½øÖÆÎÄ¼ş */
+/* åŠ è½½a.outæ ¼å¼çš„äºŒè¿›åˆ¶æ–‡ä»¶ */
 int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 {
 	struct exec ex;
@@ -815,10 +815,10 @@ int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	/* OK, This is the point of no return */
 	flush_old_exec(bprm);
 
-	/* ÏÈÊÇ´úÂë¶Î+Êı¾İ¶Î+¶Ñ */
+	/* å…ˆæ˜¯ä»£ç æ®µ+æ•°æ®æ®µ+å † */
 	current->end_code = N_TXTADDR(ex) + ex.a_text;
 	current->end_data = ex.a_data + current->end_code;
-        /* ÉèÖÃµ±Ç°¶ÑÆğÊ¼µØÖ·ºÍµ±Ç°µÄheadÖ¸ÕëÎªÊı¾İ¶ÎµÄ½áÊøÎ»ÖÃ */
+        /* è®¾ç½®å½“å‰å †èµ·å§‹åœ°å€å’Œå½“å‰çš„headæŒ‡é’ˆä¸ºæ•°æ®æ®µçš„ç»“æŸä½ç½® */
 	current->start_brk = current->brk = current->end_data;
 	current->start_code += N_TXTADDR(ex);
 	current->rss = 0;
@@ -827,7 +827,7 @@ int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	current->executable = NULL;  /* for OMAGIC files */
 	current->sgid = current->egid = bprm->e_gid;
 	if (N_MAGIC(ex) == OMAGIC) {
-                /* ½«´úÂë¶ÎºÍÊı¾İ¶ÎÓ³Éäµ½½ø³ÌµÄĞéÄâµØÖ·¿Õ¼ä */
+                /* å°†ä»£ç æ®µå’Œæ•°æ®æ®µæ˜ å°„åˆ°è¿›ç¨‹çš„è™šæ‹Ÿåœ°å€ç©ºé—´ */
 		do_mmap(NULL, 0, ex.a_text+ex.a_data,
 			PROT_READ|PROT_WRITE|PROT_EXEC,
 			MAP_FIXED|MAP_PRIVATE, 0);
@@ -872,17 +872,17 @@ int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 		bprm->inode->i_count++;
 	}
 beyond_if:
-        /* ´ÓÕâ¸öµØ·½¾Í¿ÉÒÔ¿´³öÀ´£¬½ø³ÌµÄbss¶ÎÆäÊµÊÇÔÚ¶Ñµ±ÖĞ£¬
-          * ²¢ÇÒÔÚ¶ÑµÃÆğÊ¼Î»ÖÃ´¦ 
+        /* ä»è¿™ä¸ªåœ°æ–¹å°±å¯ä»¥çœ‹å‡ºæ¥ï¼Œè¿›ç¨‹çš„bssæ®µå…¶å®æ˜¯åœ¨å †å½“ä¸­ï¼Œ
+          * å¹¶ä¸”åœ¨å †å¾—èµ·å§‹ä½ç½®å¤„ 
           */
 	sys_brk(current->brk+ex.a_bss);
 	
 	p += change_ldt(ex.a_text,bprm->page);
 	p -= MAX_ARG_PAGES*PAGE_SIZE;
 	p = (unsigned long) create_tables((char *)p,bprm->argc,bprm->envc,0);
-        /* ÉèÖÃÕ»µÄÆğÊ¼Î»ÖÃ£¬²¢²»ÊÇ´ÓTASK_SIZE¿ªÊ¼µÄ */
+        /* è®¾ç½®æ ˆçš„èµ·å§‹ä½ç½®ï¼Œå¹¶ä¸æ˜¯ä»TASK_SIZEå¼€å§‹çš„ */
 	current->start_stack = p;
-        /* ¸ü¸Ä½ø³ÌµÄÏÂÒ»ÌõÖ¸ÁîÖ¸Ïòa.outµÄÈë¿ÚµØÖ·´¦ */
+        /* æ›´æ”¹è¿›ç¨‹çš„ä¸‹ä¸€æ¡æŒ‡ä»¤æŒ‡å‘a.outçš„å…¥å£åœ°å€å¤„ */
 	regs->eip = ex.a_entry;		/* eip, magic happens :-) */
 	regs->esp = p;			/* stack pointer */
 	if (current->flags & PF_PTRACED)

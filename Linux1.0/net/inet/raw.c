@@ -90,7 +90,7 @@ raw_err (int err, unsigned char *header, unsigned long daddr,
  * This should be the easiest of all, all we do is\
  * copy it into a buffer.
  */
-/* Ô­Ê¼Ì×½Ó×ÖµÄ½ÓÊÕº¯Êı */
+/* åŸå§‹å¥—æ¥å­—çš„æ¥æ”¶å‡½æ•° */
 int
 raw_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
 	unsigned long daddr, unsigned short len, unsigned long saddr,
@@ -107,7 +107,7 @@ raw_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
 	kfree_skb(skb, FREE_READ);
 	return(0);
   }
-  /* È¡³ö¶ÔÓ¦µÄsockÌ×½Ó×ÖÊı¾İ */
+  /* å–å‡ºå¯¹åº”çš„sockå¥—æ¥å­—æ•°æ® */
   sk = (struct sock *) protocol->data;
   if (sk == NULL) {
 	kfree_skb(skb, FREE_READ);
@@ -115,12 +115,12 @@ raw_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
   }
 
   /* Now we need to copy this into memory. */
-  /* ÉèÖÃskb¶ÔÓ¦µÄsockÌ×½Ó×Ö£¬ÔÚÍøÂç²ãÏò´«Êä²ã´«µİÊı¾İÊ±£¬
-    * »áÑ­»·É¨Ãèstruct inet_protocolÉ¢ÁĞ±í£¬·ûºÏprotocolµÄ½á¹¹
-    * ¶¼»á±»µ÷ÓÃ¶ÔÓ¦µÄrcv»Øµ÷º¯Êı£¬Èç¹ûÒ»¸öskb°üÓĞ¶ÔÓ¦µÄ¶à¸ö
-    * struct inet_protocol£¬ÔòÖ®Ç°É¨Ãèµ½µÄ¶¼´øÓĞcopyÎ»£¬Ôò´ËÊ±
-    * Èçraw_rcv½ÓÊÕµ½µÄskb¶¼ÊÇ¸´ÖÆÁËÔ­À´µÄÒ»·İskb£¬ËùÒÔÔÚÏÂÃæ
-    * Ò»¾äÖĞ¾Í»áÉèÖÃ¶ÔÓ¦µÄÌ×½Ó×Ö
+  /* è®¾ç½®skbå¯¹åº”çš„sockå¥—æ¥å­—ï¼Œåœ¨ç½‘ç»œå±‚å‘ä¼ è¾“å±‚ä¼ é€’æ•°æ®æ—¶ï¼Œ
+    * ä¼šå¾ªç¯æ‰«æstruct inet_protocolæ•£åˆ—è¡¨ï¼Œç¬¦åˆprotocolçš„ç»“æ„
+    * éƒ½ä¼šè¢«è°ƒç”¨å¯¹åº”çš„rcvå›è°ƒå‡½æ•°ï¼Œå¦‚æœä¸€ä¸ªskbåŒ…æœ‰å¯¹åº”çš„å¤šä¸ª
+    * struct inet_protocolï¼Œåˆ™ä¹‹å‰æ‰«æåˆ°çš„éƒ½å¸¦æœ‰copyä½ï¼Œåˆ™æ­¤æ—¶
+    * å¦‚raw_rcvæ¥æ”¶åˆ°çš„skbéƒ½æ˜¯å¤åˆ¶äº†åŸæ¥çš„ä¸€ä»½skbï¼Œæ‰€ä»¥åœ¨ä¸‹é¢
+    * ä¸€å¥ä¸­å°±ä¼šè®¾ç½®å¯¹åº”çš„å¥—æ¥å­—
     */
   skb->sk = sk;
   skb->len = len + skb->ip_hdr->ihl*sizeof(long);
@@ -144,7 +144,7 @@ raw_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
 
 
 /* This will do terrible things if len + ipheader + devheader > dev->mtu */
-/* RAWÌ×½Ó×ÖµÄ·¢ËÍº¯Êı */
+/* RAWå¥—æ¥å­—çš„å‘é€å‡½æ•° */
 static int
 raw_sendto(struct sock *sk, unsigned char *from, int len,
 	   int noblock,
@@ -275,10 +275,10 @@ raw_write(struct sock *sk, unsigned char *buff, int len, int noblock,
   return(raw_sendto(sk, buff, len, noblock, flags, NULL, 0));
 }
 
-/* rawÌ×½Ó×Ö¹Ø±Õ£¬ÒòÎªrawÌ×½Ó×Östruct inet_protocol½á¹¹
-  * µÄÌØÊâĞÔ£¬Ì×½Ó×ÖÔÚ¹Ø±ÕµÄÊ±ºò£¬ĞèÒª½«Ì×½Ó×Ö¶ÔÓ¦µÄ 
-  * struct inet_protocol½á¹¹¸øÉ¾³ı£¬µ±ÍøÂç²ãÏò´«Êä²ã£¬´«µİ 
-  * Êı¾İÊ±£¬¾Í²»»áËÑË÷µ½¸ÃÌ×½Ó×Ö  
+/* rawå¥—æ¥å­—å…³é—­ï¼Œå› ä¸ºrawå¥—æ¥å­—struct inet_protocolç»“æ„
+  * çš„ç‰¹æ®Šæ€§ï¼Œå¥—æ¥å­—åœ¨å…³é—­çš„æ—¶å€™ï¼Œéœ€è¦å°†å¥—æ¥å­—å¯¹åº”çš„ 
+  * struct inet_protocolç»“æ„ç»™åˆ é™¤ï¼Œå½“ç½‘ç»œå±‚å‘ä¼ è¾“å±‚ï¼Œä¼ é€’ 
+  * æ•°æ®æ—¶ï¼Œå°±ä¸ä¼šæœç´¢åˆ°è¯¥å¥—æ¥å­—  
   */
 static void
 raw_close(struct sock *sk, int timeout)
@@ -289,8 +289,8 @@ raw_close(struct sock *sk, int timeout)
   DPRINTF((DBG_RAW, "raw_close: deleting protocol %d\n",
 	   ((struct inet_protocol *)sk->pair)->protocol));
 
-  /* ×¢ÒâÔÚ´ËÊ±²ÅÓÃÉÏÁË£¬ÔÚraw_initÊ±ÉèÖÃµÄpair±äÁ¿£¬
-    * Ò²¾ÍÊÇ»ñÈ¡Ì×½Ó×Ö¶ÔÓ¦µÄstruct inet_protocolÖ¸Õë 
+  /* æ³¨æ„åœ¨æ­¤æ—¶æ‰ç”¨ä¸Šäº†ï¼Œåœ¨raw_initæ—¶è®¾ç½®çš„pairå˜é‡ï¼Œ
+    * ä¹Ÿå°±æ˜¯è·å–å¥—æ¥å­—å¯¹åº”çš„struct inet_protocolæŒ‡é’ˆ 
     */
   if (inet_del_protocol((struct inet_protocol *)sk->pair) < 0)
 		DPRINTF((DBG_RAW, "raw_close: del_protocol failed.\n"));
@@ -299,9 +299,9 @@ raw_close(struct sock *sk, int timeout)
   release_sock(sk);
 }
 
-/* Ô­Ê¼Ì×½Ó×ÖµÄ³õÊ¼»¯£¬ÔÚµ÷ÓÃinet_createº¯ÊıÊ±£¬×îºó»á³õÊ¼»¯
-  * Ö»ÓĞrawĞ­ÒéÓĞ¸Ã³õÊ¼»¯º¯Êı£¬×¢ÒâÔÚÃ¿´Îµ÷ÓÃinet_createº¯ÊıÊ± 
-  * ¶¼»áµ÷ÓÃ¸Ã³õÊ¼»¯º¯Êı£¬Ôò¶à´Îµ÷ÓÃµÄÔ­ÒòÊÇÊ²Ã´£¿ 
+/* åŸå§‹å¥—æ¥å­—çš„åˆå§‹åŒ–ï¼Œåœ¨è°ƒç”¨inet_createå‡½æ•°æ—¶ï¼Œæœ€åä¼šåˆå§‹åŒ–
+  * åªæœ‰rawåè®®æœ‰è¯¥åˆå§‹åŒ–å‡½æ•°ï¼Œæ³¨æ„åœ¨æ¯æ¬¡è°ƒç”¨inet_createå‡½æ•°æ—¶ 
+  * éƒ½ä¼šè°ƒç”¨è¯¥åˆå§‹åŒ–å‡½æ•°ï¼Œåˆ™å¤šæ¬¡è°ƒç”¨çš„åŸå› æ˜¯ä»€ä¹ˆï¼Ÿ 
   */
 static int
 raw_init(struct sock *sk)
@@ -313,7 +313,7 @@ raw_init(struct sock *sk)
 
   p->handler = raw_rcv;
   p->protocol = sk->protocol;
-  /* Ğ¯´ø¶ÔÓ¦µÄsockÌ×½Ó×Ö */
+  /* æºå¸¦å¯¹åº”çš„sockå¥—æ¥å­— */
   p->data = (void *)sk;
   p->err_handler = raw_err;
   p->name="USER";
@@ -321,8 +321,8 @@ raw_init(struct sock *sk)
   inet_add_protocol(p);
    
   /* We need to remember this somewhere. */
-  /* ÔÚ¹Ø±ÕrawÌ×½Ó×ÖµÄÊ±ºò£¬ĞèÒª»ñÈ¡sockÌ×½Ó×ÖµÄstruct inet_protocolÖ¸Õë
-    * Òò´ËÔÚ´Ë´¦¸ø¼Ç×¡ 
+  /* åœ¨å…³é—­rawå¥—æ¥å­—çš„æ—¶å€™ï¼Œéœ€è¦è·å–sockå¥—æ¥å­—çš„struct inet_protocolæŒ‡é’ˆ
+    * å› æ­¤åœ¨æ­¤å¤„ç»™è®°ä½ 
     */
   sk->pair = (struct sock *)p;
 
@@ -336,7 +336,7 @@ raw_init(struct sock *sk)
  * This should be easy, if there is something there
  * we return it, otherwise we block.
  */
-/* Ô­Ê¼Ì×½Ó×ÖµÄ½ÓÊÕº¯Êı */
+/* åŸå§‹å¥—æ¥å­—çš„æ¥æ”¶å‡½æ•° */
 int
 raw_recvfrom(struct sock *sk, unsigned char *to, int len,
 	     int noblock, unsigned flags, struct sockaddr_in *sin,
@@ -353,7 +353,7 @@ raw_recvfrom(struct sock *sk, unsigned char *to, int len,
   if (len == 0) return(0);
   if (len < 0) return(-EINVAL);
 
-  /* Èç¹û½ÓÊÕÍ¨µÀ¹Ø±Õ */
+  /* å¦‚æœæ¥æ”¶é€šé“å…³é—­ */
   if (sk->shutdown & RCV_SHUTDOWN) return(0);
   if (addr_len) {
 	err=verify_area(VERIFY_WRITE, addr_len, sizeof(*addr_len));
@@ -376,14 +376,14 @@ raw_recvfrom(struct sock *sk, unsigned char *to, int len,
   if(skb==NULL)
   	return err;
 
-  /* »ñÈ¡ĞèÒª¿½±´µÄ×Ö½ÚÊı */
+  /* è·å–éœ€è¦æ‹·è´çš„å­—èŠ‚æ•° */
   copied = min(len, skb->len);
   
   skb_copy_datagram(skb, 0, to, copied);
 
   /* Copy the address. */
-  /* ½«µØÖ·ĞÅÏ¢¿½±´µ½sinµ±ÖĞ£¬ÒòÎªsin´ËÊ±
-    * ÊÇÒ»¸ö´«³ö²ÎÊı
+  /* å°†åœ°å€ä¿¡æ¯æ‹·è´åˆ°sinå½“ä¸­ï¼Œå› ä¸ºsinæ­¤æ—¶
+    * æ˜¯ä¸€ä¸ªä¼ å‡ºå‚æ•°
     */
   if (sin) {
 	struct sockaddr_in addr;
@@ -406,7 +406,7 @@ raw_read (struct sock *sk, unsigned char *buff, int len, int noblock,
   return(raw_recvfrom(sk, buff, len, noblock, flags, NULL, NULL));
 }
 
-/* Ô­Ê¼Ì×½Ó×ÖĞ­Òé */
+/* åŸå§‹å¥—æ¥å­—åè®® */
 struct proto raw_prot = {
   sock_wmalloc,
   sock_rmalloc,

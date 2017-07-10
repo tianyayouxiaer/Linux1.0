@@ -340,7 +340,7 @@ void ll_rw_page(int rw, int dev, int page, char * buffer)
    device. Currently the only restriction is that all buffers must belong to
    the same device */
 
-/* 从设备中读取或写nr块数据到bh或设备中
+/* 浠庤澶囦腑璇诲彇鎴栧啓nr鍧楁暟鎹埌bh鎴栬澶囦腑
  */
 void ll_rw_block(int rw, int nr, struct buffer_head * bh[])
 {

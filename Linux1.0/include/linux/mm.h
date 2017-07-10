@@ -45,7 +45,7 @@ struct vm_area_struct {
 	struct vm_area_struct * vm_next;	/* linked list */
 	struct vm_area_struct * vm_share;	/* linked list */
 	struct inode * vm_inode;
-	unsigned long vm_offset;		/*´ÓÎÄ¼þµÄµÚ¼¸¸ö×Ö½Ú´¦¿ªÊ¼Ó³Éä*/
+	unsigned long vm_offset;		/*ä»Žæ–‡ä»¶çš„ç¬¬å‡ ä¸ªå­—èŠ‚å¤„å¼€å§‹æ˜ å°„*/
 	struct vm_operations_struct * vm_ops;
 };
 
@@ -90,13 +90,13 @@ extern unsigned long secondary_page_list;
  */
 extern unsigned long __get_free_page(int priority);
 
-/* ¸Ãº¯ÊýÄÃµ½µÄÒ³±»Çå0 */
+/* è¯¥å‡½æ•°æ‹¿åˆ°çš„é¡µè¢«æ¸…0 */
 extern inline unsigned long get_free_page(int priority)
 {
 	unsigned long page;
 
 	page = __get_free_page(priority);
-	/* ½«page¶ÔÓ¦µÄÒ³ÖÐµÄÊý¾ÝÇå0*/
+	/* å°†pageå¯¹åº”çš„é¡µä¸­çš„æ•°æ®æ¸…0*/
 	if (page)
 		__asm__ __volatile__("rep ; stosl"
 			: /* no outputs */ \
@@ -165,13 +165,13 @@ __asm__ __volatile__("movl %%cr3,%%eax\n\tmovl %%eax,%%cr3": : :"ax")
 
 extern unsigned long high_memory;
 
-/* »ñÈ¡ÎïÀíµØÖ·¶ÔÓ¦µÄÒ³ºÅ£¬Ïàµ±ÓÚÊÇ³ýÒÔ4KB */
+/* èŽ·å–ç‰©ç†åœ°å€å¯¹åº”çš„é¡µå·ï¼Œç›¸å½“äºŽæ˜¯é™¤ä»¥4KB */
 #define MAP_NR(addr) ((addr) >> PAGE_SHIFT)
-#define MAP_PAGE_RESERVED (1<<15)			/* ÎªÄÚºË±£ÁôµÄÒ³ */
+#define MAP_PAGE_RESERVED (1<<15)			/* ä¸ºå†…æ ¸ä¿ç•™çš„é¡µ */
 
 extern unsigned short * mem_map;
 
-#define PAGE_PRESENT	0x001                /* ÄÚ´æÔÚÖ÷´æÖÐ */
+#define PAGE_PRESENT	0x001                /* å†…å­˜åœ¨ä¸»å­˜ä¸­ */
 #define PAGE_RW		0x002
 #define PAGE_USER	0x004
 #define PAGE_PWT	0x008	/* 486 only - not used currently */
@@ -186,13 +186,13 @@ extern unsigned short * mem_map;
 #define PAGE_READONLY	(PAGE_PRESENT | PAGE_USER | PAGE_ACCESSED)
 #define PAGE_TABLE	(PAGE_PRESENT | PAGE_RW | PAGE_USER | PAGE_ACCESSED)
 
-/* »ñÈ¡ÄÚ´æµÄÓÅÏÈ¼¶ */
-/* Èç¹ûÔÚfree_page_listµ±ÖÐÃ»ÓÐ¿ÕÏÐÎïÀíÒ³£¬Ôò·µ»ØÊ§°Ü
+/* èŽ·å–å†…å­˜çš„ä¼˜å…ˆçº§ */
+/* å¦‚æžœåœ¨free_page_listå½“ä¸­æ²¡æœ‰ç©ºé—²ç‰©ç†é¡µï¼Œåˆ™è¿”å›žå¤±è´¥
  */
 #define GFP_BUFFER	0x00
-/* ±íÊ¾Ò»¶¨ÒªµÃµ½ÄÚ´æ£¬Èç¹û³£¹æ¿ÕÏÐÁÐ±ífree_page_listÒÑÓÃÍê£¬
- * ÔòÏòÄÚºË±£ÁôÄÚ´æ³Øsecondary_page_listÖÐÉêÇë£¬
- * Èç¹ûÈÔÈ»Ã»ÓÐÉêÇëµ½£¬Ôò·µ»Ø¿Õ£¬ÌØ±ðÊÇÄÚºËÖÐ»¹ÓÐÖÐ¶ÏÐèÒª´¦ÀíµÄÊ±ºò
+/* è¡¨ç¤ºä¸€å®šè¦å¾—åˆ°å†…å­˜ï¼Œå¦‚æžœå¸¸è§„ç©ºé—²åˆ—è¡¨free_page_listå·²ç”¨å®Œï¼Œ
+ * åˆ™å‘å†…æ ¸ä¿ç•™å†…å­˜æ± secondary_page_listä¸­ç”³è¯·ï¼Œ
+ * å¦‚æžœä»ç„¶æ²¡æœ‰ç”³è¯·åˆ°ï¼Œåˆ™è¿”å›žç©ºï¼Œç‰¹åˆ«æ˜¯å†…æ ¸ä¸­è¿˜æœ‰ä¸­æ–­éœ€è¦å¤„ç†çš„æ—¶å€™
  */
 #define GFP_ATOMIC	0x01
 #define GFP_USER	0x02

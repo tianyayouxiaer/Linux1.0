@@ -47,24 +47,24 @@ extern void buffer_init(void);
 extern unsigned long inode_init(unsigned long start, unsigned long end);
 extern unsigned long file_table_init(unsigned long start, unsigned long end);
 
-#define MAJOR(a) (int)((unsigned short)(a) >> 8)   /* Ö÷Éè±¸ºÅ */
-#define MINOR(a) (int)((unsigned short)(a) & 0xFF) /* ´ÎÉè±¸ºÅ£¬´ËÉè±¸ºÅÔÚ×îµÍ8Î» */
-#define MKDEV(a,b) ((int)((((a) & 0xff) << 8) | ((b) & 0xff)))  /* Éú³ÉÒ»¸öÉè±¸ºÅ£¬°üÀ¨Ö÷´ÎÉè±¸ºÅ */
+#define MAJOR(a) (int)((unsigned short)(a) >> 8)   /* ä¸»è®¾å¤‡å· */
+#define MINOR(a) (int)((unsigned short)(a) & 0xFF) /* æ¬¡è®¾å¤‡å·ï¼Œæ­¤è®¾å¤‡å·åœ¨æœ€ä½8ä½ */
+#define MKDEV(a,b) ((int)((((a) & 0xff) << 8) | ((b) & 0xff)))  /* ç”Ÿæˆä¸€ä¸ªè®¾å¤‡å·ï¼ŒåŒ…æ‹¬ä¸»æ¬¡è®¾å¤‡å· */
 
 #ifndef NULL
 #define NULL ((void *) 0)
 #endif
 
 #define NIL_FILP	((struct file *)0)
-#define SEL_IN		1	/* Ì½²âÊı¾İÊÇ·ñ¿ÉÒÔ¶ÁÈ¡ */
-#define SEL_OUT		2 	/* Ì½²â¶ÔÓ¦Ì×½Ó×Ö·¢ËÍ»º³åÇøµÄ¿ÕÏĞ´óĞ¡ */
-#define SEL_EX		4	/* Ì½²âÖ®Ç°²Ù×÷ÊÇ·ñÓĞ´íÎó·¢Éú */
+#define SEL_IN		1	/* æ¢æµ‹æ•°æ®æ˜¯å¦å¯ä»¥è¯»å– */
+#define SEL_OUT		2 	/* æ¢æµ‹å¯¹åº”å¥—æ¥å­—å‘é€ç¼“å†²åŒºçš„ç©ºé—²å¤§å° */
+#define SEL_EX		4	/* æ¢æµ‹ä¹‹å‰æ“ä½œæ˜¯å¦æœ‰é”™è¯¯å‘ç”Ÿ */
 
 /*
  * These are the fs-independent mount-flags: up to 16 flags are supported
  */
 
-/* ÎÄ¼şÏµÍ³µÄ¹ÒÔØ±ê¼Ç */
+/* æ–‡ä»¶ç³»ç»Ÿçš„æŒ‚è½½æ ‡è®° */
 #define MS_RDONLY    1 /* mount read-only */
 #define MS_NOSUID    2 /* ignore suid and sgid bits */
 #define MS_NODEV     4 /* disallow access to device special files */
@@ -160,49 +160,49 @@ struct buffer_head {
 #include <linux/sysv_fs_i.h>
 
 
-/* inodeÖĞÓĞÒ»²¿·ÖÊı¾İÊÇÔÚ´ÅÅÌµ±ÖĞµÄ
- * ×¢ÒâinodeÖĞ²¢Ã»ÓĞstruct fileµÄÖ¸Õë
- * ×¢ÒâinodeÊÇVFSÖĞÒ»¸öÖØÒªµÄ½á¹¹Ìå£¬
- * inodeÖĞ³ıÁË´æ´¢Ò»Ğ©VFSÖĞ±ØĞëµÄÊı¾İ£¬
- * »¹´æ´¢ÁËÌØ¶¨ÎÄ¼şÏµÍ³ÖĞµÄinodeĞÅÏ¢£¬
- * Èçext2ÖĞµÄstruct ext2_inode_infoµÈµÈ
+/* inodeä¸­æœ‰ä¸€éƒ¨åˆ†æ•°æ®æ˜¯åœ¨ç£ç›˜å½“ä¸­çš„
+ * æ³¨æ„inodeä¸­å¹¶æ²¡æœ‰struct fileçš„æŒ‡é’ˆ
+ * æ³¨æ„inodeæ˜¯VFSä¸­ä¸€ä¸ªé‡è¦çš„ç»“æ„ä½“ï¼Œ
+ * inodeä¸­é™¤äº†å­˜å‚¨ä¸€äº›VFSä¸­å¿…é¡»çš„æ•°æ®ï¼Œ
+ * è¿˜å­˜å‚¨äº†ç‰¹å®šæ–‡ä»¶ç³»ç»Ÿä¸­çš„inodeä¿¡æ¯ï¼Œ
+ * å¦‚ext2ä¸­çš„struct ext2_inode_infoç­‰ç­‰
  */
 struct inode {
-	dev_t		i_dev;			/* Éè±¸ºÅ */
-	unsigned long	i_ino;		/* i½ÚµãºÅ */
-	umode_t		i_mode;			/* ÎÄ¼şÀàĞÍÒÔ¼°ÎÄ¼şÈ¨ÏŞ */
-	nlink_t		i_nlink;		/* Ó²Á´½Ó¼ÆÊı */
-	uid_t		i_uid;          	/* ´´½¨ÎÄ¼şµÄÓÃ»§ID */
-	gid_t		i_gid;			/* ´´½¨ÎÄ¼şµÄÓÃ»§×éID */
-	dev_t		i_rdev;			/* ÊÇÉè±¸±êÊ¶·û£¬Ò²´æ´¢ÁËÖ÷´ÎÉè±¸ºÅ£¬
-							* ±íÊ¾Éè±¸µÄÊµ¼ÊÉè±¸ºÅ£¬²»ÊÇÂß¼­Éè±¸ºÅ 
+	dev_t		i_dev;			/* è®¾å¤‡å· */
+	unsigned long	i_ino;		/* ièŠ‚ç‚¹å· */
+	umode_t		i_mode;			/* æ–‡ä»¶ç±»å‹ä»¥åŠæ–‡ä»¶æƒé™ */
+	nlink_t		i_nlink;		/* ç¡¬é“¾æ¥è®¡æ•° */
+	uid_t		i_uid;          	/* åˆ›å»ºæ–‡ä»¶çš„ç”¨æˆ·ID */
+	gid_t		i_gid;			/* åˆ›å»ºæ–‡ä»¶çš„ç”¨æˆ·ç»„ID */
+	dev_t		i_rdev;			/* æ˜¯è®¾å¤‡æ ‡è¯†ç¬¦ï¼Œä¹Ÿå­˜å‚¨äº†ä¸»æ¬¡è®¾å¤‡å·ï¼Œ
+							* è¡¨ç¤ºè®¾å¤‡çš„å®é™…è®¾å¤‡å·ï¼Œä¸æ˜¯é€»è¾‘è®¾å¤‡å· 
 							*/
-	off_t		i_size;			/* ÎÄ¼ş´óĞ¡µ¥Î»Îª×Ö½Ú */
+	off_t		i_size;			/* æ–‡ä»¶å¤§å°å•ä½ä¸ºå­—èŠ‚ */
 	time_t		i_atime;
 	time_t		i_mtime;
-	time_t		i_ctime;		/* inodeµÄĞŞ¸ÄÊ±¼ä */
-	unsigned long	i_blksize;	/* Êı¾İ¿é´óĞ¡ */
-	unsigned long	i_blocks;	/* ÎÄ¼şÊı¾İ¿éÊı */
-	struct semaphore i_sem;     /* ²Ù×÷inodeµÄĞÅºÅÁ¿ */
+	time_t		i_ctime;		/* inodeçš„ä¿®æ”¹æ—¶é—´ */
+	unsigned long	i_blksize;	/* æ•°æ®å—å¤§å° */
+	unsigned long	i_blocks;	/* æ–‡ä»¶æ•°æ®å—æ•° */
+	struct semaphore i_sem;     /* æ“ä½œinodeçš„ä¿¡å·é‡ */
 	struct inode_operations * i_op;
-	struct super_block * i_sb;      /*¶ÔÓ¦µÄ³¬¼¶¿é£¬ÔÚinodeµÄ¶ÁÈ¡»ò²éÕÒµÈ²Ù×÷»áÓÃµ½ */
-	struct wait_queue * i_wait;		/* ²Ù×÷inodeµÄµÈ´ı¶ÓÁĞ */
-	struct file_lock * i_flock;	    /* ÎÄ¼şËø½á¹¹£¬ÓÃÓÚÍ¬²½»ò¿ØÖÆ */
-	struct vm_area_struct * i_mmap; /* ¸ÃÎÄ¼şÓ³Éäµ½µÄĞéÄâµØÖ·¶ÎµÄµØÖ· */
-	struct inode * i_next, * i_prev;     /*¿ÕÏĞË«ÏòÁ´±í*/
-	struct inode * i_hash_next, * i_hash_prev; /*hashË«ÏòÁ´±í*/
+	struct super_block * i_sb;      /*å¯¹åº”çš„è¶…çº§å—ï¼Œåœ¨inodeçš„è¯»å–æˆ–æŸ¥æ‰¾ç­‰æ“ä½œä¼šç”¨åˆ° */
+	struct wait_queue * i_wait;		/* æ“ä½œinodeçš„ç­‰å¾…é˜Ÿåˆ— */
+	struct file_lock * i_flock;	    /* æ–‡ä»¶é”ç»“æ„ï¼Œç”¨äºåŒæ­¥æˆ–æ§åˆ¶ */
+	struct vm_area_struct * i_mmap; /* è¯¥æ–‡ä»¶æ˜ å°„åˆ°çš„è™šæ‹Ÿåœ°å€æ®µçš„åœ°å€ */
+	struct inode * i_next, * i_prev;     /*ç©ºé—²åŒå‘é“¾è¡¨*/
+	struct inode * i_hash_next, * i_hash_prev; /*hashåŒå‘é“¾è¡¨*/
 	struct inode * i_bound_to, * i_bound_by;
-	struct inode * i_mount;		/* inodeËùÔÚÎÄ¼şÏµÍ³µÄ¹ÒÔØµã */
-	struct socket * i_socket;  /*Èç¹ûÊÇÍøÂçinode£¬ÔòÖ¸ÏòÍøÂçÊı¾İ*/
+	struct inode * i_mount;		/* inodeæ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„æŒ‚è½½ç‚¹ */
+	struct socket * i_socket;  /*å¦‚æœæ˜¯ç½‘ç»œinodeï¼Œåˆ™æŒ‡å‘ç½‘ç»œæ•°æ®*/
 	unsigned short i_count;
 	unsigned short i_flags;
 	unsigned char i_lock;
 	unsigned char i_dirt;
-	unsigned char i_pipe;            /* ±íÃ÷ÊÇ¹ÜµÀ¶ÔÓ¦µÄinode */
+	unsigned char i_pipe;            /* è¡¨æ˜æ˜¯ç®¡é“å¯¹åº”çš„inode */
 	unsigned char i_seek;
 	unsigned char i_update;
-	/* ÒòÎªLinux²ÉÓÃµÄÊ±VFSÎÄ¼şÏµÍ³£¬ÉÏÃæÊı¾İÊÇËùÓĞÎÄ¼şÏµÍ³¶¼ĞèÒªÊ¹ÓÃµÄÊı¾İ 
-	 * ÏÂÃæµÄÊı¾İÊÇÏàÓ¦ÎÄ¼şÏµÍ³¶ÔÓ¦µÄÌØ¶¨inodeµÄĞÅÏ¢
+	/* å› ä¸ºLinuxé‡‡ç”¨çš„æ—¶VFSæ–‡ä»¶ç³»ç»Ÿï¼Œä¸Šé¢æ•°æ®æ˜¯æ‰€æœ‰æ–‡ä»¶ç³»ç»Ÿéƒ½éœ€è¦ä½¿ç”¨çš„æ•°æ® 
+	 * ä¸‹é¢çš„æ•°æ®æ˜¯ç›¸åº”æ–‡ä»¶ç³»ç»Ÿå¯¹åº”çš„ç‰¹å®šinodeçš„ä¿¡æ¯
 	 */
 	union {
 		struct pipe_inode_info pipe_i;
@@ -219,25 +219,25 @@ struct inode {
 };
 
 struct file {
-	mode_t f_mode;		    /* ÎÄ¼ş²»´æÔÚÊ±£¬´´½¨ÎÄ¼şµÄÈ¨ÏŞ */
+	mode_t f_mode;		    /* æ–‡ä»¶ä¸å­˜åœ¨æ—¶ï¼Œåˆ›å»ºæ–‡ä»¶çš„æƒé™ */
 	dev_t f_rdev;			/* needed for /dev/tty */
-	off_t f_pos;            /* ÎÄ¼ş¶ÁĞ´Æ«ÒÆÁ¿ */
-	unsigned short f_flags; /* ÒÔÊ²Ã´ÑùµÄ·½Ê½´ò¿ªÎÄ¼ş£¬ÈçÖ»¶Á£¬Ö»Ğ´µÈµÈ */
-	unsigned short f_count;  /*ÎÄ¼şµÄÒıÓÃ¼ÆÊı*/
+	off_t f_pos;            /* æ–‡ä»¶è¯»å†™åç§»é‡ */
+	unsigned short f_flags; /* ä»¥ä»€ä¹ˆæ ·çš„æ–¹å¼æ‰“å¼€æ–‡ä»¶ï¼Œå¦‚åªè¯»ï¼Œåªå†™ç­‰ç­‰ */
+	unsigned short f_count;  /*æ–‡ä»¶çš„å¼•ç”¨è®¡æ•°*/
 	unsigned short f_reada;
 	struct file *f_next, *f_prev;
-	struct inode * f_inode;		/* ÎÄ¼ş¶ÔÓ¦µÄinode */
+	struct inode * f_inode;		/* æ–‡ä»¶å¯¹åº”çš„inode */
 	struct file_operations * f_op;
 };
 
-/* ÎÄ¼şËø½á¹¹£¬¸Ã½á¹¹¿ÉÒÔÓÃÀ´Ëø¶¨ÎÄ¼ş×Ö½ÚÖĞµÄÄ³Ò»¶Î */
+/* æ–‡ä»¶é”ç»“æ„ï¼Œè¯¥ç»“æ„å¯ä»¥ç”¨æ¥é”å®šæ–‡ä»¶å­—èŠ‚ä¸­çš„æŸä¸€æ®µ */
 struct file_lock {
 	struct file_lock *fl_next;	/* singly linked list */
 	struct task_struct *fl_owner;	/* NULL if on free list, for sanity checks */
         unsigned int fl_fd;             /* File descriptor for this lock */
 	struct wait_queue *fl_wait;
-	char fl_type;			/* ËøµÄÀàĞÍ */
-	char fl_whence;			/* Ö¸¶¨ÆğÊ¼Î»ÖÃµÄÌØµã£¬´ÓÍ·¿ªÊ¼£¬»¹ÊÇµ±Ç°¿ªÊ¼£¬»¹ÊÇÎÄ¼şÄ©Î² */
+	char fl_type;			/* é”çš„ç±»å‹ */
+	char fl_whence;			/* æŒ‡å®šèµ·å§‹ä½ç½®çš„ç‰¹ç‚¹ï¼Œä»å¤´å¼€å§‹ï¼Œè¿˜æ˜¯å½“å‰å¼€å§‹ï¼Œè¿˜æ˜¯æ–‡ä»¶æœ«å°¾ */
 	off_t fl_start;
 	off_t fl_end;
 };
@@ -252,30 +252,30 @@ struct file_lock {
 #include <linux/xia_fs_sb.h>
 #include <linux/sysv_fs_sb.h>
 
-/* super_blockºÍinodeµÀÀíÒ»Ñù£¬³ıÁË³¬¼¶¿éµÄ¹«¹²ĞÅÏ¢Ö®Íâ£¬
- * »¹°üº¬Ò»Ğ©ÌØ¶¨ÎÄ¼şÏµÍ³µÄ³¬¼¶¿éµÄÊı¾İ£¬¸ÃÊı¾İÊÇÓÃÒ»¸öunion
- * À´±íÊ¾µÄ¡£
+/* super_blockå’Œinodeé“ç†ä¸€æ ·ï¼Œé™¤äº†è¶…çº§å—çš„å…¬å…±ä¿¡æ¯ä¹‹å¤–ï¼Œ
+ * è¿˜åŒ…å«ä¸€äº›ç‰¹å®šæ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å—çš„æ•°æ®ï¼Œè¯¥æ•°æ®æ˜¯ç”¨ä¸€ä¸ªunion
+ * æ¥è¡¨ç¤ºçš„ã€‚
  */
 struct super_block {
-	dev_t s_dev;					/*¶ÔÓ¦Éè±¸ºÅ*/
-	unsigned long s_blocksize;      /* Éè±¸Êı¾İ¿éµÄ´óĞ¡ */
-	unsigned char s_blocksize_bits; /* ¿é´óĞ¡ÓÃ2µÄÃİ´Î·½±íÊ¾µÄÃİ*/
-	unsigned char s_lock;  /* ³¬¼¶¿éÊÇ·ñ±»Ëø×¡ */
+	dev_t s_dev;					/*å¯¹åº”è®¾å¤‡å·*/
+	unsigned long s_blocksize;      /* è®¾å¤‡æ•°æ®å—çš„å¤§å° */
+	unsigned char s_blocksize_bits; /* å—å¤§å°ç”¨2çš„å¹‚æ¬¡æ–¹è¡¨ç¤ºçš„å¹‚*/
+	unsigned char s_lock;  /* è¶…çº§å—æ˜¯å¦è¢«é”ä½ */
 	unsigned char s_rd_only;
-	unsigned char s_dirt;		/* ³¬¼¶¿éµÄÔà±ê¼Ç */
+	unsigned char s_dirt;		/* è¶…çº§å—çš„è„æ ‡è®° */
 	struct super_operations *s_op;
-	unsigned long s_flags;       /* ³¬¼¶¿éµÄ¹ÒÔØ±ê¼Ç */
+	unsigned long s_flags;       /* è¶…çº§å—çš„æŒ‚è½½æ ‡è®° */
 	unsigned long s_magic;
 	unsigned long s_time;
-	/* ÔÚLinuxµ±ÖĞÈç¹ûÒª½«Ä³¸öÎÄ¼şÏµÍ³¹ØÔÚµ½Ä³¸öÄ¿Â¼
-	  * Ôò»á½«¹ÒÔØÄ¿Â¼Ö®Ç°µÄËùÓĞÄÚÈİ¸øÆÁ±Îµô£¬Ò²¾ÍÊÇ¿´²»¼û 
-	  * ¿´¼ûµÄÔòÊÇ¹ÒÔØÖ®ºóµÄÎÄ¼şÏµÍ³µÄÄÚÈİ£¬Èç¹û½«¸Ã¹ÒÔØµÄÎÄ¼ş 
-	  * ÏµÍ³Ğ¶ÔØµô£¬ÔòÔ­À´±»ÆÁ±ÎµôµÄÄÚÈİÓÖ»áÖØĞÂÏÔÊ¾³öÀ´  
+	/* åœ¨Linuxå½“ä¸­å¦‚æœè¦å°†æŸä¸ªæ–‡ä»¶ç³»ç»Ÿå…³åœ¨åˆ°æŸä¸ªç›®å½•
+	  * åˆ™ä¼šå°†æŒ‚è½½ç›®å½•ä¹‹å‰çš„æ‰€æœ‰å†…å®¹ç»™å±è”½æ‰ï¼Œä¹Ÿå°±æ˜¯çœ‹ä¸è§ 
+	  * çœ‹è§çš„åˆ™æ˜¯æŒ‚è½½ä¹‹åçš„æ–‡ä»¶ç³»ç»Ÿçš„å†…å®¹ï¼Œå¦‚æœå°†è¯¥æŒ‚è½½çš„æ–‡ä»¶ 
+	  * ç³»ç»Ÿå¸è½½æ‰ï¼Œåˆ™åŸæ¥è¢«å±è”½æ‰çš„å†…å®¹åˆä¼šé‡æ–°æ˜¾ç¤ºå‡ºæ¥  
 	  */
 	struct inode * s_covered;    
-	struct inode * s_mounted;   /*ÎÄ¼şÏµÍ³µÄ¹ÒÔØµã£¬Èç¹ûÊÇ¸ùÎÄ¼şÏµÍ³ÔòÊÇ/,·ñÔò¾ÍÊÇ¹ÒÔØµãµÄinode */
-	struct wait_queue * s_wait; /* µÈ´ı²Ù×÷³¬¼¶¿éµÄ½ø³Ì¶ÓÁĞ */
-	/* ×¢ÒâÕâ²¿·ÖĞÅÏ¢ÊÇ³¬¼¶¿éµÄÎïÀíĞÅÏ¢ */
+	struct inode * s_mounted;   /*æ–‡ä»¶ç³»ç»Ÿçš„æŒ‚è½½ç‚¹ï¼Œå¦‚æœæ˜¯æ ¹æ–‡ä»¶ç³»ç»Ÿåˆ™æ˜¯/,å¦åˆ™å°±æ˜¯æŒ‚è½½ç‚¹çš„inode */
+	struct wait_queue * s_wait; /* ç­‰å¾…æ“ä½œè¶…çº§å—çš„è¿›ç¨‹é˜Ÿåˆ— */
+	/* æ³¨æ„è¿™éƒ¨åˆ†ä¿¡æ¯æ˜¯è¶…çº§å—çš„ç‰©ç†ä¿¡æ¯ */
 	union {
 		struct minix_sb_info minix_sb;
 		struct ext_sb_info ext_sb;
@@ -283,13 +283,13 @@ struct super_block {
 		struct hpfs_sb_info hpfs_sb;
 		struct msdos_sb_info msdos_sb;
 		struct isofs_sb_info isofs_sb;
-		struct nfs_sb_info nfs_sb;		/* ÍøÂçÎÄ¼şÏµÍ³µÄ³¬¼¶¿é */
+		struct nfs_sb_info nfs_sb;		/* ç½‘ç»œæ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å— */
 		struct xiafs_sb_info xiafs_sb;
 		struct sysv_sb_info sysv_sb;
 	} u;
 };
 
-/* ¶Ôinode¶ÔÓ¦ÎÄ¼şµÄ²Ù×÷
+/* å¯¹inodeå¯¹åº”æ–‡ä»¶çš„æ“ä½œ
  */
 struct file_operations {
 	int (*lseek) (struct inode *, struct file *, off_t, int);
@@ -304,7 +304,7 @@ struct file_operations {
 	int (*fsync) (struct inode *, struct file *);
 };
 
-/* ¶ÔinodeµÄ²Ù×÷
+/* å¯¹inodeçš„æ“ä½œ
  */
 struct inode_operations {
 	struct file_operations * default_file_ops;

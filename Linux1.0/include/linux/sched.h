@@ -84,8 +84,8 @@ extern unsigned long avenrun[];		/* Load averages */
 
 #define TASK_RUNNING		0
 #define TASK_INTERRUPTIBLE	1
-#define TASK_UNINTERRUPTIBLE	2	/*ÄÚºËÒ»Ğ©ÌØ¶¨Á÷³Ì£¬ÊÇ²»¿É±»´ò¶ÏµÄ£¬Ò²¾ÍÊÇ¿ÉÒÔºöÂÔÄ³Ğ©ĞÅºÅ*/
-#define TASK_ZOMBIE		3           /* ½ø³ÌµÄ½©Ê¬×´Ì¬ */
+#define TASK_UNINTERRUPTIBLE	2	/*å†…æ ¸ä¸€äº›ç‰¹å®šæµç¨‹ï¼Œæ˜¯ä¸å¯è¢«æ‰“æ–­çš„ï¼Œä¹Ÿå°±æ˜¯å¯ä»¥å¿½ç•¥æŸäº›ä¿¡å·*/
+#define TASK_ZOMBIE		3           /* è¿›ç¨‹çš„åƒµå°¸çŠ¶æ€ */
 #define TASK_STOPPED		4
 #define TASK_SWAPPING		5
 
@@ -167,10 +167,10 @@ struct tss_struct {
 struct task_struct {
 /* these are hardcoded - don't touch */
 	volatile long state;	/* -1 unrunnable, 0 runnable, >0 stopped */
-	long counter;           /* ¶¯Ì¬ÓÅÏÈ¼¶ */
+	long counter;           /* åŠ¨æ€ä¼˜å…ˆçº§ */
 	long priority;
-	/* ×¢ÒâºÜ¶àµØ·½µÄÕâÖÖĞ´·¨ if (current->signal & ~current->blocked)
-	 * signal±íÊ¾·¢ËÍ¸ø½ø³ÌµÄĞÅºÅÎ»Í¼£¬blocked±íÊ¾½ø³Ì×èÈûµÄĞÅºÅÎ»Í¼
+	/* æ³¨æ„å¾ˆå¤šåœ°æ–¹çš„è¿™ç§å†™æ³• if (current->signal & ~current->blocked)
+	 * signalè¡¨ç¤ºå‘é€ç»™è¿›ç¨‹çš„ä¿¡å·ä½å›¾ï¼Œblockedè¡¨ç¤ºè¿›ç¨‹é˜»å¡çš„ä¿¡å·ä½å›¾
 	 */
 	unsigned long signal;   
 	unsigned long blocked;	/* bitmap of masked signals */
@@ -182,37 +182,37 @@ struct task_struct {
 	struct sigaction sigaction[32];
 	unsigned long saved_kernel_stack;
 	unsigned long kernel_stack_page;
-	/* exit_signal±íÊ¾ÍË³öÊ±¸ø¸¸½ø³Ì·¢ËÍµÄĞÅºÅ
+	/* exit_signalè¡¨ç¤ºé€€å‡ºæ—¶ç»™çˆ¶è¿›ç¨‹å‘é€çš„ä¿¡å·
 	 */
 	int exit_code, exit_signal;
-        /* ÊÇ·ñÊÇelf¿ÉÖ´ĞĞÎÄ¼ş¸ñÊ½ */
+        /* æ˜¯å¦æ˜¯elfå¯æ‰§è¡Œæ–‡ä»¶æ ¼å¼ */
 	int elf_executable:1;
 	int dumpable:1;
-	/* ±íÊ¾ÄÚ´æ³Ô½ôÊ±£¬¸Ã½ø³ÌÊÇ·ñ¿ÉÒÔ±»½»»» */
+	/* è¡¨ç¤ºå†…å­˜åƒç´§æ—¶ï¼Œè¯¥è¿›ç¨‹æ˜¯å¦å¯ä»¥è¢«äº¤æ¢ */
 	int swappable:1;
-    /* Çø·Ö½ø³ÌÕıÔÚÖ´ĞĞÀÏ³ÌĞò´úÂë£¬»¹ÊÇÓÃÏµÍ³µ÷ÓÃexecve()×°ÈëÒ»¸öĞÂµÄ³ÌĞò 
+    /* åŒºåˆ†è¿›ç¨‹æ­£åœ¨æ‰§è¡Œè€ç¨‹åºä»£ç ï¼Œè¿˜æ˜¯ç”¨ç³»ç»Ÿè°ƒç”¨execve()è£…å…¥ä¸€ä¸ªæ–°çš„ç¨‹åº 
       */
 	int did_exec:1;
-	/* start_code,end_code±íÊ¾´úÂë¶ÎµÄµØÖ·¿Õ¼ä
-	  * end_data±íÊ¾Êı¾İ¶ÎµÄ½áÊøµØÖ· 
-	  * start_brk±íÊ¾heapµÄÆğÊ¼¿Õ¼ä£¬brk±íÊ¾µ±Ç°µÄheapÖ¸Õë 
-	  * start_stack±íÊ¾stack¶ÎµÄÆğÊ¼µØÖ· 
+	/* start_code,end_codeè¡¨ç¤ºä»£ç æ®µçš„åœ°å€ç©ºé—´
+	  * end_dataè¡¨ç¤ºæ•°æ®æ®µçš„ç»“æŸåœ°å€ 
+	  * start_brkè¡¨ç¤ºheapçš„èµ·å§‹ç©ºé—´ï¼Œbrkè¡¨ç¤ºå½“å‰çš„heapæŒ‡é’ˆ 
+	  * start_stackè¡¨ç¤ºstackæ®µçš„èµ·å§‹åœ°å€ 
 	  */ 
 	unsigned long start_code,end_code,end_data,start_brk,brk,start_stack,start_mmap;
 	unsigned long arg_start, arg_end, env_start, env_end;
-	/* pgrp±íÊ¾½ø³Ì×éºÅ£¬pid±íÊ¾½ø³ÌºÅ£¬½ø³Ì×é»áÓĞÒ»¸ö
-	 * ½ø³Ì×éÁìµ¼½ø³Ì£¬Áìµ¼½ø³ÌµÄpid³ÉÎª½ø³Ì×éµÄid 
-	 * ÓÃÀ´Ê¶±ğ½ø³Ì×é£¬¶à¸ö½ø³Ì×é»¹¿ÉÒÔ¹¹³ÉÒ»¸ö»á»°
+	/* pgrpè¡¨ç¤ºè¿›ç¨‹ç»„å·ï¼Œpidè¡¨ç¤ºè¿›ç¨‹å·ï¼Œè¿›ç¨‹ç»„ä¼šæœ‰ä¸€ä¸ª
+	 * è¿›ç¨‹ç»„é¢†å¯¼è¿›ç¨‹ï¼Œé¢†å¯¼è¿›ç¨‹çš„pidæˆä¸ºè¿›ç¨‹ç»„çš„id 
+	 * ç”¨æ¥è¯†åˆ«è¿›ç¨‹ç»„ï¼Œå¤šä¸ªè¿›ç¨‹ç»„è¿˜å¯ä»¥æ„æˆä¸€ä¸ªä¼šè¯
 	 * 
 	 */
 	int pid,pgrp,session,leader;
-    /* ÔÚÃ»ÓĞ¸½¼Ó×éID£¨Suplimentary ID£©µÄÄê´ú£¬Ò»¸öÓÃ»§Ö»ÄÜÊôÓÚ×ÔÒÑµÄÍ¬Ãû×é£¬
-      * ÀıÈçchinsungµÄÓÃ»§IDÊÇ1000£¬ÄÇÃ´ËüÖ»ÊôÓÚchinsung×é£¬Õâ¸ö×éµÄ×éIDÒ²ÊÇ1000£¬
-      * Èç¹ûÒª·ÃÎÊÒ»¸öÊôÓÚftpµÄÎÄ¼ş£¬ÄÇÃ´Ó¦¸ÃÏÈ½«×Ô¼ºµÄ×éID»»³ÉftpµÄ×éID²ÅĞĞ¡£
-      * ÏÔÈ»£¬ÕâÓĞµãÂé·³¡£ÓÚÊÇ×ÔBSD4.2ÒÔºó£¬³öÏÖÁË¸½¼Ó×éIDµÄ¸ÅÄî£º
-      * Ò»¸öÓÃ»§¿ÉÒÔÊôÓÚÒ»¸ö×é£¬»¹¿ÉÒÔÊôÓÚÈô¸É¸½¼Ó×é£»ÔÚ½øĞĞÈ¨ÏŞĞ£ÑéÊ±£¬
-      * ²»¹â¼ì²éÕâ¸öÓÃ»§ËùÔÚµÄ×é£¬»¹Òª¼ì²éÕâ¸öÓÃ»§ËùÔÚµÄ¸½¼Ó×é¡£
-      * Õâ¸üÌù½üÉú»îÊµ¼ÊÁË£¬ºÃ±ÈÎÒÃÇÍ¬Ê±»áÔÚºÃ¼¸¸öÏîÄ¿×é
+    /* åœ¨æ²¡æœ‰é™„åŠ ç»„IDï¼ˆSuplimentary IDï¼‰çš„å¹´ä»£ï¼Œä¸€ä¸ªç”¨æˆ·åªèƒ½å±äºè‡ªå·²çš„åŒåç»„ï¼Œ
+      * ä¾‹å¦‚chinsungçš„ç”¨æˆ·IDæ˜¯1000ï¼Œé‚£ä¹ˆå®ƒåªå±äºchinsungç»„ï¼Œè¿™ä¸ªç»„çš„ç»„IDä¹Ÿæ˜¯1000ï¼Œ
+      * å¦‚æœè¦è®¿é—®ä¸€ä¸ªå±äºftpçš„æ–‡ä»¶ï¼Œé‚£ä¹ˆåº”è¯¥å…ˆå°†è‡ªå·±çš„ç»„IDæ¢æˆftpçš„ç»„IDæ‰è¡Œã€‚
+      * æ˜¾ç„¶ï¼Œè¿™æœ‰ç‚¹éº»çƒ¦ã€‚äºæ˜¯è‡ªBSD4.2ä»¥åï¼Œå‡ºç°äº†é™„åŠ ç»„IDçš„æ¦‚å¿µï¼š
+      * ä¸€ä¸ªç”¨æˆ·å¯ä»¥å±äºä¸€ä¸ªç»„ï¼Œè¿˜å¯ä»¥å±äºè‹¥å¹²é™„åŠ ç»„ï¼›åœ¨è¿›è¡Œæƒé™æ ¡éªŒæ—¶ï¼Œ
+      * ä¸å…‰æ£€æŸ¥è¿™ä¸ªç”¨æˆ·æ‰€åœ¨çš„ç»„ï¼Œè¿˜è¦æ£€æŸ¥è¿™ä¸ªç”¨æˆ·æ‰€åœ¨çš„é™„åŠ ç»„ã€‚
+      * è¿™æ›´è´´è¿‘ç”Ÿæ´»å®é™…äº†ï¼Œå¥½æ¯”æˆ‘ä»¬åŒæ—¶ä¼šåœ¨å¥½å‡ ä¸ªé¡¹ç›®ç»„
       */
 	int	groups[NGROUPS];
 	/* 
@@ -221,78 +221,78 @@ struct task_struct {
 	 * p->p_pptr->pid)
 	 */
 
-	/* p_opptr¼ÇÂ¼´´½¨¸Ã½ø³ÌµÄ½ø³Ì£¬p_pptrÎªµ±Ç°¸¸½ø³Ì£¬p_cptrÎª×îĞ¡º¢×Ó½ø³Ì
-	 * p_ysptr¼ÇÂ¼ÄêÇáµÄĞÖµÜ½ø³Ì£¬p_osptrÎªÀÏµÄĞÖµÜ½ø³Ì
+	/* p_opptrè®°å½•åˆ›å»ºè¯¥è¿›ç¨‹çš„è¿›ç¨‹ï¼Œp_ppträ¸ºå½“å‰çˆ¶è¿›ç¨‹ï¼Œp_cpträ¸ºæœ€å°å­©å­è¿›ç¨‹
+	 * p_ysptrè®°å½•å¹´è½»çš„å…„å¼Ÿè¿›ç¨‹ï¼Œp_ospträ¸ºè€çš„å…„å¼Ÿè¿›ç¨‹
 	 */
 	struct task_struct *p_opptr,*p_pptr, *p_cptr, *p_ysptr, *p_osptr;
-	/* µÈ´ıº¢×Ó½ø³ÌµÄ¶ÓÁĞ£¬ÊÇ½«×Ô¼ºÌí¼Óµ½¸Ã¶ÓÁĞµ±ÖĞ
+	/* ç­‰å¾…å­©å­è¿›ç¨‹çš„é˜Ÿåˆ—ï¼Œæ˜¯å°†è‡ªå·±æ·»åŠ åˆ°è¯¥é˜Ÿåˆ—å½“ä¸­
 	 */
 	struct wait_queue *wait_chldexit;	/* for wait4() */
 	/*
 	 * For ease of programming... Normal sleeps don't need to
 	 * keep track of a wait-queue: every task has an entry of its own
 	 */
-	/* ÓÃ»§id£¬ÓĞĞ§id Ò»¸ö½ø³ÌÈç¹ûÃ»ÓĞSUID»òSGIDÎ»£¬Ôòeuid=uid egid=gid£¬
-	 * ·Ö±ğÊÇÔËĞĞÕâ¸ö³ÌĞòµÄÓÃ»§µÄuidºÍgid¡£ÀıÈçkevinÓÃ»§µÄuidºÍgid·Ö±ğÎª204ºÍ202£¬
-	 * fooÓÃ»§µÄuidºÍgidÎª 200£¬201£¬kevinÔËĞĞmyfile³ÌĞòĞÎ³ÉµÄ½ø³ÌµÄeuid=uid=204£¬
-	 * egid=gid=202£¬ÄÚºË¸ù¾İÕâĞ©ÖµÀ´ÅĞ¶Ï½ø³Ì¶Ô×ÊÔ´·ÃÎÊµÄÏŞÖÆ£¬
-	 * ÆäÊµ¾ÍÊÇkevinÓÃ»§¶Ô×ÊÔ´·ÃÎÊµÄÈ¨ÏŞ£¬ºÍfooÃ»¹ØÏµ¡£ 
-      * Èç¹ûÒ»¸ö³ÌĞòÉèÖÃÁËSUID£¬ÔòeuidºÍegid±ä³É±»ÔËĞĞµÄ³ÌĞòµÄËùÓĞÕßµÄuidºÍgid£¬
-      * ÀıÈçkevinÓÃ»§ÔËĞĞmyfile£¬euid=200£¬egid=201£¬uid=204£¬gid=202£¬
-      * ÔòÕâ¸ö½ø³Ì¾ßÓĞËüµÄÊôÖ÷fooµÄ×ÊÔ´·ÃÎÊÈ¨ÏŞ¡£
-      * Ê¹ÓÃeuidÀ´È·ÈÏ×ÊÔ´µÄ·ÃÎÊÈ¨ÏŞ 
+	/* ç”¨æˆ·idï¼Œæœ‰æ•ˆid ä¸€ä¸ªè¿›ç¨‹å¦‚æœæ²¡æœ‰SUIDæˆ–SGIDä½ï¼Œåˆ™euid=uid egid=gidï¼Œ
+	 * åˆ†åˆ«æ˜¯è¿è¡Œè¿™ä¸ªç¨‹åºçš„ç”¨æˆ·çš„uidå’Œgidã€‚ä¾‹å¦‚kevinç”¨æˆ·çš„uidå’Œgidåˆ†åˆ«ä¸º204å’Œ202ï¼Œ
+	 * fooç”¨æˆ·çš„uidå’Œgidä¸º 200ï¼Œ201ï¼Œkevinè¿è¡Œmyfileç¨‹åºå½¢æˆçš„è¿›ç¨‹çš„euid=uid=204ï¼Œ
+	 * egid=gid=202ï¼Œå†…æ ¸æ ¹æ®è¿™äº›å€¼æ¥åˆ¤æ–­è¿›ç¨‹å¯¹èµ„æºè®¿é—®çš„é™åˆ¶ï¼Œ
+	 * å…¶å®å°±æ˜¯kevinç”¨æˆ·å¯¹èµ„æºè®¿é—®çš„æƒé™ï¼Œå’Œfooæ²¡å…³ç³»ã€‚ 
+      * å¦‚æœä¸€ä¸ªç¨‹åºè®¾ç½®äº†SUIDï¼Œåˆ™euidå’Œegidå˜æˆè¢«è¿è¡Œçš„ç¨‹åºçš„æ‰€æœ‰è€…çš„uidå’Œgidï¼Œ
+      * ä¾‹å¦‚kevinç”¨æˆ·è¿è¡Œmyfileï¼Œeuid=200ï¼Œegid=201ï¼Œuid=204ï¼Œgid=202ï¼Œ
+      * åˆ™è¿™ä¸ªè¿›ç¨‹å…·æœ‰å®ƒçš„å±ä¸»fooçš„èµ„æºè®¿é—®æƒé™ã€‚
+      * ä½¿ç”¨euidæ¥ç¡®è®¤èµ„æºçš„è®¿é—®æƒé™ 
       */
 	unsigned short uid,euid,suid;
-	/* ÓÃ»§×éid£¬ÓĞĞ§×éid*/
+	/* ç”¨æˆ·ç»„idï¼Œæœ‰æ•ˆç»„id*/
 	unsigned short gid,egid,sgid;
-	/* Èí¼ş¶¨Ê±£¬Ö¸³ö½ø³Ì¼ä¸ô¶à¾Ã±»ÖØĞÂ»½ĞÑ£¬²ÉÓÃtickÎªµ¥Î» */
+	/* è½¯ä»¶å®šæ—¶ï¼ŒæŒ‡å‡ºè¿›ç¨‹é—´éš”å¤šä¹…è¢«é‡æ–°å”¤é†’ï¼Œé‡‡ç”¨tickä¸ºå•ä½ */
 	unsigned long timeout;
-	/* Ã¿¸ötickÊ¹it_real_value¼õ1£¬¼õµ½0Ê±Ïò½ø³Ì·¢ËÍĞÅºÅSIGALRM£¬²¢ÖØĞÂÉèÖÃ³õÖµ¡£
-	 * ³õÖµ±£´æÔÚit_real_crµ±ÖĞ
-	 * ²»¹ÜÊÇÓÃ»§Ì¬»¹ÊÇÄÚºËÌ¬Ã¿¸ötickÊ¹it_prof_value¼õ1£¬¼õµ½0Ê±
-	 * Ïî½ø³Ì·¢ËÍSIGPROFĞÅºÅ£¬²¢ÖØĞÂÉèÖÃ£¬³õÖµÓÉit_prof_incr±£´æ
-	 * ½ø³ÌÔÚÓÃ»§Ì¬Ö´ĞĞÊ±Ã¿¸ötickÊ¹it_virt_value¼õ1£¬¼õµ½0
-	 * Ê±£¬Ïò½ø³Ì·¢ËÍSIGVTALRMĞÅºÅ£¬²¢ÖØĞÂÉèÖÃ³õÖµ¡£³õÖµÓÉit_virt_incr±£´æ
+	/* æ¯ä¸ªtickä½¿it_real_valueå‡1ï¼Œå‡åˆ°0æ—¶å‘è¿›ç¨‹å‘é€ä¿¡å·SIGALRMï¼Œå¹¶é‡æ–°è®¾ç½®åˆå€¼ã€‚
+	 * åˆå€¼ä¿å­˜åœ¨it_real_crå½“ä¸­
+	 * ä¸ç®¡æ˜¯ç”¨æˆ·æ€è¿˜æ˜¯å†…æ ¸æ€æ¯ä¸ªtickä½¿it_prof_valueå‡1ï¼Œå‡åˆ°0æ—¶
+	 * é¡¹è¿›ç¨‹å‘é€SIGPROFä¿¡å·ï¼Œå¹¶é‡æ–°è®¾ç½®ï¼Œåˆå€¼ç”±it_prof_incrä¿å­˜
+	 * è¿›ç¨‹åœ¨ç”¨æˆ·æ€æ‰§è¡Œæ—¶æ¯ä¸ªtickä½¿it_virt_valueå‡1ï¼Œå‡åˆ°0
+	 * æ—¶ï¼Œå‘è¿›ç¨‹å‘é€SIGVTALRMä¿¡å·ï¼Œå¹¶é‡æ–°è®¾ç½®åˆå€¼ã€‚åˆå€¼ç”±it_virt_incrä¿å­˜
 	 */
 	unsigned long it_real_value, it_prof_value, it_virt_value;
 	unsigned long it_real_incr, it_prof_incr, it_virt_incr;
 	long utime,stime,cutime,cstime,start_time;
-	/* ±íÊ¾×Ô½ø³ÌÆô¶¯ÒÔÀ´Ëù·¢ÉúµÄÈ±Ò³ÖĞ¶Ï´ÎÊı £¬
-	  * maj_flt±íÊ¾ĞèÒª¶ÁĞ´´ÅÅÌ£¬¿ÉÄÜÊÇÄÚ´æÒ³ÔÚ´ÅÅÌÖĞĞèÒªloadµ½ÎïÀíÄÚ´æµ±ÖĞ 
-	  * Ò²¿ÉÄÜÊÇÎïÀíÒ³ÄÚ´æ²»×ã£¬ĞèÒªÌÔÌ­²¿·ÖÎïÀíÒ³µ½´ÅÅÌÖĞ 
+	/* è¡¨ç¤ºè‡ªè¿›ç¨‹å¯åŠ¨ä»¥æ¥æ‰€å‘ç”Ÿçš„ç¼ºé¡µä¸­æ–­æ¬¡æ•° ï¼Œ
+	  * maj_fltè¡¨ç¤ºéœ€è¦è¯»å†™ç£ç›˜ï¼Œå¯èƒ½æ˜¯å†…å­˜é¡µåœ¨ç£ç›˜ä¸­éœ€è¦loadåˆ°ç‰©ç†å†…å­˜å½“ä¸­ 
+	  * ä¹Ÿå¯èƒ½æ˜¯ç‰©ç†é¡µå†…å­˜ä¸è¶³ï¼Œéœ€è¦æ·˜æ±°éƒ¨åˆ†ç‰©ç†é¡µåˆ°ç£ç›˜ä¸­ 
 	  */
 	unsigned long min_flt, maj_flt;
 	unsigned long cmin_flt, cmaj_flt;
-        /* ½ø³ÌµÄ¸÷ÖÖ×ÊÔ´ÏŞÖÆ£¬Èç½ø³ÌÊı¾İ¶Î£¬¶ÑÕ»¶Î£¬½ø³ÌµÄ×î´óĞéÄâ¿Õ¼äµÈµÈ */
+        /* è¿›ç¨‹çš„å„ç§èµ„æºé™åˆ¶ï¼Œå¦‚è¿›ç¨‹æ•°æ®æ®µï¼Œå †æ ˆæ®µï¼Œè¿›ç¨‹çš„æœ€å¤§è™šæ‹Ÿç©ºé—´ç­‰ç­‰ */
 	struct rlimit rlim[RLIM_NLIMITS]; 
 	unsigned short used_math;
-	unsigned short rss;	/* number of resident pages */ /*µ±Ç°ÔÚÖ÷´æÖĞµÄÄÚ´æÒ³Êı*/
+	unsigned short rss;	/* number of resident pages */ /*å½“å‰åœ¨ä¸»å­˜ä¸­çš„å†…å­˜é¡µæ•°*/
 	char comm[16];
 	struct vm86_struct * vm86_info;
 	unsigned long screen_bitmap;
 /* file system info */
 	int link_count;
-	/* ±íÊ¾½ø³ÌµÄ¿ØÖÆÖÕ¶Ë */
+	/* è¡¨ç¤ºè¿›ç¨‹çš„æ§åˆ¶ç»ˆç«¯ */
 	int tty;		/* -1 if no tty, so it must be signed */
-	unsigned short umask;  /* ½ø³Ì´´½¨ÎÄ¼şÊ±Ä¬ÈÏµÄÈ¨ÏŞ·´Âë */
-	struct inode * pwd;    /* ½ø³ÌµÄµ±Ç°¹¤×÷Ä¿Â¼ */
-	struct inode * root;   /* µ±Ç°½ø³ÌµÄ¸ùÄ¿Â¼ */
-	struct inode * executable; /* µ±Ç°½ø³Ì¿ÉÖ´ĞĞÎÄ¼ş */
-	/* ĞéÄâµØÖ·Á´£¬ÔÚµØÖ·Á´±íÖĞ£¬
-	 * µØÖ·¿Õ¼äÊÇ°´ÕÕ´ÓĞ¡µ½´óµÄË³ĞòÀ´´æ·ÅµÄ
+	unsigned short umask;  /* è¿›ç¨‹åˆ›å»ºæ–‡ä»¶æ—¶é»˜è®¤çš„æƒé™åç  */
+	struct inode * pwd;    /* è¿›ç¨‹çš„å½“å‰å·¥ä½œç›®å½• */
+	struct inode * root;   /* å½“å‰è¿›ç¨‹çš„æ ¹ç›®å½• */
+	struct inode * executable; /* å½“å‰è¿›ç¨‹å¯æ‰§è¡Œæ–‡ä»¶ */
+	/* è™šæ‹Ÿåœ°å€é“¾ï¼Œåœ¨åœ°å€é“¾è¡¨ä¸­ï¼Œ
+	 * åœ°å€ç©ºé—´æ˜¯æŒ‰ç…§ä»å°åˆ°å¤§çš„é¡ºåºæ¥å­˜æ”¾çš„
 	 */
 	struct vm_area_struct * mmap;
-	/* ½ø³ÌµÄ¹²ÏíÄÚ´æÁĞ±í
+	/* è¿›ç¨‹çš„å…±äº«å†…å­˜åˆ—è¡¨
 	 */
 	struct shm_desc *shm;
-	/* ½ø³ÌµÄundoĞÅºÅÁĞ±í£¬Ò²¾ÍÊÇÔÚ½ø³ÌÍË³öµÄÊ±ºò
-	 * ½«½ø³ÌĞÅºÅÁ¿Õ¼ÓÃµÄ×ÊÔ´¸øÊÍ·Åµô£¬²»È»ĞèÒª¸Ã×ÊÔ´µÄ
-	 * ÆäËû½ø³ÌÎŞ·¨µÃµ½×ÊÔ´£¬µ¼ÖÂ×ÊÔ´ÂÒ·Ñ
+	/* è¿›ç¨‹çš„undoä¿¡å·åˆ—è¡¨ï¼Œä¹Ÿå°±æ˜¯åœ¨è¿›ç¨‹é€€å‡ºçš„æ—¶å€™
+	 * å°†è¿›ç¨‹ä¿¡å·é‡å ç”¨çš„èµ„æºç»™é‡Šæ”¾æ‰ï¼Œä¸ç„¶éœ€è¦è¯¥èµ„æºçš„
+	 * å…¶ä»–è¿›ç¨‹æ— æ³•å¾—åˆ°èµ„æºï¼Œå¯¼è‡´èµ„æºä¹±è´¹
 	 */
 	struct sem_undo *semun;
 	struct file * filp[NR_OPEN];
-	/* µ±×Ó½ø³ÌÖ´ĞĞexec×åº¯ÊıÌæ»»×Ó½ø³ÌÊ±£¬±íÊ¾ĞèÒª¹Ø±ÕµÄÎÄ¼şÃèÊö·û
-	 * ²»È»ÎÄ¼şÓÀÔ¶´¦ÓÚ´ò¿ª×´Ì¬
+	/* å½“å­è¿›ç¨‹æ‰§è¡Œexecæ—å‡½æ•°æ›¿æ¢å­è¿›ç¨‹æ—¶ï¼Œè¡¨ç¤ºéœ€è¦å…³é—­çš„æ–‡ä»¶æè¿°ç¬¦
+	 * ä¸ç„¶æ–‡ä»¶æ°¸è¿œå¤„äºæ‰“å¼€çŠ¶æ€
 	 */
 	fd_set close_on_exec;
 /* ldt for this task - used by Wine.  If NULL, default_ldt is used */
@@ -302,9 +302,9 @@ struct task_struct {
 #ifdef NEW_SWAP
 	unsigned long old_maj_flt;	/* old value of maj_flt */
 	unsigned long dec_flt;		/* page fault count of the last time */
-	unsigned long swap_cnt;		/* number of pages to swap on next pass */ /*µ±Ç°ĞèÒª½»»»µÄÒ³µÄÊıÁ¿*/
-	short swap_table;		/* current page table */  /*µ±Ç°ĞèÒª½»»»½ø³ÌÒ»¼¶Ò³±íµÄË÷Òı*/
-	short swap_page;		/* current page */ /* µ±Ç°ĞèÒª½»»»½ø³Ì¶ş¼¶Ò³µÄË÷Òı */
+	unsigned long swap_cnt;		/* number of pages to swap on next pass */ /*å½“å‰éœ€è¦äº¤æ¢çš„é¡µçš„æ•°é‡*/
+	short swap_table;		/* current page table */  /*å½“å‰éœ€è¦äº¤æ¢è¿›ç¨‹ä¸€çº§é¡µè¡¨çš„ç´¢å¼•*/
+	short swap_page;		/* current page */ /* å½“å‰éœ€è¦äº¤æ¢è¿›ç¨‹äºŒçº§é¡µçš„ç´¢å¼• */
 #endif NEW_SWAP
 	struct vm_area_struct *stk_vma;
 };
@@ -406,9 +406,9 @@ extern int irqaction(unsigned int irq,struct sigaction * sa);
  *  10 - TSS #1
  *  11 - LDT #1
  */
-/* ÏµÍ³ÎªÃ¿¸ö½ø³Ì±£ÓĞÁ½Ïî£¬ÒÀ´Î½»Ìæ£¬ÆäÖĞnÎª½ø³Ìtask_structÔÚÈÎÎñÊı×éÖĞµÄË÷Òı
- * ÓÉÓÚÃ¿¸öÃèÊö·ûÕ¼ÓÃ8byte£¬¶øÃ¿¸ö½ø³ÌÕ¼ÓÃÁ½Ïî£¬ËùÒÔn<<4,È»ºó»¹Òª¼ÓÉÏÇ°ÃæµÄ
- * ÆğÊ¼Î»ÖÃµÄÆ«ÒÆÁ¿£¬Ò²¾ÍÊÇ_TSS(n)»ñÈ¡µÄÊÇÃèÊö·ûµÄµØÖ·
+/* ç³»ç»Ÿä¸ºæ¯ä¸ªè¿›ç¨‹ä¿æœ‰ä¸¤é¡¹ï¼Œä¾æ¬¡äº¤æ›¿ï¼Œå…¶ä¸­nä¸ºè¿›ç¨‹task_structåœ¨ä»»åŠ¡æ•°ç»„ä¸­çš„ç´¢å¼•
+ * ç”±äºæ¯ä¸ªæè¿°ç¬¦å ç”¨8byteï¼Œè€Œæ¯ä¸ªè¿›ç¨‹å ç”¨ä¸¤é¡¹ï¼Œæ‰€ä»¥n<<4,ç„¶åè¿˜è¦åŠ ä¸Šå‰é¢çš„
+ * èµ·å§‹ä½ç½®çš„åç§»é‡ï¼Œä¹Ÿå°±æ˜¯_TSS(n)è·å–çš„æ˜¯æè¿°ç¬¦çš„åœ°å€
  */
 #define FIRST_TSS_ENTRY 8
 #define FIRST_LDT_ENTRY (FIRST_TSS_ENTRY+1)
@@ -428,7 +428,7 @@ __asm__("str %%ax\n\t" \
  * This also clears the TS-flag if the task we switched to has used
  * tha math co-processor latest.
  */
-/* currentÔÚÕâ¸öÊ±ºò±»¸Ä±ä£¬Ò²¾ÍÊÇÇĞ»»µ½tskÕâ¸ö½ø³Ì
+/* currentåœ¨è¿™ä¸ªæ—¶å€™è¢«æ”¹å˜ï¼Œä¹Ÿå°±æ˜¯åˆ‡æ¢åˆ°tskè¿™ä¸ªè¿›ç¨‹
  */
 #define switch_to(tsk) \
 __asm__("cmpl %%ecx,_current\n\t" \
@@ -480,7 +480,7 @@ __asm__("movw %%dx,%0\n\t" \
  * entries in the queues.
  */
 
-/* ½«waitÌí¼Óµ½ÒÔpÖ¸ÏòµÄ¶ÓÁĞÎªÊ×²¿µÄÏÂÒ»¸öÎ»ÖÃ */
+/* å°†waitæ·»åŠ åˆ°ä»¥pæŒ‡å‘çš„é˜Ÿåˆ—ä¸ºé¦–éƒ¨çš„ä¸‹ä¸€ä¸ªä½ç½® */
 extern inline void add_wait_queue(struct wait_queue ** p, struct wait_queue * wait)
 {
 	unsigned long flags;
@@ -495,9 +495,9 @@ extern inline void add_wait_queue(struct wait_queue ** p, struct wait_queue * wa
 #endif
 	save_flags(flags);
 	cli();
-	/* Èç¹û¶ÓÁĞÎª¿Õ£¬ÔòÈÃwaitÖ¸Ïò¶ÓÊ×£¬nextÖ¸Ïò×Ô¼º
-	 * µ±¼ÌĞøÏò¶ÓÁĞÖĞÌí¼Ó½ÚµãÊ±£¬Õû¸ö¶ÓÁĞ¾ÍÊÇÒ»¸ö±ÕºÏµÄÔ²»·£¬
-	 * ·ñÔò½«waitÌí¼Óµ½ÒÔ*pÎª¶ÓÊ×µÄÏÂÒ»¸öµØ·½
+	/* å¦‚æœé˜Ÿåˆ—ä¸ºç©ºï¼Œåˆ™è®©waitæŒ‡å‘é˜Ÿé¦–ï¼ŒnextæŒ‡å‘è‡ªå·±
+	 * å½“ç»§ç»­å‘é˜Ÿåˆ—ä¸­æ·»åŠ èŠ‚ç‚¹æ—¶ï¼Œæ•´ä¸ªé˜Ÿåˆ—å°±æ˜¯ä¸€ä¸ªé—­åˆçš„åœ†ç¯ï¼Œ
+	 * å¦åˆ™å°†waitæ·»åŠ åˆ°ä»¥*pä¸ºé˜Ÿé¦–çš„ä¸‹ä¸€ä¸ªåœ°æ–¹
 	 */
 	if (!*p) {
 		wait->next = wait;
@@ -509,7 +509,7 @@ extern inline void add_wait_queue(struct wait_queue ** p, struct wait_queue * wa
 	restore_flags(flags);
 }
 
-/* ½«wait´Ó¶ÓÁĞpÖ¸ÏòµÄ¶ÓÁĞÖĞÉ¾³ı */
+/* å°†waitä»é˜Ÿåˆ—pæŒ‡å‘çš„é˜Ÿåˆ—ä¸­åˆ é™¤ */
 extern inline void remove_wait_queue(struct wait_queue ** p, struct wait_queue * wait)
 {
 	unsigned long flags;
@@ -520,8 +520,8 @@ extern inline void remove_wait_queue(struct wait_queue ** p, struct wait_queue *
 
 	save_flags(flags);
 	cli();
-	/* Èç¹û¶ÓÁĞÖĞÖ»ÓĞÒ»¸ö£¬Ôò½«¸Ã¶ÓÁĞÖ¸ÎªNULL
-	 * ·´Ö®É¨ÃèµÈ´ı¶ÓÁĞ£¬²¢´ÓÖĞÉ¾³ıwait
+	/* å¦‚æœé˜Ÿåˆ—ä¸­åªæœ‰ä¸€ä¸ªï¼Œåˆ™å°†è¯¥é˜Ÿåˆ—æŒ‡ä¸ºNULL
+	 * åä¹‹æ‰«æç­‰å¾…é˜Ÿåˆ—ï¼Œå¹¶ä»ä¸­åˆ é™¤wait
 	 */
 	if ((*p == wait) &&
 #ifdef DEBUG
@@ -530,8 +530,8 @@ extern inline void remove_wait_queue(struct wait_queue ** p, struct wait_queue *
 	    ((*p = wait->next) == wait)) {
 		*p = NULL;
 	} else {
-		/* ÒòÎª¶ÓÁĞÊÇÒ»¸ö±ÕºÏµÄÔ²»·£¬ËùÒÔtmp=wait×îÖÕÊÇ¿ÉÒÔÕÒµ½waitµÄ£¬
-		 * µ«ÊÇÎªÊ²Ã´²»´Ó*p´¦¿ªÊ¼²éÕÒ?
+		/* å› ä¸ºé˜Ÿåˆ—æ˜¯ä¸€ä¸ªé—­åˆçš„åœ†ç¯ï¼Œæ‰€ä»¥tmp=waitæœ€ç»ˆæ˜¯å¯ä»¥æ‰¾åˆ°waitçš„ï¼Œ
+		 * ä½†æ˜¯ä¸ºä»€ä¹ˆä¸ä»*på¤„å¼€å§‹æŸ¥æ‰¾?
 		 */
 		tmp = wait;
 		while (tmp->next != wait) {
@@ -559,20 +559,20 @@ extern inline void select_wait(struct wait_queue ** wait_address, select_table *
 {
 	struct select_table_entry * entry;
 
-	/* Èç¹ûÓĞÈÎÒâÒ»¸öÖ¸ÕëÎªNULL,Ôò·µ»Ø£¬²»×ö´¦Àí */
+	/* å¦‚æœæœ‰ä»»æ„ä¸€ä¸ªæŒ‡é’ˆä¸ºNULL,åˆ™è¿”å›ï¼Œä¸åšå¤„ç† */
 	if (!p || !wait_address)
 		return;
-	/* ÊıÁ¿²»ÄÜ³¬¹ı */
+	/* æ•°é‡ä¸èƒ½è¶…è¿‡ */
 	if (p->nr >= __MAX_SELECT_TABLE_ENTRIES)
 		return;
-	/* »ñÈ¡µ±Ç°²Ù×÷µÄentryµÄµØÖ· */
+	/* è·å–å½“å‰æ“ä½œçš„entryçš„åœ°å€ */
  	entry = p->entry + p->nr;
-	/* ×¢ÒâÕâ¸öµØ·½ºÜÖØÒª£¬Ò²¾ÍÊÇÒª¼ÇÂ¼wait±äÁ¿ÊÇµÈ´ıÔÚÄÄ¸öÁ´±íµ±ÖĞ */
+	/* æ³¨æ„è¿™ä¸ªåœ°æ–¹å¾ˆé‡è¦ï¼Œä¹Ÿå°±æ˜¯è¦è®°å½•waitå˜é‡æ˜¯ç­‰å¾…åœ¨å“ªä¸ªé“¾è¡¨å½“ä¸­ */
 	entry->wait_address = wait_address;
 	entry->wait.task = current;
 	entry->wait.next = NULL;
 	add_wait_queue(wait_address,&entry->wait);
-	/* Ôö¼ÓnrµÄÊıÁ¿ */
+	/* å¢åŠ nrçš„æ•°é‡ */
 	p->nr++;
 }
 
@@ -615,7 +615,7 @@ static inline unsigned long get_limit(unsigned long segment)
 	return __limit+1;
 }
 
-/*  Èç¹û½ø³Ì´´½¨Ê§°Ü£¬Ôò½«½ø³ÌÔÚ½ø³Ì¶ÓÁĞÖĞµÄ¹ØÏµ¸ø½â³ı
+/*  å¦‚æœè¿›ç¨‹åˆ›å»ºå¤±è´¥ï¼Œåˆ™å°†è¿›ç¨‹åœ¨è¿›ç¨‹é˜Ÿåˆ—ä¸­çš„å…³ç³»ç»™è§£é™¤
  *
  */
 
@@ -632,7 +632,7 @@ static inline unsigned long get_limit(unsigned long segment)
 		(p)->p_pptr->p_cptr = (p)->p_osptr; \
 	} while (0)
 
-/*  ½«ĞÂ½¨µÄtask_struct²åÈëµ½ÒÔinit_taskÎªÊ×µÄË«Ïò¶ÓÁĞµÄ¶ÓÎ²
+/*  å°†æ–°å»ºçš„task_structæ’å…¥åˆ°ä»¥init_taskä¸ºé¦–çš„åŒå‘é˜Ÿåˆ—çš„é˜Ÿå°¾
  *  
  */
 

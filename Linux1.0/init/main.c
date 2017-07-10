@@ -126,10 +126,10 @@ extern void time_init(void);
 static unsigned long memory_start = 0;	/* After mem_init, stores the */
 					/* amount of free user memory */
 
-/* ÏµÍ³ÄÚºËÖ§³ÖµÄ×î´óÎïÀíºÍÊµ¼ÊÎïÀíÄÚ´æµÄ½ÏĞ¡µÄÄÇ¸öÖµ*/
+/* ç³»ç»Ÿå†…æ ¸æ”¯æŒçš„æœ€å¤§ç‰©ç†å’Œå®é™…ç‰©ç†å†…å­˜çš„è¾ƒå°çš„é‚£ä¸ªå€¼*/
 static unsigned long memory_end = 0;
-/* 640KB-1MBÁô¸øÏÔ´æÁË¡£0xA0000=640KB,µ±ÄÚºË´óĞ¡Ğ¡ÓÚ1MÊ±
-  * low_memory_startÔòÖ¸ÏòÄÚºËµÄ´óĞ¡
+/* 640KB-1MBç•™ç»™æ˜¾å­˜äº†ã€‚0xA0000=640KB,å½“å†…æ ¸å¤§å°å°äº1Mæ—¶
+  * low_memory_startåˆ™æŒ‡å‘å†…æ ¸çš„å¤§å°
   */
 static unsigned long low_memory_start = 0;
 
@@ -151,12 +151,12 @@ struct screen_info screen_info;
 unsigned char aux_device_present;
 int ramdisk_size;
 
-/* ¸ùÎÄ¼şÏµÍ³µÄ¹ÒÔØ±ê¼Ç */
+/* æ ¹æ–‡ä»¶ç³»ç»Ÿçš„æŒ‚è½½æ ‡è®° */
 int root_mountflags = 0;
 
 static char fpu_error = 0;
 
-/*Æô¶¯ÃüÁîĞĞ³õÊ¼»¯Îª¿Õ*/
+/*å¯åŠ¨å‘½ä»¤è¡Œåˆå§‹åŒ–ä¸ºç©º*/
 static char command_line[80] = { 0, };
 
 char *get_options(char *str, int *ints) 
@@ -334,13 +334,13 @@ static void parse_options(char *line)
 	envp_init[envs+1] = NULL;
 }
 
-/* ´Ëº¯ÊıÖ÷ÒªÊÇ¸ù¾İÃüÁî²ÎÊı»ñÈ¡memory_endµÄ´óĞ¡ */
+/* æ­¤å‡½æ•°ä¸»è¦æ˜¯æ ¹æ®å‘½ä»¤å‚æ•°è·å–memory_endçš„å¤§å° */
 static void copy_options(char * to, char * from)
 {
 	char c = ' ';
-	/* cÊÇÃüÁîĞĞµÄ¿Õ¸ñ²ÎÊı */
+	/* cæ˜¯å‘½ä»¤è¡Œçš„ç©ºæ ¼å‚æ•° */
 	do {
-		/* ½âÎöµ½mem=xxx²ÎÊıÊ±ÉèÖÃmemory_end */
+		/* è§£æåˆ°mem=xxxå‚æ•°æ—¶è®¾ç½®memory_end */
 		if (c == ' ' && !memcmp("mem=", from, 4))
 			memory_end = simple_strtoul(from+4, &from, 0);
 		c = *(to++) = *(from++);
@@ -358,7 +358,7 @@ static void copro_timeout(void)
 	outb_p(0,0xf0);
 }
 
-/* ÄÚºËÆô¶¯º¯Êı
+/* å†…æ ¸å¯åŠ¨å‡½æ•°
  **/
 asmlinkage void start_kernel(void)
 {
@@ -374,37 +374,37 @@ asmlinkage void start_kernel(void)
 	memory_end = (1<<20) + (EXT_MEM_K<<10);
 	memory_end &= PAGE_MASK;
 	ramdisk_size = RAMDISK_SIZE;
-        /* Í¨¹ıÃüÁîĞĞÅĞ¶Ïmemory_endµÄÎ»ÖÃ */
+        /* é€šè¿‡å‘½ä»¤è¡Œåˆ¤æ–­memory_endçš„ä½ç½® */
 	copy_options(command_line,COMMAND_LINE);
-	/*Èç¹ûÅäÖÃCONFIG_MAX_16M,Ôò×î´óÄÚ´æÖ§³Ö16MB*/
+	/*å¦‚æœé…ç½®CONFIG_MAX_16M,åˆ™æœ€å¤§å†…å­˜æ”¯æŒ16MB*/
 #ifdef CONFIG_MAX_16M
 	if (memory_end > 16*1024*1024)
 		memory_end = 16*1024*1024;
 #endif
 	if (MOUNT_ROOT_RDONLY)
 		root_mountflags |= MS_RDONLY;
-        /* Èç¹û±àÒë³öÀ´µÄÄÚºË´óÓÚ»òµÈÓÚ1M,
-          * end¶ÔÓ¦ÓÚºËĞÄµÄ´óĞ¡
+        /* å¦‚æœç¼–è¯‘å‡ºæ¥çš„å†…æ ¸å¤§äºæˆ–ç­‰äº1M,
+          * endå¯¹åº”äºæ ¸å¿ƒçš„å¤§å°
           */
 	if ((unsigned long)&end >= (1024*1024)) {
-                /* ÉèÖÃ¿ÉÓÃÄÚ´æµÄÆğÊ¼Î»ÖÃÎªÄÚºËµÄ´óĞ¡ */
+                /* è®¾ç½®å¯ç”¨å†…å­˜çš„èµ·å§‹ä½ç½®ä¸ºå†…æ ¸çš„å¤§å° */
 		memory_start = (unsigned long) &end;
 		low_memory_start = PAGE_SIZE;
 	} else {
-                /* ·ñÔòÉèÖÃÄÚºË¿ÉÓÃÄÚ´æµÄ´óĞ¡Îª1M */
+                /* å¦åˆ™è®¾ç½®å†…æ ¸å¯ç”¨å†…å­˜çš„å¤§å°ä¸º1M */
 		memory_start = 1024*1024;
 		low_memory_start = (unsigned long) &end;
 	}
-        /* ½«low_memory_start°´ÕÕÒ³´óĞ¡¶ÔÆë */
+        /* å°†low_memory_startæŒ‰ç…§é¡µå¤§å°å¯¹é½ */
 	low_memory_start = PAGE_ALIGN(low_memory_start);
-        /* ÉèÖÃswapper_pg_dirÒ³Ä¿Â¼±íµÄÓ³Éä */
+        /* è®¾ç½®swapper_pg_diré¡µç›®å½•è¡¨çš„æ˜ å°„ */
 	memory_start = paging_init(memory_start,memory_end);
 	if (strncmp((char*)0x0FFFD9, "EISA", 4) == 0)
 		EISA_bus = 1;
 	trap_init();
 	init_IRQ();
 	sched_init();
-	/*ÀïÃæ°üº¬½Ï¶à³õÊ¼»¯ºÍÉèÖÃ¹¤×÷*/
+	/*é‡Œé¢åŒ…å«è¾ƒå¤šåˆå§‹åŒ–å’Œè®¾ç½®å·¥ä½œ*/
 	parse_options(command_line);
 #ifdef CONFIG_PROFILE
 	prof_buffer = (unsigned long *) memory_start;
@@ -413,20 +413,20 @@ asmlinkage void start_kernel(void)
 	memory_start += prof_len * sizeof(unsigned long);
 #endif
 	memory_start = kmalloc_init(memory_start,memory_end);
-	/*×Ö·ûÉè±¸³õÊ¼»¯£¬°üÀ¨Êó±ê£¬ÖÕ¶Ë°¡£¬Éù¿¨µÈµÄ³õÊ¼»¯*/
+	/*å­—ç¬¦è®¾å¤‡åˆå§‹åŒ–ï¼ŒåŒ…æ‹¬é¼ æ ‡ï¼Œç»ˆç«¯å•Šï¼Œå£°å¡ç­‰çš„åˆå§‹åŒ–*/
 	memory_start = chr_dev_init(memory_start,memory_end);
-	/*¿éÉè±¸µÄ³õÊ¼»¯£¬ÆäÖĞ°üÀ¨¶ÔÓ²ÅÌµÈÆäËûÉè±¸µÄ³õÊ¼»¯*/
+	/*å—è®¾å¤‡çš„åˆå§‹åŒ–ï¼Œå…¶ä¸­åŒ…æ‹¬å¯¹ç¡¬ç›˜ç­‰å…¶ä»–è®¾å¤‡çš„åˆå§‹åŒ–*/
 	memory_start = blk_dev_init(memory_start,memory_end);
 	sti();
 	calibrate_delay();
 #ifdef CONFIG_INET
-	/*ÍøÂçÉè±¸³õÊ¼»¯*/
+	/*ç½‘ç»œè®¾å¤‡åˆå§‹åŒ–*/
 	memory_start = net_dev_init(memory_start,memory_end);
 #endif
 #ifdef CONFIG_SCSI
 	memory_start = scsi_dev_init(memory_start,memory_end);
 #endif
-	/* struct inode£¬struct fileÁ´±í³õÊ¼»¯ */
+	/* struct inodeï¼Œstruct fileé“¾è¡¨åˆå§‹åŒ– */
 	memory_start = inode_init(memory_start,memory_end);
 	memory_start = file_table_init(memory_start,memory_end);
 	mem_init(low_memory_start,memory_start,memory_end);
@@ -435,7 +435,7 @@ asmlinkage void start_kernel(void)
 	floppy_init();
 	sock_init();
 #ifdef CONFIG_SYSVIPC
-	//ipcÍ¨ĞÅ³õÊ¼»¯
+	//ipcé€šä¿¡åˆå§‹åŒ–
 	ipc_init();
 #endif
 	sti();
@@ -478,7 +478,7 @@ asmlinkage void start_kernel(void)
 	printk(linux_banner);
 
 	move_to_user_mode();
-	/* fork×Ó½ø³Ì·µ»Ø0£¬¸¸½ø³Ì·µ»Ø×Ó½ø³ÌµÄ½ø³ÌºÅ
+	/* forkå­è¿›ç¨‹è¿”å›0ï¼Œçˆ¶è¿›ç¨‹è¿”å›å­è¿›ç¨‹çš„è¿›ç¨‹å·
 	 */
 	if (!fork())		/* we count on this going ok */
 		init();
@@ -506,15 +506,15 @@ static int printf(const char *fmt, ...)
 	return i;
 }
 
-/* ¸Ã½ø³ÌÊÇÓÉ0ºÅ½ø³Ì´´½¨µÄ£¬ÏµÍ³ÖĞµÄËùÓĞÆäËû½ø³Ì¶¼ÊÇÓÉ¸Ã
- * ½ø³Ì´´½¨,ÔÚ¸Ã½ø³ÌÖĞ£¬Ê×ÏÈ¹ÒÔØrootÎÄ¼şÏµÍ³£¬ÔÚ¸Ã½ø³Ìµ±ÖĞ
- * ´´½¨µÇÂ¼shell½ø³Ì£¬È»ºó1½ø³ÌµÈ´ıµÇÂ¼½ø³Ì½áÊø£¬µÇÂ¼½áÊøÖ®ºó
- * ¸øÓÃ»§´´½¨ÖÕ¶Ë£¬ÓÃ»§¼´¿É½øĞĞ²Ù×÷¡£
+/* è¯¥è¿›ç¨‹æ˜¯ç”±0å·è¿›ç¨‹åˆ›å»ºçš„ï¼Œç³»ç»Ÿä¸­çš„æ‰€æœ‰å…¶ä»–è¿›ç¨‹éƒ½æ˜¯ç”±è¯¥
+ * è¿›ç¨‹åˆ›å»º,åœ¨è¯¥è¿›ç¨‹ä¸­ï¼Œé¦–å…ˆæŒ‚è½½rootæ–‡ä»¶ç³»ç»Ÿï¼Œåœ¨è¯¥è¿›ç¨‹å½“ä¸­
+ * åˆ›å»ºç™»å½•shellè¿›ç¨‹ï¼Œç„¶å1è¿›ç¨‹ç­‰å¾…ç™»å½•è¿›ç¨‹ç»“æŸï¼Œç™»å½•ç»“æŸä¹‹å
+ * ç»™ç”¨æˆ·åˆ›å»ºç»ˆç«¯ï¼Œç”¨æˆ·å³å¯è¿›è¡Œæ“ä½œã€‚
  */
 void init(void)
 {
 	int pid,i;
-	/*Õâ¸öº¯ÊıÀïÃæ¹ÒÔØÁË¸ùÎÄ¼şÏµÍ³*/
+	/*è¿™ä¸ªå‡½æ•°é‡Œé¢æŒ‚è½½äº†æ ¹æ–‡ä»¶ç³»ç»Ÿ*/
 	setup((void *) &drive_info);
 	sprintf(term, "TERM=con%dx%d", ORIG_VIDEO_COLS, ORIG_VIDEO_LINES);
 	(void) open("/dev/tty1",O_RDWR,0);
@@ -527,19 +527,19 @@ void init(void)
 	/* if this fails, fall through to original stuff */
 
 	if (!(pid=fork())) {
-		/*¿ªÊ¼Ö´ĞĞµÇÂ¼*/
+		/*å¼€å§‹æ‰§è¡Œç™»å½•*/
 		close(0);
 		if (open("/etc/rc",O_RDONLY,0))
 			_exit(1);
 		execve("/bin/sh",argv_rc,envp_rc);
 		_exit(2);
 	}
-	/* ¸¸½ø³ÌµÈ´ı×Ó½ø³ÌµÇÂ¼Íê³É
+	/* çˆ¶è¿›ç¨‹ç­‰å¾…å­è¿›ç¨‹ç™»å½•å®Œæˆ
 	 */
 	if (pid>0)
 		while (pid != wait(&i))
 			/* nothing */;
-	/* ÓÃ»§µÇÂ¼³É¹¦Ö®ºó£¬¸øÓÃ»§´´½¨Ò»¸öÖÕ¶Ë½ø³Ì
+	/* ç”¨æˆ·ç™»å½•æˆåŠŸä¹‹åï¼Œç»™ç”¨æˆ·åˆ›å»ºä¸€ä¸ªç»ˆç«¯è¿›ç¨‹
 	 */
 	while (1) {
 		if ((pid = fork()) < 0) {
@@ -548,15 +548,15 @@ void init(void)
 		}
 		if (!pid) {
 			close(0);close(1);close(2);
-            /* ÉèÖÃ×Ó½ø³ÌÎªĞÂ»á»°µÄÊ×½ø³Ì */
+            /* è®¾ç½®å­è¿›ç¨‹ä¸ºæ–°ä¼šè¯çš„é¦–è¿›ç¨‹ */
 			setsid();
 			(void) open("/dev/tty1",O_RDWR,0);
 			(void) dup(0);
 			(void) dup(0);
 			_exit(execve("/bin/sh",argv,envp));
 		}
-		/* 1ºÅ½ø³ÌµÈ´ıÖÕ¶Ë½ø³ÌµÄ²Ù×÷£¬Ö±µ½ÖÕ¶Ë½ø³Ì½áÊø£¬
-		 * ÖÕ¶Ë½ø³Ì½áÊøÖ®ºó¼ÌĞø´´½¨ÁíÒ»¸öÖÕ¶Ë½ø³Ì
+		/* 1å·è¿›ç¨‹ç­‰å¾…ç»ˆç«¯è¿›ç¨‹çš„æ“ä½œï¼Œç›´åˆ°ç»ˆç«¯è¿›ç¨‹ç»“æŸï¼Œ
+		 * ç»ˆç«¯è¿›ç¨‹ç»“æŸä¹‹åç»§ç»­åˆ›å»ºå¦ä¸€ä¸ªç»ˆç«¯è¿›ç¨‹
 		 */
 		while (1)
 			if (pid == wait(&i))

@@ -50,7 +50,7 @@ static inline unsigned char CMOS_READ(unsigned char addr)
 #define MAX_ERRORS     16	/* Max read/write errors/sector */
 #define RESET_FREQ      8	/* Reset controller every 8th retry */
 #define RECAL_FREQ      4	/* Recalibrate every 4th retry */
-#define MAX_HD		2       /* Ö§³ÖhdµÄ×î´óÊıÁ¿ */
+#define MAX_HD		2       /* æ”¯æŒhdçš„æœ€å¤§æ•°é‡ */
 
 static void recal_intr(void);
 static void bad_rw_intr(void);
@@ -634,7 +634,7 @@ static struct sigaction hd_sigaction = {
 	NULL
 };
 
-/* Ó²ÅÌ³õÊ¼»¯ */
+/* ç¡¬ç›˜åˆå§‹åŒ– */
 static void hd_geninit(void)
 {
 	int drive, i;
@@ -699,7 +699,7 @@ static void hd_geninit(void)
 				hd_info[i].sect*hd_info[i].cyl;
 	}
 	if (NR_HD) {
-		/* ×¢²áhdµÄÖĞ¶Ï´¦Àí*/
+		/* æ³¨å†Œhdçš„ä¸­æ–­å¤„ç†*/
 		if (irqaction(HD_IRQ,&hd_sigaction)) {
 			printk("hd.c: unable to get IRQ%d for the harddisk driver\n",HD_IRQ);
 			NR_HD = 0;
@@ -707,7 +707,7 @@ static void hd_geninit(void)
 	}
 	hd_gendisk.nr_real = NR_HD;
 
-	/* ÉèÖÃÓ²ÅÌÉè±¸µÄÊı¾İ¿éµÄ¿é´óĞ¡ */
+	/* è®¾ç½®ç¡¬ç›˜è®¾å¤‡çš„æ•°æ®å—çš„å—å¤§å° */
 	for(i=0;i<(MAX_HD << 6);i++) hd_blocksizes[i] = 1024;
 	blksize_size[MAJOR_NR] = hd_blocksizes;
 }
@@ -725,7 +725,7 @@ static struct file_operations hd_fops = {
 	block_fsync		/* fsync */
 };
 
-/* Ó²ÅÌÉè±¸³õÊ¼»¯ £¬½«hd_gendisk½ÚµãÌí¼Óµ½gendisk_headÁ´±íÖĞ*/
+/* ç¡¬ç›˜è®¾å¤‡åˆå§‹åŒ– ï¼Œå°†hd_gendiskèŠ‚ç‚¹æ·»åŠ åˆ°gendisk_headé“¾è¡¨ä¸­*/
 unsigned long hd_init(unsigned long mem_start, unsigned long mem_end)
 {
 	if (register_blkdev(MAJOR_NR,"hd",&hd_fops)) {

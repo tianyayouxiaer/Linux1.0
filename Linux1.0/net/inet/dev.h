@@ -28,10 +28,10 @@
 #define DEV_NUMBUFFS	3
 #define MAX_ADDR_LEN	7
 
-/* ×¢ÒâmacÖ¡µÄ¸ñÊ½Îª Í·²¿+Êı¾İ²¿·Ö+Ö¡Î²²¿
- * Í·²¿ 6+6+2 6±íÊ¾macµØÖ·£¬2±íÊ¾ÉÏ²ãĞ­ÒéÀàĞÍ
- * Î²²¿ 4 Ğ£Ñé 
- * ÖĞ¼äÊı¾İ²¿·Ö³¤¶ÈÎª46-1500×Ö½Ú
+/* æ³¨æ„macå¸§çš„æ ¼å¼ä¸º å¤´éƒ¨+æ•°æ®éƒ¨åˆ†+å¸§å°¾éƒ¨
+ * å¤´éƒ¨ 6+6+2 6è¡¨ç¤ºmacåœ°å€ï¼Œ2è¡¨ç¤ºä¸Šå±‚åè®®ç±»å‹
+ * å°¾éƒ¨ 4 æ ¡éªŒ 
+ * ä¸­é—´æ•°æ®éƒ¨åˆ†é•¿åº¦ä¸º46-1500å­—èŠ‚
  */
 #define MAX_HEADER	18
 
@@ -48,7 +48,7 @@
  * gradually phase out this structure, and replace it with the
  * more general (but stolen :-) BSD "ifnet" structure. -FvK
  */
-/* ÄÚºËÉè±¸½á¹¹ */
+/* å†…æ ¸è®¾å¤‡ç»“æ„ */
 struct device {
 
   /*
@@ -56,7 +56,7 @@ struct device {
    * (i.e. as seen by users in the "Space.c" file).  It is the name
    * the interface.
    */
-  char			  *name;                    /* Éè±¸Ãû³Æ£¬ÈçÍø¿¨Éè±¸¾ÍÊÇeth%d */
+  char			  *name;                    /* è®¾å¤‡åç§°ï¼Œå¦‚ç½‘å¡è®¾å¤‡å°±æ˜¯eth%d */
 
   /* I/O specific fields.  These will be moved to DDI soon. */
   unsigned long		  rmem_end;		/* shmem "recv" end	*/
@@ -64,13 +64,13 @@ struct device {
   unsigned long		  mem_end;		/* sahared mem end	*/
   unsigned long		  mem_start;		/* shared mem start	*/
   unsigned short	  base_addr;		/* device I/O address	*/
-  /* Éè±¸µÄÖĞ¶ÏÇëÇóºÅ */
+  /* è®¾å¤‡çš„ä¸­æ–­è¯·æ±‚å· */
   unsigned char		  irq;			/* device IRQ number	*/
 
   /* Low-level status flags. */
   volatile unsigned char  start,		/* start an operation	*/
-                          tbusy,		/* transmitter busy	*/    /* ±íÊ¾µ±Ç°Éè±¸ÊÇ·ñÃ¦ÓÚ·¢ËÍÊı¾İ */
-                          interrupt;		/* interrupt arrived	*/  /* ±íÊ¾ÕıÔÚ´¦ÀíÒ»¸öÖĞ¶Ï */
+                          tbusy,		/* transmitter busy	*/    /* è¡¨ç¤ºå½“å‰è®¾å¤‡æ˜¯å¦å¿™äºå‘é€æ•°æ® */
+                          interrupt;		/* interrupt arrived	*/  /* è¡¨ç¤ºæ­£åœ¨å¤„ç†ä¸€ä¸ªä¸­æ–­ */
 
   /*
    * Another mistake.
@@ -81,7 +81,7 @@ struct device {
   struct device		  *next;
 
   /* The device initialization function. Called only once. */
-  /* Éè±¸³õÊ¼»¯º¯Êı */
+  /* è®¾å¤‡åˆå§‹åŒ–å‡½æ•° */
   int			  (*init)(struct device *dev);
 
   /* Some hardware also needs these fields, but they are not part of the
@@ -107,8 +107,8 @@ struct device {
   unsigned short	  mtu;		/* interface MTU value		*/
   unsigned short	  type;		/* interface hardware type	*/
   unsigned short	  hard_header_len;	/* hardware hdr length	*/
-  /* Éè±¸Ğ¯´øµÄ¶ÔÓ¦Ë½ÓĞÊı¾İ£¬ÈçÒÔÌ«ÍøµÄÔòÎªstruct lance_private½á¹¹£¬
-    * ²»Í¬µÄÍøÂçÉè±¸Ğ¯´øµÄÊı¾İ²»Ò»Ñù 
+  /* è®¾å¤‡æºå¸¦çš„å¯¹åº”ç§æœ‰æ•°æ®ï¼Œå¦‚ä»¥å¤ªç½‘çš„åˆ™ä¸ºstruct lance_privateç»“æ„ï¼Œ
+    * ä¸åŒçš„ç½‘ç»œè®¾å¤‡æºå¸¦çš„æ•°æ®ä¸ä¸€æ · 
     */
   void			  *priv;	/* pointer to private data	*/
 
@@ -116,14 +116,14 @@ struct device {
   unsigned char		  broadcast[MAX_ADDR_LEN];	/* hw bcast add	*/
   unsigned char		  dev_addr[MAX_ADDR_LEN];	/* hw address	*/
   unsigned char		  addr_len;	/* harfware address length	*/
-  unsigned long		  pa_addr;	/* protocol address		*/  /* Éè±¸ipµØÖ· */
-  unsigned long		  pa_brdaddr;	/* protocol broadcast addr	*/ /* Éè±¸¹ã²¥µØÖ· */
+  unsigned long		  pa_addr;	/* protocol address		*/  /* è®¾å¤‡ipåœ°å€ */
+  unsigned long		  pa_brdaddr;	/* protocol broadcast addr	*/ /* è®¾å¤‡å¹¿æ’­åœ°å€ */
   unsigned long		  pa_dstaddr;	/* protocol P-P other side addr	*/
-  unsigned long		  pa_mask;	/* protocol netmask		*/   /* ×ÓÍøÑÚÂë */
+  unsigned long		  pa_mask;	/* protocol netmask		*/   /* å­ç½‘æ©ç  */
   unsigned short	  pa_alen;	/* protocol address length	*/
 
   /* Pointer to the interface buffers. */
-  /* Éè±¸¶ÔÓ¦µÄskb */
+  /* è®¾å¤‡å¯¹åº”çš„skb */
   struct sk_buff	  *volatile buffs[DEV_NUMBUFFS];
 
   /* Pointers to interface service routines. */
@@ -131,7 +131,7 @@ struct device {
   int			  (*stop)(struct device *dev);
   int			  (*hard_start_xmit) (struct sk_buff *skb,
 					      struct device *dev);
-  /* Íê³ÉmacÊ×²¿µÄ´´½¨»Øµ÷ */
+  /* å®Œæˆmacé¦–éƒ¨çš„åˆ›å»ºå›è°ƒ */
   int			  (*hard_header) (unsigned char *buff,
 					  struct device *dev,
 					  unsigned short type,
@@ -141,7 +141,7 @@ struct device {
   void			  (*add_arp) (unsigned long addr,
 				      struct sk_buff *skb,
 				      struct device *dev);
-  /* ·¢ËÍÊı¾İ°ü */
+  /* å‘é€æ•°æ®åŒ… */
   void			  (*queue_xmit)(struct sk_buff *skb,
 					struct device *dev, int pri);
   int			  (*rebuild_header)(void *eth, struct device *dev);
@@ -156,18 +156,18 @@ struct device {
 
 
 struct packet_type {
-  /* Á´Â·²ã°üÀàĞÍ */
+  /* é“¾è·¯å±‚åŒ…ç±»å‹ */
   unsigned short	type;	/* This is really NET16(ether_type) other
 				 * devices will have to translate
 				 * appropriately.
 				 */
-  /* copy¹¦ÄÜºÍstruct inet_protocolÖĞµÄcopyÒâÒåÏàÍ¬  */
+  /* copyåŠŸèƒ½å’Œstruct inet_protocolä¸­çš„copyæ„ä¹‰ç›¸åŒ  */
   unsigned short	copy:1;
-  /* ½»¸øÉÏ²ã´¦ÀíµÄº¯Êı£¬Èçip°ü(Í¨¹ıtype×Ö¶ÎÀ´ÅĞ¶Ï)Ôò´¦Àíº¯ÊıÊÇip_rcv */
+  /* äº¤ç»™ä¸Šå±‚å¤„ç†çš„å‡½æ•°ï¼Œå¦‚ipåŒ…(é€šè¿‡typeå­—æ®µæ¥åˆ¤æ–­)åˆ™å¤„ç†å‡½æ•°æ˜¯ip_rcv */
   int			(*func) (struct sk_buff *, struct device *,
 				 struct packet_type *);
   void			*data;
-  /* °üÁ´±í */
+  /* åŒ…é“¾è¡¨ */
   struct packet_type	*next;  
 };
 

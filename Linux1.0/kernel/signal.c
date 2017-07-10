@@ -14,7 +14,7 @@
 
 #include <asm/segment.h>
 
-/* Ã¿¸öĞÅºÅ¶¼ÊÇÓÃĞÅºÅÎ»Í¼À´±íÊ¾µÄ */
+/* æ¯ä¸ªä¿¡å·éƒ½æ˜¯ç”¨ä¿¡å·ä½å›¾æ¥è¡¨ç¤ºçš„ */
 #define _S(nr) (1<<((nr)-1))
 
 
@@ -147,7 +147,7 @@ static void check_pending(int signum)
 	if (p->sa_handler == SIG_IGN) {
 		if (signum == SIGCHLD)
 			return;
-		/* ÉèÖÃ½ø³ÌÊÕµ½µÄĞÅºÅ */
+		/* è®¾ç½®è¿›ç¨‹æ”¶åˆ°çš„ä¿¡å· */
 		current->signal &= ~_S(signum);
 		return;
 	}

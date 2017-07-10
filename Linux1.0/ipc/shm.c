@@ -20,12 +20,12 @@ static int newseg (key_t key, int shmflg, int size);
 static int shm_map (struct shm_desc *shmd, int remap);
 static void killseg (int id);
 
-/* ¹²ÏíÄÚ´æÔÚÄÚ´æµ±ÖĞÕ¼ÓÃµÄ×ÜÒ³Êı */
+/* å…±äº«å†…å­˜åœ¨å†…å­˜å½“ä¸­å ç”¨çš„æ€»é¡µæ•° */
 static int shm_tot = 0;  /* total number of shared memory pages */
 static int shm_rss = 0; /* number of shared memory pages that are in memory */
 static int shm_swp = 0; /* number of shared memory pages that are in swap */
 static int max_shmid = 0; /* every used id is <= max_shmid */
-static struct wait_queue *shm_lock = NULL; /* µÈ´ıÊ¹ÓÃ¹²ÏíÄÚ´æµÄÁĞ±í */
+static struct wait_queue *shm_lock = NULL; /* ç­‰å¾…ä½¿ç”¨å…±äº«å†…å­˜çš„åˆ—è¡¨ */
 static struct shmid_ds *shm_segs[SHMMNI];
 
 static unsigned short shm_seq = 0; /* incremented, for recognizing stale ids */
@@ -38,7 +38,7 @@ static ulong used_segs = 0;
 void shm_init (void)
 {
 	int id;
-    //¹²ÏíÄÚ´æ³õÊ¼»¯ÎªÎ´Ê¹ÓÃ
+    //å…±äº«å†…å­˜åˆå§‹åŒ–ä¸ºæœªä½¿ç”¨
     for (id = 0; id < SHMMNI; id++) 
 		shm_segs[id] = (struct shmid_ds *) IPC_UNUSED;
 	shm_tot = shm_rss = shm_seq = max_shmid = used_segs = 0;
@@ -46,7 +46,7 @@ void shm_init (void)
 	return;
 }
 
-/* ÕÒÎªkeyµÄ¹²ÏíÄÚ´æ */
+/* æ‰¾ä¸ºkeyçš„å…±äº«å†…å­˜ */
 static int findkey (key_t key)    
 {
 	int id;
@@ -66,14 +66,14 @@ static int findkey (key_t key)
 /* 
  * allocate new shmid_ds and pgtable. protected by shm_segs[id] = NOID.
  */
-/* ÔÚÕâ¸öº¯Êıµ±ÖĞ½ö½öÊÇ³õÊ¼»¯ÁË¹²ÏíÄÚ´æµÄÊı¾İ½á¹¹£¬
- * ²¢Ã»ÓĞ¸ø¹²ÏíÄÚ´æ·ÖÅäÊµ¼ÊµÄÎïÀíÄÚ´æ£¬Ö»ÓĞÔÚÊµ¼ÊÊ¹ÓÃµÄÊ±ºò
- * ²Å»á·ÖÅä
+/* åœ¨è¿™ä¸ªå‡½æ•°å½“ä¸­ä»…ä»…æ˜¯åˆå§‹åŒ–äº†å…±äº«å†…å­˜çš„æ•°æ®ç»“æ„ï¼Œ
+ * å¹¶æ²¡æœ‰ç»™å…±äº«å†…å­˜åˆ†é…å®é™…çš„ç‰©ç†å†…å­˜ï¼Œåªæœ‰åœ¨å®é™…ä½¿ç”¨çš„æ—¶å€™
+ * æ‰ä¼šåˆ†é…
  */
 static int newseg (key_t key, int shmflg, int size)
 {
 	struct shmid_ds *shp;
-	/* ¹²ÏíµÄÄÚ´æÒªÕıºÃÊÇÒ»ÕûÒ³ */
+	/* å…±äº«çš„å†…å­˜è¦æ­£å¥½æ˜¯ä¸€æ•´é¡µ */
 	int numpages = (size + PAGE_SIZE -1) >> PAGE_SHIFT;
 	int id, i;
 
@@ -106,7 +106,7 @@ found:
 		return -ENOMEM;
 	}
 
-	/* ½«¹²ÏíÄÚ´æµÄÎïÀíÒ³µØÖ·¶¼ÉèÖÃÎª0£¬ÔÚÊ¹ÓÃÊ±²Å»á·ÖÅä£¬²¢ÏàÓ¦µÄ¸³Öµ */
+	/* å°†å…±äº«å†…å­˜çš„ç‰©ç†é¡µåœ°å€éƒ½è®¾ç½®ä¸º0ï¼Œåœ¨ä½¿ç”¨æ—¶æ‰ä¼šåˆ†é…ï¼Œå¹¶ç›¸åº”çš„èµ‹å€¼ */
 	for (i=0; i< numpages; shp->shm_pages[i++] = 0);
 	shm_tot += numpages;
 	shp->shm_perm.key = key;
@@ -126,15 +126,15 @@ found:
 		max_shmid = id;
 	shm_segs[id] = shp;
 	used_segs++;
-	/* µ±¸Ä±ä¹²ÏíÄÚ´æ¼¯ÖĞÄ³Ò»ÏîÎªIPC_NOIDÊ±£¬
-	 * »½ĞÑÁíÒ»¸öÕıÔÚÖ´ĞĞfindkeyµÄ½ø³Ì
+	/* å½“æ”¹å˜å…±äº«å†…å­˜é›†ä¸­æŸä¸€é¡¹ä¸ºIPC_NOIDæ—¶ï¼Œ
+	 * å”¤é†’å¦ä¸€ä¸ªæ­£åœ¨æ‰§è¡Œfindkeyçš„è¿›ç¨‹
 	 */
 	if (shm_lock)
 		wake_up (&shm_lock);
 	return id + (int)shm_seq*SHMMNI;
 }
 
-/* »ñÈ¡Ò»¶Î¹²ÏíÄÚ´æ */
+/* è·å–ä¸€æ®µå…±äº«å†…å­˜ */
 int sys_shmget (key_t key, int size, int shmflg)
 {
 	struct shmid_ds *shp;
@@ -179,7 +179,7 @@ static void killseg (int id)
 	shp->shm_perm.seq++;     /* for shmat */
 	numpages = shp->shm_npages; 
 	shm_seq++;
-	/*´ÓĞÂÉèÖÃ¹²ÏíÄÚ´æ¼¯Îª¿Õ*/
+	/*ä»æ–°è®¾ç½®å…±äº«å†…å­˜é›†ä¸ºç©º*/
 	shm_segs[id] = (struct shmid_ds *) IPC_UNUSED;
 	used_segs--;
 	if (id == max_shmid) 
@@ -189,7 +189,7 @@ static void killseg (int id)
 		return;
 	}
 
-	/* ½«¹²ÏíÄÚ´æµÄËùÓĞÎïÀíÒ³¸øÊÍ·Åµô */
+	/* å°†å…±äº«å†…å­˜çš„æ‰€æœ‰ç‰©ç†é¡µç»™é‡Šæ”¾æ‰ */
 	for (i=0; i< numpages ; i++) {
 		if (!(page = shp->shm_pages[i]))
 			continue;
@@ -350,9 +350,9 @@ static int shm_map (struct shm_desc *shmd, int remap)
 	unsigned long page_dir = shmd->task->tss.cr3;
 	
 	/* check that the range is unmapped and has page_tables */
-	/* ´¦Àí¹²ÏíÄÚ´æµÄËùÓĞÒ³£¬Èç¹û¸ÃÏßĞÔµØÖ·ÒÑ¾­±»Ó³Éä£¬Ôò´ÓĞÂÓ³Éä£¬Èç¹û²»ÊÇ´ÓĞÂÓ³ÉäÔò·µ»ØÎŞĞ§ */
+	/* å¤„ç†å…±äº«å†…å­˜çš„æ‰€æœ‰é¡µï¼Œå¦‚æœè¯¥çº¿æ€§åœ°å€å·²ç»è¢«æ˜ å°„ï¼Œåˆ™ä»æ–°æ˜ å°„ï¼Œå¦‚æœä¸æ˜¯ä»æ–°æ˜ å°„åˆ™è¿”å›æ— æ•ˆ */
 	for (tmp = shmd->start; tmp < shmd->end; tmp += PAGE_SIZE) { 
-		/* »ñÈ¡Ò³Ä¿Â¼±íÖĞµÄÏî */
+		/* è·å–é¡µç›®å½•è¡¨ä¸­çš„é¡¹ */
 		page_table = PAGE_DIR_OFFSET(page_dir,tmp);
 		if (*page_table & PAGE_PRESENT) {
 			page_table = (ulong *) (PAGE_MASK & *page_table);
@@ -371,7 +371,7 @@ static int shm_map (struct shm_desc *shmd, int remap)
 			continue;
 		}  
 	    {
-			/* Èç¹ûÏßĞÔµØÖ·Ó³ÉäµÄÒ³±í²»ÔÚÄÚ´æµ±ÖĞ£¬ÔòÉêÇëÒ»¸öÒ³±í */
+			/* å¦‚æœçº¿æ€§åœ°å€æ˜ å°„çš„é¡µè¡¨ä¸åœ¨å†…å­˜å½“ä¸­ï¼Œåˆ™ç”³è¯·ä¸€ä¸ªé¡µè¡¨ */
 			unsigned long new_pt;
 			if(!(new_pt = get_free_page(GFP_KERNEL)))	/* clearing needed?  SRB. */
 				return -ENOMEM;
@@ -384,13 +384,13 @@ static int shm_map (struct shm_desc *shmd, int remap)
 
 	/* map page range */
 	shm_sgn = shmd->shm_sgn;
-	/* ¿ªÊ¼Ó³ÉäÏßĞÔµØÖ· */
+	/* å¼€å§‹æ˜ å°„çº¿æ€§åœ°å€ */
 	for (tmp = shmd->start; tmp < shmd->end; tmp += PAGE_SIZE, 
 	     shm_sgn += (1 << SHM_IDX_SHIFT)) { 
 		page_table = PAGE_DIR_OFFSET(page_dir,tmp);
 		page_table = (ulong *) (PAGE_MASK & *page_table);
 		page_table += (tmp >> PAGE_SHIFT) & (PTRS_PER_PAGE-1);
-		*page_table = shm_sgn;  /* ÄÚ´æ²¢Ã»ÓĞÊµ¼Ê·ÖÅä£¬Ö»ÊÇ¸øÁËÒ»¸ö±ê¼Ç¶øÒÑ */
+		*page_table = shm_sgn;  /* å†…å­˜å¹¶æ²¡æœ‰å®é™…åˆ†é…ï¼Œåªæ˜¯ç»™äº†ä¸€ä¸ªæ ‡è®°è€Œå·² */
 	}
 	return 0;
 }
@@ -401,9 +401,9 @@ static int shm_map (struct shm_desc *shmd, int remap)
  * Specific attaches are allowed over the executable....
  */
 
-/* ½«¹²ÏíÄÚ´æÓ³Éäµ½½ø³ÌµÄµØÖ·¿Õ¼ä 
- * shmid¹²ÏíÄÚ´æ±êÊ¶·û
- * shmaddrÏßĞÔµØÖ·
+/* å°†å…±äº«å†…å­˜æ˜ å°„åˆ°è¿›ç¨‹çš„åœ°å€ç©ºé—´ 
+ * shmidå…±äº«å†…å­˜æ ‡è¯†ç¬¦
+ * shmaddrçº¿æ€§åœ°å€
  */
 int sys_shmat (int shmid, char *shmaddr, int shmflg, ulong *raddr)
 {
@@ -426,13 +426,13 @@ int sys_shmat (int shmid, char *shmaddr, int shmflg, ulong *raddr)
 	if (shp == IPC_UNUSED || shp == IPC_NOID)
 		return -EINVAL;
 
-	/*Èç¹ûÖ¸¶¨ÏßĞÔµØÖ·Îª0£¬ÔòÏµÍ³À´Ñ¡ÔñÒ»¸öµØÖ· */
+	/*å¦‚æœæŒ‡å®šçº¿æ€§åœ°å€ä¸º0ï¼Œåˆ™ç³»ç»Ÿæ¥é€‰æ‹©ä¸€ä¸ªåœ°å€ */
 	if (!(addr = (ulong) shmaddr)) {
 		if (shmflg & SHM_REMAP)
 			return -EINVAL;
 		/* set addr below  all current unspecified attaches */
 		addr = SHM_RANGE_END; 
-		/* É¨Ãè½ø³ÌµÄ¹²ÏíÁ´±í */
+		/* æ‰«æè¿›ç¨‹çš„å…±äº«é“¾è¡¨ */
 		for (shmd = current->shm; shmd; shmd = shmd->task_next) {
 			if (shmd->start < SHM_RANGE_START)
 				continue;
@@ -462,7 +462,7 @@ int sys_shmat (int shmid, char *shmaddr, int shmflg, ulong *raddr)
 	if (shp->shm_perm.seq != shmid / SHMMNI) 
 		return -EIDRM;
 
-	/* ·ÖÅäÒ»¸öĞÂµÄ¹²ÏíÄÚ´æÃèÊö·û */
+	/* åˆ†é…ä¸€ä¸ªæ–°çš„å…±äº«å†…å­˜æè¿°ç¬¦ */
 	shmd = (struct shm_desc *) kmalloc (sizeof(*shmd), GFP_KERNEL);
 	if (!shmd)
 		return -ENOMEM;
@@ -490,7 +490,7 @@ int sys_shmat (int shmid, char *shmaddr, int shmflg, ulong *raddr)
 		return err;
 	}
 
-	/*½«ĞÂµÄ¹²ÏíÄÚ´æ¶Î£¬Ìí¼Óµ½½ø³Ì¹²ÏíÁ´±íºÍÄÚºË¹²Ïí¼¯µÄ¹²ÏíÄÚ´æÁ´±íÖĞ*/
+	/*å°†æ–°çš„å…±äº«å†…å­˜æ®µï¼Œæ·»åŠ åˆ°è¿›ç¨‹å…±äº«é“¾è¡¨å’Œå†…æ ¸å…±äº«é›†çš„å…±äº«å†…å­˜é“¾è¡¨ä¸­*/
 	shmd->task_next = current->shm;
 	current->shm = shmd;
 	shmd->seg_next = shp->attaches;
@@ -525,12 +525,12 @@ static void detach (struct shm_desc **shmdp)
  	printk("detach: shm segment (id=%d) attach list inconsistent\n",id);
 	
  found:
- 	/* ½â³ı¹²ÏíÄÚ´æµÄÏßĞÔµØÖ·Ó³Éä */
+ 	/* è§£é™¤å…±äº«å†…å­˜çš„çº¿æ€§åœ°å€æ˜ å°„ */
 	unmap_page_range (shmd->start, shp->shm_segsz); /* sleeps */
 	kfree_s (shmd, sizeof (*shmd));
   	shp->shm_lpid = current->pid;
 	shp->shm_dtime = CURRENT_TIME;
-	/* Èç¹û¹²ÏíÄÚ´æ¼¯µÄËùÓĞÄÚ´æ¶¼±»·ÖÀë£¬ÔòÊÍ·Å¸Ã¹²Ïí¼¯ */
+	/* å¦‚æœå…±äº«å†…å­˜é›†çš„æ‰€æœ‰å†…å­˜éƒ½è¢«åˆ†ç¦»ï¼Œåˆ™é‡Šæ”¾è¯¥å…±äº«é›† */
 	if (--shp->shm_nattch <= 0 && shp->shm_perm.mode & SHM_DEST)
 		killseg (id); /* sleeps */
   	return;
@@ -541,14 +541,14 @@ static void detach (struct shm_desc **shmdp)
  * The work is done in detach.
  */
 
-/* ¶Ï¿ª¹²ÏíÄÚ´æºÍµØÖ·¿Õ¼äµÄÓ³Éä
+/* æ–­å¼€å…±äº«å†…å­˜å’Œåœ°å€ç©ºé—´çš„æ˜ å°„
  */
 int sys_shmdt (char *shmaddr)
 {
 	struct shm_desc *shmd, **shmdp;	
 	
 	for (shmdp = &current->shm; (shmd = *shmdp); shmdp=&shmd->task_next) { 
-		/* ÕÒµ½½ø³ÌµÄÄÚ´æ¹²Ïí¶Î */
+		/* æ‰¾åˆ°è¿›ç¨‹çš„å†…å­˜å…±äº«æ®µ */
 		if (shmd->start == (ulong) shmaddr) {
 			detach (shmdp);
 			return 0;
@@ -580,7 +580,7 @@ int shm_fork (struct task_struct *p1, struct task_struct *p2)
 
         if (!p1->shm)
 		return 0;
-	/* ½«p1µÄ¹²ÏíÄÚ´æÃèÊö·û¸´ÖÆµ½p2µÄ¹²ÏíÄÚ´æÃèÊö·ûµ±ÖĞ
+	/* å°†p1çš„å…±äº«å†…å­˜æè¿°ç¬¦å¤åˆ¶åˆ°p2çš„å…±äº«å†…å­˜æè¿°ç¬¦å½“ä¸­
 	 *
 	 */
 	for (shmd = p1->shm; shmd; shmd = shmd->task_next) {
@@ -600,7 +600,7 @@ int shm_fork (struct task_struct *p1, struct task_struct *p2)
 		new_desc = tmp;
 	}
 	p2->shm = new_desc;
-	/* Ñ­»·´¦Àí£¬
+	/* å¾ªç¯å¤„ç†ï¼Œ
 	 */
 	for (shmd = new_desc; shmd; shmd = shmd->task_next) {
 		id = (shmd->shm_sgn >> SHM_ID_SHIFT) & SHM_ID_MASK;

@@ -102,8 +102,8 @@ static struct packet_type ax25_packet_type = {
 #endif
 
 
-/* arpĞ­ÒéÊôÓÚÍøÂç²ãĞ­Òé£¬arpĞ­ÒéÔÚÍøÂç²ãµÄ´¦Àí×îÖÕ½»¸ø
- * arp_rcv´¦Àí
+/* arpåè®®å±äºç½‘ç»œå±‚åè®®ï¼Œarpåè®®åœ¨ç½‘ç»œå±‚çš„å¤„ç†æœ€ç»ˆäº¤ç»™
+ * arp_rcvå¤„ç†
  */
 static struct packet_type arp_packet_type = {
   NET16(ETH_P_ARP),
@@ -125,7 +125,7 @@ static struct packet_type arp_packet_type = {
 #endif
 };
 
-/* ip°üÀàĞÍ½á¹¹ */
+/* ipåŒ…ç±»å‹ç»“æ„ */
 static struct packet_type ip_packet_type = {
   NET16(ETH_P_IP),
   0,		/* copy */
@@ -137,7 +137,7 @@ static struct packet_type ip_packet_type = {
 /* */
 struct packet_type *ptype_base = &ip_packet_type;
 
-/* È«¾ÖÊı¾İ°ü»º´æ¶ÓÁĞ£¬»¹ÓĞÒ»¸ö¶ÓÁĞ¾ÍÊÇstruct sockÖĞµÄback_log¶ÓÁĞ  */
+/* å…¨å±€æ•°æ®åŒ…ç¼“å­˜é˜Ÿåˆ—ï¼Œè¿˜æœ‰ä¸€ä¸ªé˜Ÿåˆ—å°±æ˜¯struct sockä¸­çš„back_logé˜Ÿåˆ—  */
 static struct sk_buff *volatile backlog = NULL;
 static unsigned long ip_bcast = 0;
 
@@ -172,7 +172,7 @@ get_mask(unsigned long addr)
   return(0);
 }
 
-/* Æ¥ÅäipµØÖ·£¬Èç¹ûÏàÍ¬Ôò·µ»Ø1£¬·ñÔò·µ»Ø0*/
+/* åŒ¹é…ipåœ°å€ï¼Œå¦‚æœç›¸åŒåˆ™è¿”å›1ï¼Œå¦åˆ™è¿”å›0*/
 int ip_addr_match(unsigned long me, unsigned long him)
 {
   int i;
@@ -180,7 +180,7 @@ int ip_addr_match(unsigned long me, unsigned long him)
   DPRINTF((DBG_DEV, "ip_addr_match(%s, ", in_ntoa(me)));
   DPRINTF((DBG_DEV, "%s)\n", in_ntoa(him)));
 
-	/* Èç¹ûÁ½¸öµØÖ·ÏàÍ¬Ôò·µ»Ø> 1 */
+	/* å¦‚æœä¸¤ä¸ªåœ°å€ç›¸åŒåˆ™è¿”å›> 1 */
   if (me == him) 
   	return(1);
   for (i = 0; i < 4; i++, me >>= 8, him >>= 8, mask >>= 8) {
@@ -189,8 +189,8 @@ int ip_addr_match(unsigned long me, unsigned long him)
 		 * The only way this could be a match is for
 		 * the rest of addr1 to be 0 or 255.
 		 */
-		/* ÅĞ¶ÏmeÊÇ²»ÊÇÔÚ0-255·¶Î§£¬
-		  * 0ºÍ255ÊÇ²»×öÅĞ¶ÏµÄ*/
+		/* åˆ¤æ–­meæ˜¯ä¸æ˜¯åœ¨0-255èŒƒå›´ï¼Œ
+		  * 0å’Œ255æ˜¯ä¸åšåˆ¤æ–­çš„*/
 		if (me != 0 && me != mask) return(0);
 		return(1);
 	}
@@ -200,7 +200,7 @@ int ip_addr_match(unsigned long me, unsigned long him)
 
 
 /* Check the address for our address, broadcasts, etc. */
-/* ¼ì²éµØÖ·ÀàĞÍ */
+/* æ£€æŸ¥åœ°å€ç±»å‹ */
 int chk_addr(unsigned long addr)
 {
 	struct device *dev;
@@ -256,7 +256,7 @@ int chk_addr(unsigned long addr)
  * yet know from or to which interface to go...).
  */
 
-/* »ñÈ¡±¾µØµØÖ· */
+/* è·å–æœ¬åœ°åœ°å€ */
 unsigned long
 my_addr(void)
 {
@@ -272,7 +272,7 @@ my_addr(void)
 static int dev_nit=0; /* Number of network taps running */
 
 /* Add a protocol ID to the list.  This will change soon. */
-/* Ìí¼ÓÒ»¸östruct packet_type½á¹¹µ½ptype_baseÁ´±íµ±ÖĞ */
+/* æ·»åŠ ä¸€ä¸ªstruct packet_typeç»“æ„åˆ°ptype_baseé“¾è¡¨å½“ä¸­ */
 void
 dev_add_pack(struct packet_type *pt)
 {
@@ -303,7 +303,7 @@ dev_add_pack(struct packet_type *pt)
 
   if(pt->type==NET16(ETH_P_ALL))
   {
-        /* ½«ptÌí¼Óµ½Ä©Î² */
+        /* å°†ptæ·»åŠ åˆ°æœ«å°¾ */
   	pt->next=NULL;
   	if(ptype_base==NULL)
 	  	ptype_base=pt;
@@ -319,7 +319,7 @@ dev_add_pack(struct packet_type *pt)
 
 
 /* Remove a protocol ID from the list.  This will change soon. */
-/* ¸Ãº¯Êı¹¦ÄÜºÍinet_del_protocolº¯Êı²î²»¶à */
+/* è¯¥å‡½æ•°åŠŸèƒ½å’Œinet_del_protocolå‡½æ•°å·®ä¸å¤š */
 void
 dev_remove_pack(struct packet_type *pt)
 {
@@ -351,7 +351,7 @@ dev_remove_pack(struct packet_type *pt)
 
 
 /* Find an interface in the list. This will change soon. */
-/* ¸ù¾İÃû³ÆÀ´»ñÈ¡Éè±¸ */
+/* æ ¹æ®åç§°æ¥è·å–è®¾å¤‡ */
 struct device *
 dev_get(char *name)
 {
@@ -495,7 +495,7 @@ dev_queue_xmit(struct sk_buff *skb, struct device *dev, int pri)
  * (protocol) levels.  It always succeeds.
  */
 
-/* Çı¶¯³ÌĞòµ÷ÓÃ netif_rx ½«½ÓÊÕµ½µÄÊı¾İ°ü»º´æÓÚ¸Ã¶ÓÁĞÖĞ
+/* é©±åŠ¨ç¨‹åºè°ƒç”¨ netif_rx å°†æ¥æ”¶åˆ°çš„æ•°æ®åŒ…ç¼“å­˜äºè¯¥é˜Ÿåˆ—ä¸­
   */
 void
 netif_rx(struct sk_buff *skb)
@@ -594,8 +594,8 @@ dev_transmit(void)
   }
 }
 
-/* ±äÁ¿in_bhÊÇÎªÁË·ÀÖ¹ÖØ¸´Ö´ĞĞÏÂ°ë²¿·Ö£¬¼´ÏÂ°ë²¿·Ö²»ÔÊĞíÖØÈë£¬
- * ´Ónet_bhÊµÏÖµÄ¹¦ÄÜÀ´¿´£¬ÖØÈëºÜ¿ÉÄÜÔì³ÉÄÚºË²»Ò»ÖÂ
+/* å˜é‡in_bhæ˜¯ä¸ºäº†é˜²æ­¢é‡å¤æ‰§è¡Œä¸‹åŠéƒ¨åˆ†ï¼Œå³ä¸‹åŠéƒ¨åˆ†ä¸å…è®¸é‡å…¥ï¼Œ
+ * ä»net_bhå®ç°çš„åŠŸèƒ½æ¥çœ‹ï¼Œé‡å…¥å¾ˆå¯èƒ½é€ æˆå†…æ ¸ä¸ä¸€è‡´
  */
 static volatile char in_bh = 0;
 
@@ -610,7 +610,7 @@ int in_inet_bh()	/* Used by timer.c */
  *
  */
 
-/* ÍøÂçÉè±¸µÄÏÂ°ë²¿·Ö£¬Í¨¹ıÍøÂçÉè±¸µÄÖĞ¶ÏÔËĞĞµ½Õâ¸öµØ·½ */
+/* ç½‘ç»œè®¾å¤‡çš„ä¸‹åŠéƒ¨åˆ†ï¼Œé€šè¿‡ç½‘ç»œè®¾å¤‡çš„ä¸­æ–­è¿è¡Œåˆ°è¿™ä¸ªåœ°æ–¹ */
 void
 inet_bh(void *tmp)
 {
@@ -622,7 +622,7 @@ inet_bh(void *tmp)
 
   /* Atomically check and mark our BUSY state. */
 
-  /* ½«Ô­À´µÄÎ»ÉèÖÃÎª1£¬Èç¹ûÔ­À´µÄÎ»Îª1£¬ÔòÖ±½Ó·µ»Ø */
+  /* å°†åŸæ¥çš„ä½è®¾ç½®ä¸º1ï¼Œå¦‚æœåŸæ¥çš„ä½ä¸º1ï¼Œåˆ™ç›´æ¥è¿”å› */
   if (set_bit(1, (void*)&in_bh))
       return;
 
@@ -653,7 +653,7 @@ inet_bh(void *tmp)
 	* SLIP and PLIP have no alternative but to force the type to be
 	* IP or something like that.  Sigh- FvK
 	*/
-	/* »ñÈ¡°üµÄÀàĞÍ£¬ÊÇip°ü£¬arp°ü */
+	/* è·å–åŒ…çš„ç±»å‹ï¼Œæ˜¯ipåŒ…ï¼ŒarpåŒ… */
        type = skb->dev->type_trans(skb, skb->dev);
 
 	/*
@@ -662,8 +662,8 @@ inet_bh(void *tmp)
 	 * change soon if I get my way- FvK), and forward the packet
 	 * to anyone who wants it.
 	 */
-	/* É¨ÃèËùÓĞ°üÀàĞÍµÄÁ´±í£¬È»ºó¸ù¾İ°üÀàĞÍÀ´µ÷ÓÃÏàÓ¦µÄÉÏ²ãº¯Êı
-	  * Èçip_rcv£¬arp_rcvµÈµÈ£¬×¢ÒâÕâÀïºÍÍøÂç²ãÏò´«Êä²ã´«µİµÄÉ¨Ãè·½Ê½ÓĞµã²»Ò»Ñù
+	/* æ‰«ææ‰€æœ‰åŒ…ç±»å‹çš„é“¾è¡¨ï¼Œç„¶åæ ¹æ®åŒ…ç±»å‹æ¥è°ƒç”¨ç›¸åº”çš„ä¸Šå±‚å‡½æ•°
+	  * å¦‚ip_rcvï¼Œarp_rcvç­‰ç­‰ï¼Œæ³¨æ„è¿™é‡Œå’Œç½‘ç»œå±‚å‘ä¼ è¾“å±‚ä¼ é€’çš„æ‰«ææ–¹å¼æœ‰ç‚¹ä¸ä¸€æ ·
 	  */
 	for (ptype = ptype_base; ptype != NULL; ptype = ptype->next) {
 		if (ptype->type == type || ptype->type == NET16(ETH_P_ALL)) {
@@ -694,7 +694,7 @@ inet_bh(void *tmp)
 			flag = 1;
 
 			/* Kick the protocol handler. */
-			/* µ÷ÓÃÍøÂç²ãµÄip_rcvº¯ÊıµÈµÈ */
+			/* è°ƒç”¨ç½‘ç»œå±‚çš„ip_rcvå‡½æ•°ç­‰ç­‰ */
 			ptype->func(skb2, skb->dev, ptype);
 		}
 	}
@@ -991,7 +991,7 @@ dev_ifsioc(void *arg, unsigned int getset)
 
 
 /* This function handles all "interface"-type I/O control requests. */
-/* Éè±¸µÄIO¿ØÖÆº¯Êı */
+/* è®¾å¤‡çš„IOæ§åˆ¶å‡½æ•° */
 int
 dev_ioctl(unsigned int cmd, void *arg)
 {
@@ -1050,7 +1050,7 @@ dev_ioctl(unsigned int cmd, void *arg)
 
 
 /* Initialize the DEV module. */
-/* ³õÊ¼»¯ËùÓĞµÄÉè±¸ */
+/* åˆå§‹åŒ–æ‰€æœ‰çš„è®¾å¤‡ */
 void
 dev_init(void)
 {

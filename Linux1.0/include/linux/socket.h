@@ -20,7 +20,7 @@ struct linger {
 #define SOCK_RAW	3		/* raw socket			*/
 #define SOCK_RDM	4		/* reliably-delivered message	*/
 #define SOCK_SEQPACKET	5		/* sequential packet socket	*/
-/* ÄÚºË½«²»¶ÔÍøÂçÊı¾İ½øĞĞ´¦Àí¶øÖ±½Ó½»¸øÓÃ»§£¬Êı¾İÖ±½Ó´ÓÍø¿¨µÄĞ­ÒéÕ»½»¸øÓÃ»§ */
+/* å†…æ ¸å°†ä¸å¯¹ç½‘ç»œæ•°æ®è¿›è¡Œå¤„ç†è€Œç›´æ¥äº¤ç»™ç”¨æˆ·ï¼Œæ•°æ®ç›´æ¥ä»ç½‘å¡çš„åè®®æ ˆäº¤ç»™ç”¨æˆ· */
 #define SOCK_PACKET	10		/* linux specific way of	*/
 					/* getting packets at the dev	*/
 					/* level.  For writing rarp and	*/
@@ -41,20 +41,20 @@ struct linger {
 #define PF_IPX		AF_IPX
 
 /* Flags we can use with send/ and recv. */
-/* TCPµÄ´øÍâÊı¾İ±ê¼Ç£¬Ò²¾ÍÊÇ½ô¼±Êı¾İ£¬TCPÔÚ½ÓÊÕµ½´øÍâÊı¾İÊ±£¬ĞèÒªÓÅÏÈ´¦Àí
-  * ÈçftpĞ­Òé£¬¿Í»§¶Ë·¢ËÍÈ¡ÏûÎÄ¼ş´«ÊäµÄ´øÍâ½ô¼±Êı¾İ
+/* TCPçš„å¸¦å¤–æ•°æ®æ ‡è®°ï¼Œä¹Ÿå°±æ˜¯ç´§æ€¥æ•°æ®ï¼ŒTCPåœ¨æ¥æ”¶åˆ°å¸¦å¤–æ•°æ®æ—¶ï¼Œéœ€è¦ä¼˜å…ˆå¤„ç†
+  * å¦‚ftpåè®®ï¼Œå®¢æˆ·ç«¯å‘é€å–æ¶ˆæ–‡ä»¶ä¼ è¾“çš„å¸¦å¤–ç´§æ€¥æ•°æ®
   */
 #define MSG_OOB		1
-/* ½ö½öÊÇÊı¾İÔ¤ÏÈ¶ÁÈ¡ºÍ¼ì²é£¬ÀıÈç¶ÁÈ¡Ò»¸öskb£¬µ«ÊÇ²»½«skb´Ó¶ÓÁĞÖĞÉ¾³ı  */
+/* ä»…ä»…æ˜¯æ•°æ®é¢„å…ˆè¯»å–å’Œæ£€æŸ¥ï¼Œä¾‹å¦‚è¯»å–ä¸€ä¸ªskbï¼Œä½†æ˜¯ä¸å°†skbä»é˜Ÿåˆ—ä¸­åˆ é™¤  */
 #define MSG_PEEK	2   
 
 /* Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx */
-#define SOL_SOCKET	1  /* »ù±¾Ì×½Ó¿Ú */
-#define SOL_IP		0  /* ipÌ×½Ó¿Ú */
+#define SOL_SOCKET	1  /* åŸºæœ¬å¥—æ¥å£ */
+#define SOL_IP		0  /* ipå¥—æ¥å£ */
 #define SOL_IPX		256
 #define SOL_AX25	257
-#define SOL_TCP		6  /* tcpÌ×½Ó¿Ú */
-#define SOL_UDP		17 /* udpÌ×½Ó¿Ú */
+#define SOL_TCP		6  /* tcpå¥—æ¥å£ */
+#define SOL_UDP		17 /* udpå¥—æ¥å£ */
 
 /* For setsockoptions(2) */
 #define SO_DEBUG	1

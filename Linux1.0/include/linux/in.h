@@ -35,7 +35,7 @@ enum {
 };
 
 
-/*ÍøÂçipµØÖ·£¬long int ÕıºÃÊÇ4¸ö×Ö½Ú£¬Ã¿¸ö×Ö½ÚµÄÊı×Ö·¶Î§Îª0-255*/
+/*ç½‘ç»œipåœ°å€ï¼Œlong int æ­£å¥½æ˜¯4ä¸ªå­—èŠ‚ï¼Œæ¯ä¸ªå­—èŠ‚çš„æ•°å­—èŒƒå›´ä¸º0-255*/
 /* Internet address. */
 struct in_addr {
 	unsigned long int	s_addr;

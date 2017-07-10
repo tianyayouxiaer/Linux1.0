@@ -59,7 +59,7 @@ char *eth_print(unsigned char *ptr)
   return(buff);
 }
 
-/* ÉèÖÃÉè±¸µÄ¶ÁĞ´ÄÚ´æ£¬ÖĞ¶ÏºÅºÍµØÖ· */
+/* è®¾ç½®è®¾å¤‡çš„è¯»å†™å†…å­˜ï¼Œä¸­æ–­å·å’Œåœ°å€ */
 void eth_setup(char *str, int *ints)
 {
 	struct device *d = dev_base;
@@ -95,7 +95,7 @@ eth_dump(struct ethhdr *eth)
 
 
 /* Create the Ethernet MAC header. */
-/* ¹¹½¨ÒÔÌ«ÍøÍ·²¿µÄ»Øµ÷º¯Êı */
+/* æ„å»ºä»¥å¤ªç½‘å¤´éƒ¨çš„å›è°ƒå‡½æ•° */
 int
 eth_header(unsigned char *buff, struct device *dev, unsigned short type,
 	   unsigned long daddr, unsigned long saddr, unsigned len)
@@ -176,7 +176,7 @@ eth_add_arp(unsigned long addr, struct sk_buff *skb, struct device *dev)
 
 
 /* Determine the packet's protocol ID. */
-/* ÅĞ¶ÏÁ´Â·²ã°üµÄÀàĞÍ */
+/* åˆ¤æ–­é“¾è·¯å±‚åŒ…çš„ç±»å‹ */
 unsigned short
 eth_type_trans(struct sk_buff *skb, struct device *dev)
 {

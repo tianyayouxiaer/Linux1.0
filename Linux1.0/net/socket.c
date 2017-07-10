@@ -56,8 +56,8 @@ static int sock_select(struct inode *inode, struct file *file, int which, select
 static int sock_ioctl(struct inode *inode, struct file *file,
 		      unsigned int cmd, unsigned long arg);
 
-/* ²Ù×÷socketµÄÎÄ¼ş²Ù×÷º¯Êı£¬ÔÚRead_write.cÖĞµ÷ÓÃµ½ÕâÀï£¬
-  * inet,unixĞ­Òé×å¶¼Ê¹ÓÃÕâ¸ö
+/* æ“ä½œsocketçš„æ–‡ä»¶æ“ä½œå‡½æ•°ï¼Œåœ¨Read_write.cä¸­è°ƒç”¨åˆ°è¿™é‡Œï¼Œ
+  * inet,unixåè®®æ—éƒ½ä½¿ç”¨è¿™ä¸ª
   */
 static struct file_operations socket_file_ops = {
   sock_lseek,
@@ -73,9 +73,9 @@ static struct file_operations socket_file_ops = {
 
 static struct socket sockets[NSOCKETS];
 
-/* µÈ´ıÊ¹ÓÃstruct socket½á¹¹µÄ½ø³Ì¶ÓÁĞ£¬Ä¿Ç°ÏµÍ³ÖĞÖ§³ÖµÄstruct sockets½á¹¹ÎªNSOCKETS¸ö */
+/* ç­‰å¾…ä½¿ç”¨struct socketç»“æ„çš„è¿›ç¨‹é˜Ÿåˆ—ï¼Œç›®å‰ç³»ç»Ÿä¸­æ”¯æŒçš„struct socketsç»“æ„ä¸ºNSOCKETSä¸ª */
 static struct wait_queue *socket_wait_free = NULL;
-/* ÏµÍ³ÖĞËùÓĞµÄĞ­Òé×åÊı¾İ£¬Èç³£ÓÃµÄUNIX¡¢INETĞ­Òé×å */
+/* ç³»ç»Ÿä¸­æ‰€æœ‰çš„åè®®æ—æ•°æ®ï¼Œå¦‚å¸¸ç”¨çš„UNIXã€INETåè®®æ— */
 static struct proto_ops *pops[NPROTO];
 static int net_debug = 0;
 
@@ -99,9 +99,9 @@ static void dprintf(int level, char *fmt, ...)
 
 /* Obtains the first available file descriptor and sets it up for use. */
 
-/* ·µ»ØsocketÎÄ¼şµÄÎÄ¼şÃèÊö·û£¬ÒòÎªÊÂÏÈÒÑ¾­´´½¨ºÃÁËinode£¬
- * È»ºóÔÚ½ø³ÌµÄfileÊı×éµ±ÖĞ²éÕÒÒ»¸ö¿ÉÓÃµÄfile£¬È»ºóÏà»¥
- * ³õÊ¼»¯fileºÍinode£¬×îºó·µ»ØfileµÄË÷Òı£¬¼´ÎÄ¼şÃèÊö·û
+/* è¿”å›socketæ–‡ä»¶çš„æ–‡ä»¶æè¿°ç¬¦ï¼Œå› ä¸ºäº‹å…ˆå·²ç»åˆ›å»ºå¥½äº†inodeï¼Œ
+ * ç„¶ååœ¨è¿›ç¨‹çš„fileæ•°ç»„å½“ä¸­æŸ¥æ‰¾ä¸€ä¸ªå¯ç”¨çš„fileï¼Œç„¶åç›¸äº’
+ * åˆå§‹åŒ–fileå’Œinodeï¼Œæœ€åè¿”å›fileçš„ç´¢å¼•ï¼Œå³æ–‡ä»¶æè¿°ç¬¦
  */
 static int get_fd(struct inode *inode)
 {
@@ -140,20 +140,20 @@ static inline void toss_fd(int fd)
   sys_close(fd);		/* the count protects us from iput */
 }
 
-/* ¸ù¾İinodeÀ´²éÕÒstruct socket½á¹¹ */
+/* æ ¹æ®inodeæ¥æŸ¥æ‰¾struct socketç»“æ„ */
 struct socket *socki_lookup(struct inode *inode)
 {
   struct socket *sock;
 
-  /* Èç¹ûµ±Ç°inodeµÄi_socket²»Îª¿Õ£¬ÇÒÁ½ÕßÏà»¥Ö¸Ïò£¬Ôò·µ»Ø */
+  /* å¦‚æœå½“å‰inodeçš„i_socketä¸ä¸ºç©ºï¼Œä¸”ä¸¤è€…ç›¸äº’æŒ‡å‘ï¼Œåˆ™è¿”å› */
   if ((sock = inode->i_socket) != NULL) {
 	if (sock->state != SS_FREE && SOCK_INODE(sock) == inode)
 		return sock;
 	printk("socket.c: uhhuh. stale inode->i_socket pointer\n");
   }
-  /* Èç¹ûinodeµ±ÖĞÃ»ÓĞstruct socketµÄÖ¸Õë£¬
-    * ÔòÔÚsocketÊı×éÖĞ²éÕÒsocketÖĞinodeÖ¸Ïò²ÎÊıinodeµÄÏî
-    * Èç¹ûÕÒµ½ÁËÔò·µ»Ø£¬·ñÔò·µ»ØÎª¿Õ¡£
+  /* å¦‚æœinodeå½“ä¸­æ²¡æœ‰struct socketçš„æŒ‡é’ˆï¼Œ
+    * åˆ™åœ¨socketæ•°ç»„ä¸­æŸ¥æ‰¾socketä¸­inodeæŒ‡å‘å‚æ•°inodeçš„é¡¹
+    * å¦‚æœæ‰¾åˆ°äº†åˆ™è¿”å›ï¼Œå¦åˆ™è¿”å›ä¸ºç©ºã€‚
     */
   for (sock = sockets; sock <= last_socket; ++sock)
 	if (sock->state != SS_FREE && SOCK_INODE(sock) == inode) {
@@ -163,7 +163,7 @@ struct socket *socki_lookup(struct inode *inode)
   return(NULL);
 }
 
-/* ¸ù¾İÎÄ¼şÃèÊö·ûÀ´²éÕÒstruct socket */
+/* æ ¹æ®æ–‡ä»¶æè¿°ç¬¦æ¥æŸ¥æ‰¾struct socket */
 static inline struct socket *sockfd_lookup(int fd, struct file **pfile)
 {
   struct file *file;
@@ -173,10 +173,10 @@ static inline struct socket *sockfd_lookup(int fd, struct file **pfile)
   return(socki_lookup(file->f_inode));
 }
 
-/* ²éÕÒÒ»¸ö¿ÕÏĞµÄstruct socket½á¹¹£¬²¢³õÊ¼»¯ÏàÓ¦µÄ¹ØÏµ
- * ÈçsockÖĞÓĞinode½ÚµãÖ¸Õë£¬inodeÖĞÓĞstruct socketÖ¸Õë
- * wait±íÊ¾ÔÚ»ñÈ¡socket½á¹¹µÄÊ±ºò£¬¸Ãº¯ÊıÊÇ²»ÊÇ×èÈûµÄ£¬
- * wait>0±íÊ¾×èÈû£¬=0±íÊ¾·Ç×èÈû
+/* æŸ¥æ‰¾ä¸€ä¸ªç©ºé—²çš„struct socketç»“æ„ï¼Œå¹¶åˆå§‹åŒ–ç›¸åº”çš„å…³ç³»
+ * å¦‚sockä¸­æœ‰inodeèŠ‚ç‚¹æŒ‡é’ˆï¼Œinodeä¸­æœ‰struct socketæŒ‡é’ˆ
+ * waitè¡¨ç¤ºåœ¨è·å–socketç»“æ„çš„æ—¶å€™ï¼Œè¯¥å‡½æ•°æ˜¯ä¸æ˜¯é˜»å¡çš„ï¼Œ
+ * wait>0è¡¨ç¤ºé˜»å¡ï¼Œ=0è¡¨ç¤ºéé˜»å¡
  */
 static struct socket *sock_alloc(int wait)
 {
@@ -186,7 +186,7 @@ static struct socket *sock_alloc(int wait)
 	cli();
 	for (sock = sockets; sock <= last_socket; ++sock) {
 		if (sock->state == SS_FREE) {
-			/* ×¢ÒâÔÚsocketÏµÍ³µ÷ÓÃÍê³Éºóstruct socketµÄ×´Ì¬ÎªSS_UNCONNECTED */
+			/* æ³¨æ„åœ¨socketç³»ç»Ÿè°ƒç”¨å®Œæˆåstruct socketçš„çŠ¶æ€ä¸ºSS_UNCONNECTED */
 			sock->state = SS_UNCONNECTED;
 			sti();
 			sock->flags = 0;
@@ -202,16 +202,16 @@ static struct socket *sock_alloc(int wait)
 			 * inode.  The close system call will iput this inode
 			 * for us.
 			 */
-			/* ´Ë´¦¸øsocket·ÖÅäÁËÒ»¸öinode£¬µ«ÊÇinodeÊÇ¿ÕµÄ£¬
-			 * ²¢Ã»ÓĞ°üº¬ÓĞĞ§Êı¾İµÄ 
+			/* æ­¤å¤„ç»™socketåˆ†é…äº†ä¸€ä¸ªinodeï¼Œä½†æ˜¯inodeæ˜¯ç©ºçš„ï¼Œ
+			 * å¹¶æ²¡æœ‰åŒ…å«æœ‰æ•ˆæ•°æ®çš„ 
 			 */
 			if (!(SOCK_INODE(sock) = get_empty_inode())) {
 				printk("NET: sock_alloc: no more inodes\n");
 				sock->state = SS_FREE;
 				return(NULL);
 			}
-			/* ´ËÊ±ÉèÖÃinodeºÍsocketÖ®¼äµÄ¹ØÏµ,
-			 * S_IFSOCKÖ¸Ã÷inodeÖ¸ÏòµÄÊ±socketÎÄ¼ş 
+			/* æ­¤æ—¶è®¾ç½®inodeå’Œsocketä¹‹é—´çš„å…³ç³»,
+			 * S_IFSOCKæŒ‡æ˜inodeæŒ‡å‘çš„æ—¶socketæ–‡ä»¶ 
 			 */
 			SOCK_INODE(sock)->i_mode = S_IFSOCK;
 			SOCK_INODE(sock)->i_uid = current->euid;
@@ -228,7 +228,7 @@ static struct socket *sock_alloc(int wait)
 	sti();
 	if (!wait) return(NULL);
 	DPRINTF((net_debug, "NET: sock_alloc: no free sockets, sleeping...\n"));
-	/* Èç¹ûÃ»ÕÒµ½£¬ÔòÔÚsocket_wait_free¶ÓÁĞÖĞË¯Ãß£¬µ±ÓĞÊÍ·ÅÊ±£¬Ôò»½ĞÑ¸Ã½ø³Ì */
+	/* å¦‚æœæ²¡æ‰¾åˆ°ï¼Œåˆ™åœ¨socket_wait_freeé˜Ÿåˆ—ä¸­ç¡çœ ï¼Œå½“æœ‰é‡Šæ”¾æ—¶ï¼Œåˆ™å”¤é†’è¯¥è¿›ç¨‹ */
 	interruptible_sleep_on(&socket_wait_free);
 	if (current->signal & ~current->blocked) {
 		DPRINTF((net_debug, "NET: sock_alloc: sleep was interrupted\n"));
@@ -239,8 +239,8 @@ static struct socket *sock_alloc(int wait)
 }
 
 
-/* ¹Ø±ÕsocketÁ¬½Ó£¬²¢ÇÒ»½ĞÑËùÓĞÕıÔÚµÈ´ıÊ¹ÓÃ¸ÃsocketµÄ½ø³Ì
- * ¸Ãº¯ÊıÖ»×÷ÓÃÓÚUNIXÓò
+/* å…³é—­socketè¿æ¥ï¼Œå¹¶ä¸”å”¤é†’æ‰€æœ‰æ­£åœ¨ç­‰å¾…ä½¿ç”¨è¯¥socketçš„è¿›ç¨‹
+ * è¯¥å‡½æ•°åªä½œç”¨äºUNIXåŸŸ
  */
 static inline void sock_release_peer(struct socket *peer)
 {
@@ -248,7 +248,7 @@ static inline void sock_release_peer(struct socket *peer)
   wake_up_interruptible(peer->wait);
 }
 
-/* ÊÍ·ÅÒ»¸ösocket½á¹¹£¬²¢»½ĞÑsocket_wait_free¶ÓÁĞ */
+/* é‡Šæ”¾ä¸€ä¸ªsocketç»“æ„ï¼Œå¹¶å”¤é†’socket_wait_freeé˜Ÿåˆ— */
 static void sock_release(struct socket *sock)
 {
   int oldstate;
@@ -257,7 +257,7 @@ static void sock_release(struct socket *sock)
 
   DPRINTF((net_debug, "NET: sock_release: socket 0x%x, inode 0x%x\n",
 						sock, SOCK_INODE(sock)));
-  /* ÉèÖÃsocketµÄ×´Ì¬ÎªÕıÔÚ¹Ø±ÕÁ¬½Ó */
+  /* è®¾ç½®socketçš„çŠ¶æ€ä¸ºæ­£åœ¨å…³é—­è¿æ¥ */
   if ((oldstate = sock->state) != SS_UNCONNECTED)
 			sock->state = SS_DISCONNECTING;
 
@@ -290,13 +290,13 @@ sock_lseek(struct inode *inode, struct file *file, off_t offset, int whence)
   return(-ESPIPE);
 }
 
-/* ´ÓsocketÎÄ¼şÖĞ¶ÁÈ¡Êı¾İ */
+/* ä»socketæ–‡ä»¶ä¸­è¯»å–æ•°æ® */
 static int sock_read(struct inode *inode, struct file *file, char *ubuf, int size)
 {
   struct socket *sock;
 
   DPRINTF((net_debug, "NET: sock_read: buf=0x%x, size=%d\n", ubuf, size));
-  /* Í¨¹ıinodeÕÒµ½socket½á¹¹Ìå */
+  /* é€šè¿‡inodeæ‰¾åˆ°socketç»“æ„ä½“ */
   if (!(sock = socki_lookup(inode))) {
 	printk("NET: sock_read: can't find socket for inode!\n");
 	return(-EBADF);
@@ -305,7 +305,7 @@ static int sock_read(struct inode *inode, struct file *file, char *ubuf, int siz
   return(sock->ops->read(sock, ubuf, size, (file->f_flags & O_NONBLOCK)));
 }
 
-/* ÏòsocketÎÄ¼şÖĞĞ´Êı¾İ */
+/* å‘socketæ–‡ä»¶ä¸­å†™æ•°æ® */
 static int sock_write(struct inode *inode, struct file *file, char *ubuf, int size)
 {
   struct socket *sock;
@@ -363,7 +363,7 @@ static int sock_select(struct inode *inode, struct file *file, int sel_type, sel
   return(0);
 }
 
-/* ¹Ø±ÕsocketÎÄ¼ş */
+/* å…³é—­socketæ–‡ä»¶ */
 void sock_close(struct inode *inode, struct file *file)
 {
   struct socket *sock;
@@ -377,17 +377,17 @@ void sock_close(struct inode *inode, struct file *file)
 	printk("NET: sock_close: can't find socket for inode!\n");
 	return;
   }
-  /* ½«socketÊÍ·Å */
+  /* å°†socketé‡Šæ”¾ */
   sock_release(sock);
 }
 
-/* sock_awaitconn º¯ÊıÖ»ÓÃÓÚ UNIX Óò£¬ ÓÃÓÚ´¦ÀíÒ»¸ö¿Í»§¶ËÁ¬½ÓÇëÇó¡£
- * socket ½á¹¹ÖĞ iconn£¬ conn½á¹¹ÓÃÓÚ UNIX ÓòÖĞÁ¬½Ó²Ù×÷£¬
- * ÆäÖĞ iconn Ö»ÓÃÓÚ·şÎñÆ÷¶Ë£¬±íÊ¾µÈ´ıÁ¬½Óµ«ÉĞÎ´Íê³ÉÁ¬½ÓµÄ
- * ¿Í»§¶Ë socket ½á¹¹Á´±í¡£
- * servsock±íÊ¾·şÎñÌ×½Ó×Ö
- * mysock±íÊ¾Á¬½ÓÌ×½Ó×Ö 
- * º¯Êı·µ»Ø0£¬Ôò±íÊ¾Á¬½Ó³É¹¦  
+/* sock_awaitconn å‡½æ•°åªç”¨äº UNIX åŸŸï¼Œ ç”¨äºå¤„ç†ä¸€ä¸ªå®¢æˆ·ç«¯è¿æ¥è¯·æ±‚ã€‚
+ * socket ç»“æ„ä¸­ iconnï¼Œ connç»“æ„ç”¨äº UNIX åŸŸä¸­è¿æ¥æ“ä½œï¼Œ
+ * å…¶ä¸­ iconn åªç”¨äºæœåŠ¡å™¨ç«¯ï¼Œè¡¨ç¤ºç­‰å¾…è¿æ¥ä½†å°šæœªå®Œæˆè¿æ¥çš„
+ * å®¢æˆ·ç«¯ socket ç»“æ„é“¾è¡¨ã€‚
+ * servsockè¡¨ç¤ºæœåŠ¡å¥—æ¥å­—
+ * mysockè¡¨ç¤ºè¿æ¥å¥—æ¥å­— 
+ * å‡½æ•°è¿”å›0ï¼Œåˆ™è¡¨ç¤ºè¿æ¥æˆåŠŸ  
  */
 int
 sock_awaitconn(struct socket *mysock, struct socket *servsock)
@@ -398,7 +398,7 @@ sock_awaitconn(struct socket *mysock, struct socket *servsock)
 	"NET: sock_awaitconn: trying to connect socket 0x%x to 0x%x\n",
 							mysock, servsock));
 
-  /* ¼ì²é·şÎñ¶ËÊÇ·ñ´¦ÓÚÕìÌı×´Ì¬ */
+  /* æ£€æŸ¥æœåŠ¡ç«¯æ˜¯å¦å¤„äºä¾¦å¬çŠ¶æ€ */
   if (!(servsock->flags & SO_ACCEPTCON)) {
 	DPRINTF((net_debug,
 		"NET: sock_awaitconn: server not accepting connections\n"));
@@ -408,13 +408,13 @@ sock_awaitconn(struct socket *mysock, struct socket *servsock)
   /* Put ourselves on the server's incomplete connection queue. */
   mysock->next = NULL;
   cli();
-  /* °ÑmysockÌ×½Ó×ÖÌí¼Óµ½iconn¶ÓÁĞµÄÄ©Î² */
+  /* æŠŠmysockå¥—æ¥å­—æ·»åŠ åˆ°iconné˜Ÿåˆ—çš„æœ«å°¾ */
   if (!(last = servsock->iconn)) servsock->iconn = mysock;
   else {
 	while (last->next) last = last->next;
 	last->next = mysock;
   }
-  /* ÉèÖÃÁ¬½ÓÌ×½Ó×ÖµÄ×´Ì¬ÎªÕıÔÚÁ¬½Ó */
+  /* è®¾ç½®è¿æ¥å¥—æ¥å­—çš„çŠ¶æ€ä¸ºæ­£åœ¨è¿æ¥ */
   mysock->state = SS_CONNECTING;
   mysock->conn = servsock;
   sti();
@@ -423,14 +423,14 @@ sock_awaitconn(struct socket *mysock, struct socket *servsock)
    * Wake up server, then await connection. server will set state to
    * SS_CONNECTED if we're connected.
    */
-  /* »½ĞÑ·şÎñ½ø³Ì 
+  /* å”¤é†’æœåŠ¡è¿›ç¨‹ 
     */
   wake_up_interruptible(servsock->wait);
   if (mysock->state != SS_CONNECTED) {
-        /* µ±Ç°½ø³ÌµÈ´ıÔÚmysockµÄwaitµ±ÖĞ */
+        /* å½“å‰è¿›ç¨‹ç­‰å¾…åœ¨mysockçš„waitå½“ä¸­ */
 	interruptible_sleep_on(mysock->wait);
-        /* µ±Ç°½ø³Ì±»»½ĞÑÖ®ºó£¬²»ÊÇÁ¬½Ó×´Ì¬»òÊÇÕıÔÚÁ¬½Ó×´Ì¬£¬
-          * Ôò½øĞĞÏàÓ¦µÄ´íÎó´¦Àí£¬Èç¹ûÊÇÕıÔÚÁ¬½Ó×´Ì¬£¬Ôò¼ÌĞøµÈ´ıÁ¬½Ó 
+        /* å½“å‰è¿›ç¨‹è¢«å”¤é†’ä¹‹åï¼Œä¸æ˜¯è¿æ¥çŠ¶æ€æˆ–æ˜¯æ­£åœ¨è¿æ¥çŠ¶æ€ï¼Œ
+          * åˆ™è¿›è¡Œç›¸åº”çš„é”™è¯¯å¤„ç†ï¼Œå¦‚æœæ˜¯æ­£åœ¨è¿æ¥çŠ¶æ€ï¼Œåˆ™ç»§ç»­ç­‰å¾…è¿æ¥ 
           */
 	if (mysock->state != SS_CONNECTED &&
 	    mysock->state != SS_DISCONNECTING) {
@@ -443,7 +443,7 @@ sock_awaitconn(struct socket *mysock, struct socket *servsock)
 		 */
 		if (mysock->conn == servsock) {
 			cli();
-                        /* ½«mysock´ÓservsockµÄµÈ´ıÁ¬½Ó¶ÓÁĞÖĞÉ¾³ı */
+                        /* å°†mysockä»servsockçš„ç­‰å¾…è¿æ¥é˜Ÿåˆ—ä¸­åˆ é™¤ */
 			if ((last = servsock->iconn) == mysock)
 					servsock->iconn = mysock->next;
 			else {
@@ -463,8 +463,8 @@ sock_awaitconn(struct socket *mysock, struct socket *servsock)
  * Perform the socket system call. we locate the appropriate
  * family, then create a fresh socket.
  */
-/* ´´½¨Ò»¸ösocketµÄÌ×½Ó×Ö£¬Ò»°ã»á¸ù¾İtypeµÄÀàĞÍÀ´È·¶¨protocolµÄÀàĞÍ£¬
- * protocolµÄÀàĞÍÒ»°ãÄ¬ÈÏÎªIPPROTO_IP
+/* åˆ›å»ºä¸€ä¸ªsocketçš„å¥—æ¥å­—ï¼Œä¸€èˆ¬ä¼šæ ¹æ®typeçš„ç±»å‹æ¥ç¡®å®šprotocolçš„ç±»å‹ï¼Œ
+ * protocolçš„ç±»å‹ä¸€èˆ¬é»˜è®¤ä¸ºIPPROTO_IP
  */
 static int sock_socket(int family, int type, int protocol)
 {
@@ -477,7 +477,7 @@ static int sock_socket(int family, int type, int protocol)
 						family, type, protocol));
 
   /* Locate the correct protocol family. */
-  /* ÕÒµ½Ğ­Òé×åµÄ²Ù×÷º¯Êı */
+  /* æ‰¾åˆ°åè®®æ—çš„æ“ä½œå‡½æ•° */
   for (i = 0; i < NPROTO; ++i) {
 	if (pops[i] == NULL) continue;
 	if (pops[i]->family == family) break;
@@ -509,9 +509,9 @@ static int sock_socket(int family, int type, int protocol)
   }
   sock->type = type;
   sock->ops = ops;
-  /* ¸ù¾İ²»Í¬µÄĞ­Òé×åº¯Êı¼¯À´´´½¨socket£¬
-    * Òò´ËÔÚ²»Í¬Ğ­ÒéµÄproto_ops½á¹¹µ±ÖĞÊÇÃ»ÓĞsocketµ÷ÓÃµÄ£¬ 
-    * Ö»ÓĞcreateº¯Êı 
+  /* æ ¹æ®ä¸åŒçš„åè®®æ—å‡½æ•°é›†æ¥åˆ›å»ºsocketï¼Œ
+    * å› æ­¤åœ¨ä¸åŒåè®®çš„proto_opsç»“æ„å½“ä¸­æ˜¯æ²¡æœ‰socketè°ƒç”¨çš„ï¼Œ 
+    * åªæœ‰createå‡½æ•° 
     */
   if ((i = sock->ops->create(sock, protocol)) < 0) {
 	sock_release(sock);
@@ -527,8 +527,8 @@ static int sock_socket(int family, int type, int protocol)
 }
 
 
-/* Õâ¸öºÍpipe¹¦ÄÜÓĞÏàËÆÖ®´¦£¬pipeÊÇµ¥¹¤µÄ£¬socketpairÊÇË«¹¤µÄ
- * familyÖ»ÄÜÊÇUNIXÓòµÄ¡£
+/* è¿™ä¸ªå’ŒpipeåŠŸèƒ½æœ‰ç›¸ä¼¼ä¹‹å¤„ï¼Œpipeæ˜¯å•å·¥çš„ï¼Œsocketpairæ˜¯åŒå·¥çš„
+ * familyåªèƒ½æ˜¯UNIXåŸŸçš„ã€‚
  */
 static int
 sock_socketpair(int family, int type, int protocol, unsigned long usockvec[2])
@@ -545,7 +545,7 @@ sock_socketpair(int family, int type, int protocol, unsigned long usockvec[2])
    * Obtain the first socket and check if the underlying protocol
    * supports the socketpair call.
    */
-  /* Èç¹û´´½¨Ê§°Ü£¬ÔòÖ±½Ó·µ»Ø */
+  /* å¦‚æœåˆ›å»ºå¤±è´¥ï¼Œåˆ™ç›´æ¥è¿”å› */
   if ((fd1 = sock_socket(family, type, protocol)) < 0) return(fd1);
   sock1 = sockfd_lookup(fd1, NULL);
   if (!sock1->ops->socketpair) {
@@ -566,7 +566,7 @@ sock_socketpair(int family, int type, int protocol, unsigned long usockvec[2])
   }
   sock1->conn = sock2;
   sock2->conn = sock1;
-  /* Íê³Ésocketpair²Ù×÷ºó£¬ÔòÕâÖ»Ì×½Ó×ÖµÄ×´Ì¬ÎªÁ¬½Ó×´Ì¬ */
+  /* å®Œæˆsocketpairæ“ä½œåï¼Œåˆ™è¿™åªå¥—æ¥å­—çš„çŠ¶æ€ä¸ºè¿æ¥çŠ¶æ€ */
   sock1->state = SS_CONNECTED;
   sock2->state = SS_CONNECTED;
 
@@ -608,10 +608,10 @@ sock_bind(int fd, struct sockaddr *umyaddr, int addrlen)
  * ready for listening.
  */
 
-/* ¼àÌıÌ×½Ó×Ö 
- * fd±íÊ¾Òª¼àÌıµÄÌ×½Ó×ÖÃèÊö·û
- * backlog±íÊ¾ÔÚacceptº¯ÊıÖĞµÈ´ı¶ÁÈ¡µÄ¶ÓÁĞµÄ³¤¶È£¬
- * Ò²¾ÍÊÇstruct sockµÄmax_ack_backlog
+/* ç›‘å¬å¥—æ¥å­— 
+ * fdè¡¨ç¤ºè¦ç›‘å¬çš„å¥—æ¥å­—æè¿°ç¬¦
+ * backlogè¡¨ç¤ºåœ¨acceptå‡½æ•°ä¸­ç­‰å¾…è¯»å–çš„é˜Ÿåˆ—çš„é•¿åº¦ï¼Œ
+ * ä¹Ÿå°±æ˜¯struct sockçš„max_ack_backlog
  */
 static int
 sock_listen(int fd, int backlog)
@@ -621,14 +621,14 @@ sock_listen(int fd, int backlog)
   DPRINTF((net_debug, "NET: sock_listen: fd = %d\n", fd));
   if (fd < 0 || fd >= NR_OPEN || current->filp[fd] == NULL)
 								return(-EBADF);
-  /* ÕÒµ½ÎÄ¼şÃèÊö·ûµÄsocket½á¹¹ */
+  /* æ‰¾åˆ°æ–‡ä»¶æè¿°ç¬¦çš„socketç»“æ„ */
   if (!(sock = sockfd_lookup(fd, NULL))) return(-ENOTSOCK);
   if (sock->state != SS_UNCONNECTED) {
 	DPRINTF((net_debug, "NET: sock_listen: socket isn't unconnected\n"));
 	return(-EINVAL);
   }
   if (sock->ops && sock->ops->listen) sock->ops->listen(sock, backlog);
-  /* ÉèÖÃsocketµÄ×´Ì¬Îª¼àÌı×´Ì¬ */
+  /* è®¾ç½®socketçš„çŠ¶æ€ä¸ºç›‘å¬çŠ¶æ€ */
   sock->flags |= SO_ACCEPTCON;
   return(0);
 }
@@ -639,10 +639,10 @@ sock_listen(int fd, int backlog)
  * with the client, wake up the client, then return the new
  * connected fd.
  */
-/* fdÊÇ¼àÌıµÄÌ×½Ó×Ö,¸Ãº¯ÊıµÄÖ´ĞĞ¹ı³ÌÎª£¬Ê×ÏÈÔÚsocketsÊı×éµ±ÖĞÉêÇëÒ»¸ö
- * struct socket£¬ÔÚÉêÇëstruct socketµÄ¹ı³ÌÖĞ¾Í¸øsocket·ÖÅäÁËinode½Úµã£¬
- * È»ºóÔÚ·ÖÅäÒ»¸östruct file½á¹¹£¬×îºó¾Í·µ»ØÒ»¸öĞÂµÄÎÄ¼şÃèÊö·û£¬¸Ã¹ı³ÌÊÇÒ»¸ö
- * ·´ÏòµÄ¹ı³Ì
+/* fdæ˜¯ç›‘å¬çš„å¥—æ¥å­—,è¯¥å‡½æ•°çš„æ‰§è¡Œè¿‡ç¨‹ä¸ºï¼Œé¦–å…ˆåœ¨socketsæ•°ç»„å½“ä¸­ç”³è¯·ä¸€ä¸ª
+ * struct socketï¼Œåœ¨ç”³è¯·struct socketçš„è¿‡ç¨‹ä¸­å°±ç»™socketåˆ†é…äº†inodeèŠ‚ç‚¹ï¼Œ
+ * ç„¶ååœ¨åˆ†é…ä¸€ä¸ªstruct fileç»“æ„ï¼Œæœ€åå°±è¿”å›ä¸€ä¸ªæ–°çš„æ–‡ä»¶æè¿°ç¬¦ï¼Œè¯¥è¿‡ç¨‹æ˜¯ä¸€ä¸ª
+ * åå‘çš„è¿‡ç¨‹
  */
 static int sock_accept(int fd, struct sockaddr *upeer_sockaddr, int *upeer_addrlen)
 {
@@ -654,7 +654,7 @@ static int sock_accept(int fd, struct sockaddr *upeer_sockaddr, int *upeer_addrl
   if (fd < 0 || fd >= NR_OPEN || ((file = current->filp[fd]) == NULL))
 								return(-EBADF);
 
-  /* ÕÒµ½¼àÌıfdµÄsocket½á¹¹ */
+  /* æ‰¾åˆ°ç›‘å¬fdçš„socketç»“æ„ */
   if (!(sock = sockfd_lookup(fd, &file))) return(-ENOTSOCK);
   if (sock->state != SS_UNCONNECTED) {
 	DPRINTF((net_debug, "NET: sock_accept: socket isn't unconnected\n"));
@@ -666,12 +666,12 @@ static int sock_accept(int fd, struct sockaddr *upeer_sockaddr, int *upeer_addrl
 	return(-EINVAL);
   }
 
-	/* ·Ç×èÈûµÄ»ñÈ¡Ò»¸ösocket½á¹¹ */
+	/* éé˜»å¡çš„è·å–ä¸€ä¸ªsocketç»“æ„ */
   if (!(newsock = sock_alloc(0))) {
 	printk("NET: sock_accept: no more sockets\n");
 	return(-EAGAIN);
   }
-  /* Á½¸ösocketµÄÀàĞÍ£¬Ğ­Òé×å²Ù×÷º¯ÊıÏàÍ¬ */
+  /* ä¸¤ä¸ªsocketçš„ç±»å‹ï¼Œåè®®æ—æ“ä½œå‡½æ•°ç›¸åŒ */
   newsock->type = sock->type;
   newsock->ops = sock->ops;
   if ((i = sock->ops->dup(newsock, sock)) < 0) {
@@ -685,7 +685,7 @@ static int sock_accept(int fd, struct sockaddr *upeer_sockaddr, int *upeer_addrl
 	return(i);
   }
 
-  /* ¸øĞÂµÄsocket·ÖÅäÒ»¸öÎÄ¼şÃèÊö·û */
+  /* ç»™æ–°çš„socketåˆ†é…ä¸€ä¸ªæ–‡ä»¶æè¿°ç¬¦ */
   if ((fd = get_fd(SOCK_INODE(newsock))) < 0) {
 	sock_release(newsock);
 	return(-EINVAL);
@@ -697,16 +697,16 @@ static int sock_accept(int fd, struct sockaddr *upeer_sockaddr, int *upeer_addrl
   if (upeer_sockaddr)
 	newsock->ops->getname(newsock, upeer_sockaddr, upeer_addrlen, 1);
 
-  /* ·µ»ØĞÂµÄsocketÎÄ¼şÃèÊö·û */
+  /* è¿”å›æ–°çš„socketæ–‡ä»¶æè¿°ç¬¦ */
   return(fd);
 }
 
 
 /* Attempt to connect to a socket with the server address. */
-/* È¥Á¬½Ó·şÎñÆ÷
- * fdÊÇÁ¬½ÓÌ×½Ó×ÖµÄÎÄ¼şÃèÊö·û
- * uservaddrÊÇ·şÎñÆ÷µØÖ·
- * addrlenµØÖ·³¤¶È
+/* å»è¿æ¥æœåŠ¡å™¨
+ * fdæ˜¯è¿æ¥å¥—æ¥å­—çš„æ–‡ä»¶æè¿°ç¬¦
+ * uservaddræ˜¯æœåŠ¡å™¨åœ°å€
+ * addrlenåœ°å€é•¿åº¦
  */
 static int sock_connect(int fd, struct sockaddr *uservaddr, int addrlen)
 {
@@ -735,7 +735,7 @@ static int sock_connect(int fd, struct sockaddr *uservaddr, int addrlen)
 			"NET: sock_connect: socket not unconnected\n"));
 		return(-EINVAL);
   }
-  /* ¿ªÊ¼ÕæÕıµÄÁ¬½Ó·şÎñÆ÷ */
+  /* å¼€å§‹çœŸæ­£çš„è¿æ¥æœåŠ¡å™¨ */
   i = sock->ops->connect(sock, uservaddr, addrlen, file->f_flags);
   if (i < 0) {
 	DPRINTF((net_debug, "NET: sock_connect: connect failed\n"));
@@ -885,7 +885,7 @@ sock_getsockopt(int fd, int level, int optname, char *optval, int *optlen)
 }
 
 
-/* ¹Ø±ÕÌ×½Ó×Ö */
+/* å…³é—­å¥—æ¥å­— */
 static int
 sock_shutdown(int fd, int how)
 {
@@ -1120,7 +1120,7 @@ static struct file_operations net_fops = {
  * SOCKET module.
  */
 
-/* ×¢²á²»Í¬µØÖ·×åµÄĞ­Òé²Ù×÷º¯Êı
+/* æ³¨å†Œä¸åŒåœ°å€æ—çš„åè®®æ“ä½œå‡½æ•°
  */
 int sock_register(int family, struct proto_ops *ops)
 {
@@ -1141,7 +1141,7 @@ int sock_register(int family, struct proto_ops *ops)
 }
 
 
-/* ÍøÂçÄ£¿é³õÊ¼»¯ */
+/* ç½‘ç»œæ¨¡å—åˆå§‹åŒ– */
 void
 sock_init(void)
 {
@@ -1149,8 +1149,8 @@ sock_init(void)
   int i;
 
   /* Set up our SOCKET VFS major device. */
-/* ×¢²áÍøÂçÉè±¸¶ÁĞ´º¯Êı£¬ÔÚLinuxÏµÍ³µ±ÖĞËùÓĞµÄÉè±¸²Ù×÷¶¼±»
- * µ±³É¶ÔÎÄ¼şÏµÍ³µÄ²Ù×÷
+/* æ³¨å†Œç½‘ç»œè®¾å¤‡è¯»å†™å‡½æ•°ï¼Œåœ¨Linuxç³»ç»Ÿå½“ä¸­æ‰€æœ‰çš„è®¾å¤‡æ“ä½œéƒ½è¢«
+ * å½“æˆå¯¹æ–‡ä»¶ç³»ç»Ÿçš„æ“ä½œ
  */
   if (register_chrdev(SOCKET_MAJOR, "socket", &net_fops) < 0) {
 	printk("NET: cannot register major device %d!\n", SOCKET_MAJOR);
@@ -1165,7 +1165,7 @@ sock_init(void)
 
   /* Initialize the DDI module. */
 
-/* Éè±¸Çı¶¯½Ó¿ÚÄ£¿é
+/* è®¾å¤‡é©±åŠ¨æ¥å£æ¨¡å—
   */
   ddi_init();
 

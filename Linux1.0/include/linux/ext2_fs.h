@@ -160,12 +160,12 @@ struct ext2_old_group_desc
 
 struct ext2_group_desc
 {
-	unsigned long  bg_block_bitmap;		/* Blocks bitmap block */ /* ¿éÎ»Í¼¿éºÅ */
-	unsigned long  bg_inode_bitmap;		/* Inodes bitmap block */ /* inodeÎ»Í¼¿éºÅ */
-	unsigned long  bg_inode_table;		/* Inodes table block */ /* µÚÒ»¸öË÷Òı½Úµã±í¿é¿éºÅ */
-	unsigned short bg_free_blocks_count;	/* Free blocks count */ /* ×éÖĞ¿ÕÏĞ¿é¸öÊı */
-	unsigned short bg_free_inodes_count;	/* Free inodes count */ /* ×éÖĞ¿ÕÏĞË÷Òı½Úµã¸öÊı */
-	unsigned short bg_used_dirs_count;	/* Directories count */ /* ×éÖĞÄ¿Â¼¸öÊı */
+	unsigned long  bg_block_bitmap;		/* Blocks bitmap block */ /* å—ä½å›¾å—å· */
+	unsigned long  bg_inode_bitmap;		/* Inodes bitmap block */ /* inodeä½å›¾å—å· */
+	unsigned long  bg_inode_table;		/* Inodes table block */ /* ç¬¬ä¸€ä¸ªç´¢å¼•èŠ‚ç‚¹è¡¨å—å—å· */
+	unsigned short bg_free_blocks_count;	/* Free blocks count */ /* ç»„ä¸­ç©ºé—²å—ä¸ªæ•° */
+	unsigned short bg_free_inodes_count;	/* Free inodes count */ /* ç»„ä¸­ç©ºé—²ç´¢å¼•èŠ‚ç‚¹ä¸ªæ•° */
+	unsigned short bg_used_dirs_count;	/* Directories count */ /* ç»„ä¸­ç›®å½•ä¸ªæ•° */
 	unsigned short bg_pad;
 	unsigned long  bg_reserved[3];
 };
@@ -186,7 +186,7 @@ struct ext2_group_desc
 /*
  * Constants relative to the data blocks
  */
-/* ÎÄ¼şÊı¾İ¿éµÄÓ³Éä£¬12¿éÖ±½ÓÓ³Éä£¬Í¨¹ıÕâ¸ö¿ÉÒÔËã³öext2¿ÉÒÔÖ§³ÖµÄ×î´óÎÄ¼ş´óĞ¡ */
+/* æ–‡ä»¶æ•°æ®å—çš„æ˜ å°„ï¼Œ12å—ç›´æ¥æ˜ å°„ï¼Œé€šè¿‡è¿™ä¸ªå¯ä»¥ç®—å‡ºext2å¯ä»¥æ”¯æŒçš„æœ€å¤§æ–‡ä»¶å¤§å° */
 #define	EXT2_NDIR_BLOCKS		12
 #define	EXT2_IND_BLOCK			EXT2_NDIR_BLOCKS
 #define	EXT2_DIND_BLOCK			(EXT2_IND_BLOCK + 1)
@@ -213,10 +213,10 @@ struct ext2_group_desc
  * Structure of an inode on the disk
  */
 
-/* ÔÚÓ²ÅÌÖĞinodeµÄÊı¾İ 
+/* åœ¨ç¡¬ç›˜ä¸­inodeçš„æ•°æ® 
  */
 struct ext2_inode {
-	unsigned short i_mode;		/* File mode */ /* ÎÄ¼şÀàĞÍºÍ·ÃÎÊÈ¨ÏŞ */
+	unsigned short i_mode;		/* File mode */ /* æ–‡ä»¶ç±»å‹å’Œè®¿é—®æƒé™ */
 	unsigned short i_uid;		/* Owner Uid */
 	unsigned long  i_size;		/* Size in bytes */
 	unsigned long  i_atime;		/* Access time */
@@ -224,11 +224,11 @@ struct ext2_inode {
 	unsigned long  i_mtime;		/* Modification time */
 	unsigned long  i_dtime;		/* Deletion Time */
 	unsigned short i_gid;		/* Group Id */
-	unsigned short i_links_count;	/* Links count */ /* Ó²Á´½Ó¼ÆÊıÆ÷ */
-	unsigned long  i_blocks;	/* Blocks count */ /* ÎÄ¼şÊı¾İ¿éÊı */
+	unsigned short i_links_count;	/* Links count */ /* ç¡¬é“¾æ¥è®¡æ•°å™¨ */
+	unsigned long  i_blocks;	/* Blocks count */ /* æ–‡ä»¶æ•°æ®å—æ•° */
 	unsigned long  i_flags;		/* File flags */
 	unsigned long  i_reserved1;
-	unsigned long  i_block[EXT2_N_BLOCKS];/* Pointers to blocks */ /* Ö¸ÏòÊı¾İ¿éµÄÖ¸Õë */
+	unsigned long  i_block[EXT2_N_BLOCKS];/* Pointers to blocks */ /* æŒ‡å‘æ•°æ®å—çš„æŒ‡é’ˆ */
 	unsigned long  i_version;	/* File version (for NFS) */
 	unsigned long  i_file_acl;	/* File ACL */
 	unsigned long  i_dir_acl;	/* Directory ACL */
@@ -285,13 +285,13 @@ struct ext2_super_block {
 	unsigned long  s_r_blocks_count;/* Reserved blocks count */
 	unsigned long  s_free_blocks_count;/* Free blocks count */
 	unsigned long  s_free_inodes_count;/* Free inodes count */
-	/* µÚÒ»¸ö¿ÉÒÔ±»Ê¹ÓÃµÄÊı¾İ¿é£¬Ö®Ç°µÄ¶¼ÊÇ±£ÁôµÄ */
+	/* ç¬¬ä¸€ä¸ªå¯ä»¥è¢«ä½¿ç”¨çš„æ•°æ®å—ï¼Œä¹‹å‰çš„éƒ½æ˜¯ä¿ç•™çš„ */
 	unsigned long  s_first_data_block;/* First Data Block */
-	/* ÒÔ2µÄÃİ´Î·½±íÊ¾¿éµÄ´óĞ¡£¬ÓÃ1024×Ö½Ú×÷Îªµ¥Î»£¬0±íÊ¾1024×Ö½ÚµÄ´óĞ¡£¬
-	 * 1±íÊ¾2048¿éµÄ´óĞ¡
+	/* ä»¥2çš„å¹‚æ¬¡æ–¹è¡¨ç¤ºå—çš„å¤§å°ï¼Œç”¨1024å­—èŠ‚ä½œä¸ºå•ä½ï¼Œ0è¡¨ç¤º1024å­—èŠ‚çš„å¤§å°ï¼Œ
+	 * 1è¡¨ç¤º2048å—çš„å¤§å°
 	 */
 	unsigned long  s_log_block_size;/* Block size */
-	/* ºÍs_log_block_size Ò»ÑùµÄ±íÊ¾·½·¨ */
+	/* å’Œs_log_block_size ä¸€æ ·çš„è¡¨ç¤ºæ–¹æ³• */
 	long           s_log_frag_size;	/* Fragment size */
 	unsigned long  s_blocks_per_group;/* # Blocks per group */
 	unsigned long  s_frags_per_group;/* # Fragments per group */
@@ -314,11 +314,11 @@ struct ext2_super_block {
  */
 #define EXT2_NAME_LEN 255
 
-/* ×¢ÒâÕâ¸ö½á¹¹ºÜÌØÊâ£¬Ö÷ÒªÄ¿µÄÊÇ¼õĞ¡´ÅÅÌÂÒ·Ñ
- * ËäËµÕâ¸ö½á¹¹µÄ³¤¶ÈÓÃsizeofÊÇ¿ÉÒÔÈ·¶¨µÄ£¬µ«ÊÇÃ¿¸ö
- * ÎÄ¼şµÄ³¤¶È²»Ò»¶¨¶¼ºÜ´ó£¬Èç¹ûÃ¿¸öÄ¿Â¼µÄÃû³Æ¶¼°´ÕÕ×î´ó³¤¶ÈÀ´´æ´¢
- * Ôò»áÂÒ·Ñ½Ï¶à¿Õ¼ä£¬Îª´ËÊ¹ÓÃrec_lenÀ´ÌØ±ğ×¢Ã÷Ä¿Â¼½á¹¹Êµ¼ÊÔÚÄÚ´æµ±ÖĞ
- * Ê¹ÓÃµÄ³¤¶È
+/* æ³¨æ„è¿™ä¸ªç»“æ„å¾ˆç‰¹æ®Šï¼Œä¸»è¦ç›®çš„æ˜¯å‡å°ç£ç›˜ä¹±è´¹
+ * è™½è¯´è¿™ä¸ªç»“æ„çš„é•¿åº¦ç”¨sizeofæ˜¯å¯ä»¥ç¡®å®šçš„ï¼Œä½†æ˜¯æ¯ä¸ª
+ * æ–‡ä»¶çš„é•¿åº¦ä¸ä¸€å®šéƒ½å¾ˆå¤§ï¼Œå¦‚æœæ¯ä¸ªç›®å½•çš„åç§°éƒ½æŒ‰ç…§æœ€å¤§é•¿åº¦æ¥å­˜å‚¨
+ * åˆ™ä¼šä¹±è´¹è¾ƒå¤šç©ºé—´ï¼Œä¸ºæ­¤ä½¿ç”¨rec_lenæ¥ç‰¹åˆ«æ³¨æ˜ç›®å½•ç»“æ„å®é™…åœ¨å†…å­˜å½“ä¸­
+ * ä½¿ç”¨çš„é•¿åº¦
  */
 struct ext2_dir_entry {
 	unsigned long  inode;			/* Inode number */

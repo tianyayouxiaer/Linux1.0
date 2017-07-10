@@ -29,7 +29,7 @@
 
 
 /* These are the defined Ethernet Protocol ID's. */
-/* ÏµÍ³ÖĞ¶¨ÒåµÄÒÔÌ«ÍøĞ­ÒéID */
+/* ç³»ç»Ÿä¸­å®šä¹‰çš„ä»¥å¤ªç½‘åè®®ID */
 #define ETH_P_LOOP	0x0060		/* Ethernet Loopback packet	*/
 #define ETH_P_ECHO	0x0200		/* Ethernet Echo packet		*/
 #define ETH_P_PUP	0x0400		/* Xerox PUP packet		*/
@@ -43,7 +43,7 @@
 #define ETH_P_ALL	0x0003		/* Every packet (be careful!!!) */
 
 /* This is an Ethernet frame header. */
-/* ÒÔÌ«ÍøÍ·²¿ */
+/* ä»¥å¤ªç½‘å¤´éƒ¨ */
 struct ethhdr {
   unsigned char		h_dest[ETH_ALEN];	/* destination eth addr	*/
   unsigned char		h_source[ETH_ALEN];	/* source ether addr	*/

@@ -18,7 +18,7 @@
 
 struct vm_struct {
 	unsigned long flags;
-	void * addr;		//Ó³ÉäµÄµØÖ·
+	void * addr;		//æ˜ å°„çš„åœ°å€
 	unsigned long size;
 	struct vm_struct * next;
 };
@@ -34,13 +34,13 @@ static struct vm_struct * vmlist = NULL;
  */
 #define VMALLOC_OFFSET	(8*1024*1024)
 
-/* Ö÷Òª×÷ÓÃÍ³Ò»ĞŞ¸Ä½ø³ÌµÄÄÚºË¿Õ¼äµÄÓ³Éä
+/* ä¸»è¦ä½œç”¨ç»Ÿä¸€ä¿®æ”¹è¿›ç¨‹çš„å†…æ ¸ç©ºé—´çš„æ˜ å°„
  */
 
 static inline void set_pgdir(unsigned long dindex, unsigned long value)
 {
 	struct task_struct * p;
-	/*½«ËùÓĞ½ø³ÌµÄÒ³Ä¿Â¼±íÖĞdindexÏîÉèÖÃÎªvalue*/
+	/*å°†æ‰€æœ‰è¿›ç¨‹çš„é¡µç›®å½•è¡¨ä¸­dindexé¡¹è®¾ç½®ä¸ºvalue*/
 	p = &init_task;
 	do {
 		((unsigned long *) p->tss.cr3)[dindex] = value;
@@ -48,7 +48,7 @@ static inline void set_pgdir(unsigned long dindex, unsigned long value)
 	} while (p != &init_task);
 }
 
-/* ½«vmallocÓ³ÉäµÄÄÚ´æ¸ø½â³ıÓ³Éä£¬²¢ÊÍ·ÅµôÖ®Ç°Ó³ÉäµÄÎïÀíÒ³
+/* å°†vmallocæ˜ å°„çš„å†…å­˜ç»™è§£é™¤æ˜ å°„ï¼Œå¹¶é‡Šæ”¾æ‰ä¹‹å‰æ˜ å°„çš„ç‰©ç†é¡µ
  */
 static int free_area_pages(unsigned long dindex, unsigned long index, unsigned long nr)
 {
@@ -58,7 +58,7 @@ static int free_area_pages(unsigned long dindex, unsigned long index, unsigned l
 		return 0;
 	page &= PAGE_MASK;
 	pte = index + (unsigned long *) page;
-	/*½«Ò³±íÖĞµÄÒ³½â³ıÓ³Éä,²¢ÊÍ·ÅµôÎïÀíÒ³*/
+	/*å°†é¡µè¡¨ä¸­çš„é¡µè§£é™¤æ˜ å°„,å¹¶é‡Šæ”¾æ‰ç‰©ç†é¡µ*/
 	do {
 		unsigned long pg = *pte;
 		*pte = 0;
@@ -66,19 +66,19 @@ static int free_area_pages(unsigned long dindex, unsigned long index, unsigned l
 			free_page(pg);
 		pte++;
 	} while (--nr);
-	/* ´Ë´¦ÅĞ¶Ï¸ÃÒ³±íÊÇ·ñ»¹ÓĞÓ³Éä£¬Ò²¾ÍÊÇÕâ¸öÒ³±í»¹ÊÇ·ñÓĞÓÃ£¬
-	 * Èç¹û¸ÃÒ³±íÃ»ÓĞÓ³ÉäÈÎºÎÄÚ´æ£¬ÔòĞèÒª½«¸ÃÒ³±íÕ¼ÓÃµÄÒ»Ò³ÄÚ´æ
-	 * ¸øÊÍ·Åµô£¬ÒòÎªÔÚalloc_area_pagesº¯ÊıÖĞ£¬Èç¹ûÔÚÓ³ÉäµÄÊ±ºò
-	 * Èç¹ûÒ³±íÎª¿Õ£¬ÔòÉêÇëÁËÒ»¸öĞÂµÄÒ³±í£¬Èç¹ûÒ³±íÖ»Ê¹ÓÃÁËÒ»Ïî£¬
-	 * ÔÚÊÍ·ÅµÄÊ±ºò½«Ò³±íÖĞ½öÓĞµÄÒ»ÏîÓ³Éä¸ø½â³ıÁË£¬ÄÇÃ´¸ÃÒ³±í¾Í
-	 * Ã»ÓĞÈÎºÎ×÷ÓÃÁË£¬ÎªÁË½ÚÔ¼ÄÚ´æ×îºÃ½«¸ÃÒ³±íÊÍ·Å
+	/* æ­¤å¤„åˆ¤æ–­è¯¥é¡µè¡¨æ˜¯å¦è¿˜æœ‰æ˜ å°„ï¼Œä¹Ÿå°±æ˜¯è¿™ä¸ªé¡µè¡¨è¿˜æ˜¯å¦æœ‰ç”¨ï¼Œ
+	 * å¦‚æœè¯¥é¡µè¡¨æ²¡æœ‰æ˜ å°„ä»»ä½•å†…å­˜ï¼Œåˆ™éœ€è¦å°†è¯¥é¡µè¡¨å ç”¨çš„ä¸€é¡µå†…å­˜
+	 * ç»™é‡Šæ”¾æ‰ï¼Œå› ä¸ºåœ¨alloc_area_pageså‡½æ•°ä¸­ï¼Œå¦‚æœåœ¨æ˜ å°„çš„æ—¶å€™
+	 * å¦‚æœé¡µè¡¨ä¸ºç©ºï¼Œåˆ™ç”³è¯·äº†ä¸€ä¸ªæ–°çš„é¡µè¡¨ï¼Œå¦‚æœé¡µè¡¨åªä½¿ç”¨äº†ä¸€é¡¹ï¼Œ
+	 * åœ¨é‡Šæ”¾çš„æ—¶å€™å°†é¡µè¡¨ä¸­ä»…æœ‰çš„ä¸€é¡¹æ˜ å°„ç»™è§£é™¤äº†ï¼Œé‚£ä¹ˆè¯¥é¡µè¡¨å°±
+	 * æ²¡æœ‰ä»»ä½•ä½œç”¨äº†ï¼Œä¸ºäº†èŠ‚çº¦å†…å­˜æœ€å¥½å°†è¯¥é¡µè¡¨é‡Šæ”¾
 	 */
 	pte = (unsigned long *) page;
 	for (nr = 0 ; nr < 1024 ; nr++, pte++)
 		if (*pte)
 			return 0;
-	/* ÒòÎªÓ³ÉäµÄÊÇÄÚºË¿Õ¼ä£¬¶øËùÓĞµÄ½ø³Ì¹²ÏíÄÚºË¿Õ¼äµÄ£¬ËùÒÔĞèÒª
-	 * ½«ËùÓĞ½ø³ÌµÄÄÚºË¿Õ¼äÓ³Éä¸ü¸Ä
+	/* å› ä¸ºæ˜ å°„çš„æ˜¯å†…æ ¸ç©ºé—´ï¼Œè€Œæ‰€æœ‰çš„è¿›ç¨‹å…±äº«å†…æ ¸ç©ºé—´çš„ï¼Œæ‰€ä»¥éœ€è¦
+	 * å°†æ‰€æœ‰è¿›ç¨‹çš„å†…æ ¸ç©ºé—´æ˜ å°„æ›´æ”¹
 	 */
 	set_pgdir(dindex,0);
 	mem_map[MAP_NR(page)] = 1;
@@ -88,10 +88,10 @@ static int free_area_pages(unsigned long dindex, unsigned long index, unsigned l
 }
 
 
-/*  ×¢ÒâlinuxµÄÄÚ´æ·ÖÅä£¬²ÉÓÃ¶ş¼¶Ò³±í£¬dindexÊÇ4MµÄË÷Òı£¬¼´Ò³Ä¿Â¼±íÖĞµÄË÷Òı
-  *  index¼´Ê¹Ò³±íÖĞµÄË÷Òı£¬nrÊÇ´ÓindexË÷Òı´¦¿ªÊ¼Ó³Éä¶àÉÙÒ³µÄÄÚ´æ£¬Ò²¼´ÉêÇëÁËnr
-  *  Ò³ÎïÀíÄÚ´æ,²¢Ó³Éäµ½dindex,index...index+nrµÄÎ»ÖÃÉÏ£¬´Ë´¦×¢Òâswapper_pg_dir
-  *  ÊÇÄÚºËÒ³Ä¿Â¼±í£¬¼ÇÂ¼Õû¸öÄÚ´æµÄÊ¹ÓÃÇé¿ö
+/*  æ³¨æ„linuxçš„å†…å­˜åˆ†é…ï¼Œé‡‡ç”¨äºŒçº§é¡µè¡¨ï¼Œdindexæ˜¯4Mçš„ç´¢å¼•ï¼Œå³é¡µç›®å½•è¡¨ä¸­çš„ç´¢å¼•
+  *  indexå³ä½¿é¡µè¡¨ä¸­çš„ç´¢å¼•ï¼Œnræ˜¯ä»indexç´¢å¼•å¤„å¼€å§‹æ˜ å°„å¤šå°‘é¡µçš„å†…å­˜ï¼Œä¹Ÿå³ç”³è¯·äº†nr
+  *  é¡µç‰©ç†å†…å­˜,å¹¶æ˜ å°„åˆ°dindex,index...index+nrçš„ä½ç½®ä¸Šï¼Œæ­¤å¤„æ³¨æ„swapper_pg_dir
+  *  æ˜¯å†…æ ¸é¡µç›®å½•è¡¨ï¼Œè®°å½•æ•´ä¸ªå†…å­˜çš„ä½¿ç”¨æƒ…å†µ
   */
 
 static int alloc_area_pages(unsigned long dindex, unsigned long index, unsigned long nr)
@@ -99,7 +99,7 @@ static int alloc_area_pages(unsigned long dindex, unsigned long index, unsigned 
 	unsigned long page, *pte;
 
 	page = swapper_pg_dir[dindex];
-	/*Èç¹û¸ÃÒ³±íÎª¿Õ£¬ÔòÉêÇëÒ»¸öÎïÀíÒ³×÷ÎªÒ³±í*/
+	/*å¦‚æœè¯¥é¡µè¡¨ä¸ºç©ºï¼Œåˆ™ç”³è¯·ä¸€ä¸ªç‰©ç†é¡µä½œä¸ºé¡µè¡¨*/
 	if (!page) {
 		page = get_free_page(GFP_KERNEL);
 		if (!page)
@@ -131,14 +131,14 @@ static int do_area(void * addr, unsigned long size,
 	int (*area_fn)(unsigned long,unsigned long,unsigned long))
 {
 	unsigned long nr, dindex, index;
-	//»ñÈ¡ÄÚ´æµÄÒ³Êı
+	//è·å–å†…å­˜çš„é¡µæ•°
 	nr = size >> PAGE_SHIFT;
-	//Ó³ÉäµÄÊÇÄÚºË¿Õ¼ä     ÎªÊ²Ã´+TASK_SIZE ??????
+	//æ˜ å°„çš„æ˜¯å†…æ ¸ç©ºé—´     ä¸ºä»€ä¹ˆ+TASK_SIZE ??????
 	dindex = (TASK_SIZE + (unsigned long) addr) >> 22;
-	//indexµÄ·¶Î§ÔÚ0-1024·¶Î§
+	//indexçš„èŒƒå›´åœ¨0-1024èŒƒå›´
 	index = (((unsigned long) addr) >> PAGE_SHIFT) & (PTRS_PER_PAGE-1);
 	while (nr > 0) {
-		/* ÅĞ¶Ïµ±Ç°Ò³±í»¹ÓĞ¶àÉÙÏî¿ÉÒÔ±»Ó³Éä   */
+		/* åˆ¤æ–­å½“å‰é¡µè¡¨è¿˜æœ‰å¤šå°‘é¡¹å¯ä»¥è¢«æ˜ å°„   */
 		unsigned long i = PTRS_PER_PAGE - index;
 
 		if (i > nr)
@@ -146,9 +146,9 @@ static int do_area(void * addr, unsigned long size,
 		nr -= i;
 		if (area_fn(dindex, index, i))
 			return -1;
-		/*ÏÂÒ»¸öÓ³ÉäÒ³±íµÄË÷Òı´Ó0¿ªÊ¼*/
+		/*ä¸‹ä¸€ä¸ªæ˜ å°„é¡µè¡¨çš„ç´¢å¼•ä»0å¼€å§‹*/
 		index = 0;
-		/*Ôö¼ÓÒ³Ä¿Â¼±íÖĞµÄË÷Òı*/
+		/*å¢åŠ é¡µç›®å½•è¡¨ä¸­çš„ç´¢å¼•*/
 		dindex++;
 	}
 	return 0;
@@ -160,12 +160,12 @@ void vfree(void * addr)
 
 	if (!addr)
 		return;
-	//½«ÊÍ·ÅµÄµØÖ·°´Ò³¶ÔÆë
+	//å°†é‡Šæ”¾çš„åœ°å€æŒ‰é¡µå¯¹é½
 	if ((PAGE_SIZE-1) & (unsigned long) addr) {
 		printk("Trying to vfree() bad address (%p)\n", addr);
 		return;
 	}
-	//´Óvmalloc·ÖÅäµÄÒ³±íµ±ÖĞÉ¨Ãè,ÕÒµ½ÒªÊÍ·ÅµÄ½Úµã£¬²¢ÊÍ·ÅÕÒµ½µÄ½Úµã
+	//ä»vmallocåˆ†é…çš„é¡µè¡¨å½“ä¸­æ‰«æ,æ‰¾åˆ°è¦é‡Šæ”¾çš„èŠ‚ç‚¹ï¼Œå¹¶é‡Šæ”¾æ‰¾åˆ°çš„èŠ‚ç‚¹
 	for (p = &vmlist ; (tmp = *p) ; p = &tmp->next) {
 		if (tmp->addr == addr) {
 			*p = tmp->next;
@@ -177,41 +177,41 @@ void vfree(void * addr)
 	printk("Trying to vfree() nonexistent vm area (%p)\n", addr);
 }
 
-/* ÓÃvamllocÁ½´Î·ÖÅäµÄµØÖ·ÊÇ²»¿ÉÄÜÁ¬ĞøµÄ£¬ÒòÎªÖĞ¼äÁôÓĞÒ»¸öPAGE_SIZE´óĞ¡µÄhole
- * ²¢ÇÒvamlloc·ÖÅäµÄµØÖ·±ØĞëÊÇÕûÒ³µÄ(´ó¿éÄÚ´æ)¡£Êµ¼ÊÉÏÊÇÓÃµÄÎïÀíÄÚ´æÊÇ²»Á¬ĞøµÄ¡£kmalloc
- * Ôò·ÖÅäµÄÊÇĞ¡ÄÚ´æ ,do_areaµÄÊ±ºò+TASK_SIZEµ½ÄÚºË¿Õ¼ä ????????
+/* ç”¨vamllocä¸¤æ¬¡åˆ†é…çš„åœ°å€æ˜¯ä¸å¯èƒ½è¿ç»­çš„ï¼Œå› ä¸ºä¸­é—´ç•™æœ‰ä¸€ä¸ªPAGE_SIZEå¤§å°çš„hole
+ * å¹¶ä¸”vamllocåˆ†é…çš„åœ°å€å¿…é¡»æ˜¯æ•´é¡µçš„(å¤§å—å†…å­˜)ã€‚å®é™…ä¸Šæ˜¯ç”¨çš„ç‰©ç†å†…å­˜æ˜¯ä¸è¿ç»­çš„ã€‚kmalloc
+ * åˆ™åˆ†é…çš„æ˜¯å°å†…å­˜ ,do_areaçš„æ—¶å€™+TASK_SIZEåˆ°å†…æ ¸ç©ºé—´ ????????
  */
 void * vmalloc(unsigned long size)
 {
 	void * addr;
 	struct vm_struct **p, *tmp, *area;
-	//sizeµØÖ·¶ÔÆë£¬²»×ãÒ³µÄ×÷ÎªÒ»ÕûÒ³À´´¦Àí£¬Ò²¾ÍÊÇÒ»Ò³µÄÕûÊı±¶
+	//sizeåœ°å€å¯¹é½ï¼Œä¸è¶³é¡µçš„ä½œä¸ºä¸€æ•´é¡µæ¥å¤„ç†ï¼Œä¹Ÿå°±æ˜¯ä¸€é¡µçš„æ•´æ•°å€
 	size = PAGE_ALIGN(size);
 	if (!size || size > high_memory)
 		return NULL;
-	//´ÓÄÚºËÖĞ·ÖÅäÒ»¸ö½á¹¹Ìå¸øarea
+	//ä»å†…æ ¸ä¸­åˆ†é…ä¸€ä¸ªç»“æ„ä½“ç»™area
 	area = (struct vm_struct *) kmalloc(sizeof(*area), GFP_KERNEL);
 	if (!area)
 		return NULL;
 
-	/* addrÖ¸ÏòµÄÊÇ8MBµÄÇ°Ò»¸öÎ»ÖÃ£¬vmalloc·ÖÅäµÄµØÖ·ÊÇ´Ó8MB¿ªÊ¼µÄ*/
+	/* addræŒ‡å‘çš„æ˜¯8MBçš„å‰ä¸€ä¸ªä½ç½®ï¼Œvmallocåˆ†é…çš„åœ°å€æ˜¯ä»8MBå¼€å§‹çš„*/
 	addr = (void *) ((high_memory + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1));
-	/*´Ë´¦ÎªÉ¶Òª¼ÓÒ»¸öPAGE_SIZE   ????   */
+	/*æ­¤å¤„ä¸ºå•¥è¦åŠ ä¸€ä¸ªPAGE_SIZE   ????   */
 	area->size = size + PAGE_SIZE;
 	area->next = NULL;
 	
-	/* ×¢Òâ´Ë´¦´úÂë±È½Ï¾«ÇÉ£¬µÚÒ»´ÎÔËĞĞµÄÊ±ºòforÑ­»·²¢²»»áÖ´ĞĞ£¬Ö±µ½ÏÂÒ»´Î¼´
-	 * *p = areaÖ´ĞĞºó£¬¼´vmlist=area£¬tmp->addrÖĞµØÖ·ÊÇË³Ğò´æ·ÅµÄ£¬²¢ÇÒÊÇÒÀ´ÎÔö´óµÄ
-	 * 8MB¿ªÊ¼     |----(ÒÑ±»Ê¹ÓÃ)---|------(¿ÕÏĞ´óĞ¡Îªsize+PAGE_SIZE)-----|----(ÒÑÊ¹ÓÃ)----|....µÈµÈ
+	/* æ³¨æ„æ­¤å¤„ä»£ç æ¯”è¾ƒç²¾å·§ï¼Œç¬¬ä¸€æ¬¡è¿è¡Œçš„æ—¶å€™forå¾ªç¯å¹¶ä¸ä¼šæ‰§è¡Œï¼Œç›´åˆ°ä¸‹ä¸€æ¬¡å³
+	 * *p = areaæ‰§è¡Œåï¼Œå³vmlist=areaï¼Œtmp->addrä¸­åœ°å€æ˜¯é¡ºåºå­˜æ”¾çš„ï¼Œå¹¶ä¸”æ˜¯ä¾æ¬¡å¢å¤§çš„
+	 * 8MBå¼€å§‹     |----(å·²è¢«ä½¿ç”¨)---|------(ç©ºé—²å¤§å°ä¸ºsize+PAGE_SIZE)-----|----(å·²ä½¿ç”¨)----|....ç­‰ç­‰
 	 */
 	for (p = &vmlist; (tmp = *p) ; p = &tmp->next) {
-		/*ÕÒµ½Ò»¸ö¿ÉÒÔ´æ·Åsize´óĞ¡µÄÇø¼ä£¬²¢½«ĞÂarea²åÈëµ½vmlistµ±ÖĞ*/
+		/*æ‰¾åˆ°ä¸€ä¸ªå¯ä»¥å­˜æ”¾sizeå¤§å°çš„åŒºé—´ï¼Œå¹¶å°†æ–°areaæ’å…¥åˆ°vmlistå½“ä¸­*/
 		if (size + (unsigned long) addr < (unsigned long) tmp->addr)
 			break;
-		//addrµØÖ·ÒÀ´ÎÏòºóÒ»ÏÂÒÆ¶¯
+		//addråœ°å€ä¾æ¬¡å‘åä¸€ä¸‹ç§»åŠ¨
 		addr = (void *) (tmp->size + (unsigned long) tmp->addr);
 	}
-	//½«ÉêÇëµÄareaÁ¬½Óµ½pËùÖ¸½ÚµãºóÃæ£¬
+	//å°†ç”³è¯·çš„areaè¿æ¥åˆ°pæ‰€æŒ‡èŠ‚ç‚¹åé¢ï¼Œ
 	area->addr = addr;
 	area->next = *p;
 	*p = area;
@@ -223,31 +223,31 @@ void * vmalloc(unsigned long size)
 }
 
 
-/* ·µ»ØÊµ¼Ê¶ÁÈ¡ÊıÁ¿
- * ´ÓµØÖ·addr´¦£¬¶ÁÈ¡count×Ö½Ú´æ·Åµ½buf´¦£¬
+/* è¿”å›å®é™…è¯»å–æ•°é‡
+ * ä»åœ°å€addrå¤„ï¼Œè¯»å–countå­—èŠ‚å­˜æ”¾åˆ°bufå¤„ï¼Œ
  */
 int vread(char *buf, char *addr, int count)
 {
 	struct vm_struct **p, *tmp;
 	char *vaddr, *buf_start = buf;
 	int n;
-	//É¨Ãèvmlist
+	//æ‰«ævmlist
 	for (p = &vmlist; (tmp = *p) ; p = &tmp->next) {
 		vaddr = (char *) tmp->addr;
-		/*´Ë´¦Ñ­»·Ò»¶¨ÊÇÔÚÏÂÃæÑ­»·ºóÃæÖ´ĞĞ£¬ÒòÎªÁ´±íÖĞµØÖ·ÊÇ´ÓĞ¡µ½´óÅÅÁĞµÄ*/
+		/*æ­¤å¤„å¾ªç¯ä¸€å®šæ˜¯åœ¨ä¸‹é¢å¾ªç¯åé¢æ‰§è¡Œï¼Œå› ä¸ºé“¾è¡¨ä¸­åœ°å€æ˜¯ä»å°åˆ°å¤§æ’åˆ—çš„*/
 		while (addr < vaddr) {
 			if (count == 0)
 				goto finished;
 			put_fs_byte('\0', buf++), addr++, count--;
 		}
-		/*ºÍvmallocÖĞµÄ+PAGE_SIZE¶ÔÓ¦*/
+		/*å’Œvmallocä¸­çš„+PAGE_SIZEå¯¹åº”*/
 		n = tmp->size - PAGE_SIZE;
 		if (addr > vaddr)
 			n -= addr - vaddr;
-		/* ½áºÏÉÏÃæÊ¾ÒâÍ¼£¬Èç¹ûÃ»ÓĞÕÒµ½ÕıÈ·µÄ½Úµã£¬Ôò»áÖ´ĞĞÉÏÃæµÄif,´ËÊ±
-		 * n¾Í»áĞ¡ÓÚ0,¾Í²»»áÖ´ĞĞÏÂÃæµÄwhile£¬Ö»ÓĞÕÒµ½ÕıÈ·µÄ½Úµã²Å»áÖ´ĞĞ
-		 * whileÖ´ĞĞºó»á½«Ê£ÏÂµÄËùÓĞ×Ö½Ú¶ÁÍê£¬Ç°ÌáÊÇcount»¹´óÓÚ0£¬Èç¹û¶ÁÍêÖ®ºó
-		 * countÈÔÈ»´óÓÚ0£¬ÔòºóÃæËùÓĞµÄÄÚÈİ¶¼Ìî³ä'\0',Ò²¾ÍÊÇÖ´ĞĞÉÏÃæµÄwhile
+		/* ç»“åˆä¸Šé¢ç¤ºæ„å›¾ï¼Œå¦‚æœæ²¡æœ‰æ‰¾åˆ°æ­£ç¡®çš„èŠ‚ç‚¹ï¼Œåˆ™ä¼šæ‰§è¡Œä¸Šé¢çš„if,æ­¤æ—¶
+		 * nå°±ä¼šå°äº0,å°±ä¸ä¼šæ‰§è¡Œä¸‹é¢çš„whileï¼Œåªæœ‰æ‰¾åˆ°æ­£ç¡®çš„èŠ‚ç‚¹æ‰ä¼šæ‰§è¡Œ
+		 * whileæ‰§è¡Œåä¼šå°†å‰©ä¸‹çš„æ‰€æœ‰å­—èŠ‚è¯»å®Œï¼Œå‰ææ˜¯countè¿˜å¤§äº0ï¼Œå¦‚æœè¯»å®Œä¹‹å
+		 * countä»ç„¶å¤§äº0ï¼Œåˆ™åé¢æ‰€æœ‰çš„å†…å®¹éƒ½å¡«å……'\0',ä¹Ÿå°±æ˜¯æ‰§è¡Œä¸Šé¢çš„while
 		 */
 		while (--n >= 0) {
 			if (count == 0)

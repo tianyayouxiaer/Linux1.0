@@ -48,7 +48,7 @@ struct route {
   unsigned long route[MAX_ROUTE];
 };
 
-/* ipĞ­ÒéÍ·µÄÑ¡ÏîÊı¾İ */
+/* ipåè®®å¤´çš„é€‰é¡¹æ•°æ® */
 struct options {
   struct route		record_route;
   struct route		loose_route;
@@ -63,19 +63,19 @@ struct options {
 
 
 struct iphdr {
-  /* °üÍ·³¤¶È£¬µ¥Î»ÊÇ4¸ö×Ö½Ú£¬IP°üÍ·×îÉÙ³¤¶ÈÎª20¸ö×Ö½Ú  */
+  /* åŒ…å¤´é•¿åº¦ï¼Œå•ä½æ˜¯4ä¸ªå­—èŠ‚ï¼ŒIPåŒ…å¤´æœ€å°‘é•¿åº¦ä¸º20ä¸ªå­—èŠ‚  */
   unsigned char		ihl:4,             
-			version:4;              /* Ğ­Òé°æ±¾ */
-  unsigned char		tos;               /* ·şÎñÀàĞÍ */
-  unsigned short	tot_len;        /* °ü×Ü¹²³¤¶È */
+			version:4;              /* åè®®ç‰ˆæœ¬ */
+  unsigned char		tos;               /* æœåŠ¡ç±»å‹ */
+  unsigned short	tot_len;        /* åŒ…æ€»å…±é•¿åº¦ */
   unsigned short	id;
-  unsigned short	frag_off;       /* ·Ö¶ÎÆ«ÒÆ */
-  unsigned char		ttl;                /* ´æ»îÊ±¼ä */
-  unsigned char		protocol;  /* ±íÃ÷ÉÏ²ãÊ¹ÓÃµÄĞ­Òé */
-  unsigned short	check;     /* ipĞ­ÒéĞ£ÑéºÍ */
+  unsigned short	frag_off;       /* åˆ†æ®µåç§» */
+  unsigned char		ttl;                /* å­˜æ´»æ—¶é—´ */
+  unsigned char		protocol;  /* è¡¨æ˜ä¸Šå±‚ä½¿ç”¨çš„åè®® */
+  unsigned short	check;     /* ipåè®®æ ¡éªŒå’Œ */
   unsigned long		saddr;
   unsigned long		daddr;
-  /*The options start here. */   /* Ñ¡ÏîÊı¾İ½ô°¤×ÅºóÃæ´æ·Å */
+  /*The options start here. */   /* é€‰é¡¹æ•°æ®ç´§æŒ¨ç€åé¢å­˜æ”¾ */
 };
 
 

@@ -52,7 +52,7 @@
 
 #include "unix.h"
 
-/* UNIXÓòĞ­ÒéÊı¾İµÄÊı×é */
+/* UNIXåŸŸåè®®æ•°æ®çš„æ•°ç»„ */
 struct unix_proto_data unix_datas[NSOCKETS];
 static int unix_debug = 0;
 
@@ -231,9 +231,9 @@ unix_proto_recv(struct socket *sock, void *buff, int len, int nonblock,
   return(unix_proto_read(sock, (char *) buff, len, nonblock));
 }
 
-/* ÔÚĞ­ÒéÊı×éÖĞ²éÕÒÂú×ãÌõ¼şµÄĞ­ÒéÊı¾İ£¬
- * ÕÒÕÒÌõ¼şÎªĞ­Òé×åºÍinode£¬×îÖÕ½á¹ûÒ»°ãÊÇ 
- * clientÕÒµ½server¶Ë¶ÔÓ¦µÄunix_proto_data½á¹¹  
+/* åœ¨åè®®æ•°ç»„ä¸­æŸ¥æ‰¾æ»¡è¶³æ¡ä»¶çš„åè®®æ•°æ®ï¼Œ
+ * æ‰¾æ‰¾æ¡ä»¶ä¸ºåè®®æ—å’Œinodeï¼Œæœ€ç»ˆç»“æœä¸€èˆ¬æ˜¯ 
+ * clientæ‰¾åˆ°serverç«¯å¯¹åº”çš„unix_proto_dataç»“æ„  
  */
 static struct unix_proto_data *
 unix_data_lookup(struct sockaddr_un *sockun, int sockaddr_len,
@@ -250,15 +250,15 @@ unix_data_lookup(struct sockaddr_un *sockun, int sockaddr_len,
   return(NULL);
 }
 
-/* ·ÖÅäÒ»¸öunixÓòµÄĞ­ÒéÊı¾İ£¬¸Ãº¯ÊıÖ»ÓĞÔÚunix_proto_createº¯ÊıÖĞµ÷ÓÃ
-  * Ò²¾ÍÊÇ·ÖÅäunixĞ­ÒéÓòÌ×½Ó×ÖÊ±²Å»áÓÃµ½
+/* åˆ†é…ä¸€ä¸ªunixåŸŸçš„åè®®æ•°æ®ï¼Œè¯¥å‡½æ•°åªæœ‰åœ¨unix_proto_createå‡½æ•°ä¸­è°ƒç”¨
+  * ä¹Ÿå°±æ˜¯åˆ†é…unixåè®®åŸŸå¥—æ¥å­—æ—¶æ‰ä¼šç”¨åˆ°
   */
 static struct unix_proto_data *unix_data_alloc(void)
 {
   struct unix_proto_data *upd;
 
   cli();
-  /* É¨ÃèÊı×é */
+  /* æ‰«ææ•°ç»„ */
   for(upd = unix_datas; upd <= last_unix_data; ++upd) {
 	if (!upd->refcnt) {
 		upd->refcnt = -1;	/* unix domain socket not yet initialised - bgm */
@@ -277,7 +277,7 @@ static struct unix_proto_data *unix_data_alloc(void)
   return(NULL);
 }
 
-/* Ôö¼ÓupdµÄÒıÓÃ¼ÆÊı */
+/* å¢åŠ updçš„å¼•ç”¨è®¡æ•° */
 static inline void
 unix_data_ref(struct unix_proto_data *upd)
 {
@@ -289,7 +289,7 @@ unix_data_ref(struct unix_proto_data *upd)
   dprintf(1, "UNIX: data_ref: refing data 0x%x(%d)\n", upd, upd->refcnt);
 }
 
-/* ¼õÉÙupdµÄÒıÓÃ¼ÆÊı */
+/* å‡å°‘updçš„å¼•ç”¨è®¡æ•° */
 static void unix_data_deref(struct unix_proto_data *upd)
 {
   if (!upd) {
@@ -297,7 +297,7 @@ static void unix_data_deref(struct unix_proto_data *upd)
     return;
   }
 
-  /* Èç¹ûÒıÓÃ¼ÆÊıÎª1£¬ÔòÊÍ·ÅupdµÄbuf */
+  /* å¦‚æœå¼•ç”¨è®¡æ•°ä¸º1ï¼Œåˆ™é‡Šæ”¾updçš„buf */
   if (upd->refcnt == 1) {
 	dprintf(1, "UNIX: data_deref: releasing data 0x%x\n", upd);
 	if (upd->buf) {
@@ -314,7 +314,7 @@ static void unix_data_deref(struct unix_proto_data *upd)
  * Upon a create, we allocate an empty protocol data,
  * and grab a page to buffer writes.
  */
-/* ´´½¨Ò»¸öUNIXÓòµÄsocket
+/* åˆ›å»ºä¸€ä¸ªUNIXåŸŸçš„socket
  */
 static int unix_proto_create(struct socket *sock, int protocol)
 {
@@ -337,8 +337,8 @@ static int unix_proto_create(struct socket *sock, int protocol)
   upd->protocol = protocol;
   upd->socket = sock;
   UN_DATA(sock) = upd;
-  /* ´ËÊ±ÉèÖÃupdµÄÒıÓÃ¼ÆÊıÎª1£¬
-    * µ±socketpairÊ±ÔòÔÚÔö¼ÓÒ»¸öÒıÓÃ¼ÆÊı
+  /* æ­¤æ—¶è®¾ç½®updçš„å¼•ç”¨è®¡æ•°ä¸º1ï¼Œ
+    * å½“socketpairæ—¶åˆ™åœ¨å¢åŠ ä¸€ä¸ªå¼•ç”¨è®¡æ•°
     */
   upd->refcnt = 1;	/* Now its complete - bgm */
   dprintf(1, "UNIX: create: allocated data 0x%x\n", upd);
@@ -346,7 +346,7 @@ static int unix_proto_create(struct socket *sock, int protocol)
 }
 
 
-/* ÔÚacceptµÄÊ±ºò»á¸´ÖÆÒ»¸ö¼àÌıµÄÎÄ¼şÃèÊö·û */
+/* åœ¨acceptçš„æ—¶å€™ä¼šå¤åˆ¶ä¸€ä¸ªç›‘å¬çš„æ–‡ä»¶æè¿°ç¬¦ */
 static int unix_proto_dup(struct socket *newsock, struct socket *oldsock)
 {
   struct unix_proto_data *upd = UN_DATA(oldsock);
@@ -354,7 +354,7 @@ static int unix_proto_dup(struct socket *newsock, struct socket *oldsock)
   return(unix_proto_create(newsock, upd->protocol));
 }
 
-/* ÊÍ·ÅÌ×½Ó×Ö */
+/* é‡Šæ”¾å¥—æ¥å­— */
 static int
 unix_proto_release(struct socket *sock, struct socket *peer)
 {
@@ -366,7 +366,7 @@ unix_proto_release(struct socket *sock, struct socket *peer)
 	printk("UNIX: release: socket link mismatch!\n");
 	return(-EINVAL);
   }
-  /* ÏÈÊÍ·Å×Ô¼ºÕ¼ÓÃµÄinode½Úµã */
+  /* å…ˆé‡Šæ”¾è‡ªå·±å ç”¨çš„inodeèŠ‚ç‚¹ */
   if (upd->inode) {
 	dprintf(1, "UNIX: release: releasing inode 0x%x\n", upd->inode);
 	iput(upd->inode);
@@ -374,9 +374,9 @@ unix_proto_release(struct socket *sock, struct socket *peer)
   }
   UN_DATA(sock) = NULL;
   upd->socket = NULL;
-  /* ÊÍ·Å¶Ô¶ÔµÈÒıÓÃµÄ¼ÆÊı */
+  /* é‡Šæ”¾å¯¹å¯¹ç­‰å¼•ç”¨çš„è®¡æ•° */
   if (upd->peerupd) unix_data_deref(upd->peerupd);
-  /* ÊÍ·Å×Ô¼ºµÄÒıÓÃ¼ÆÊı */
+  /* é‡Šæ”¾è‡ªå·±çš„å¼•ç”¨è®¡æ•° */
   unix_data_deref(upd);
   return(0);
 }
@@ -392,12 +392,12 @@ unix_proto_release(struct socket *sock, struct socket *peer)
  *	  I think thats what BSD does in the case of datagram sockets...
  */
 
-/* ÔÚÕâÀï°ó¶¨µÄ¹ı³ÌÖ÷ÒªÊÇ¸ù¾İ·şÎñ¶ËµÄÌ×½Ó×ÖÀ´´´½¨Ò»¸ösockÎÄ¼ş */
+/* åœ¨è¿™é‡Œç»‘å®šçš„è¿‡ç¨‹ä¸»è¦æ˜¯æ ¹æ®æœåŠ¡ç«¯çš„å¥—æ¥å­—æ¥åˆ›å»ºä¸€ä¸ªsockæ–‡ä»¶ */
 static int unix_proto_bind(struct socket *sock, struct sockaddr *umyaddr,
 		int sockaddr_len)
 {
   char fname[sizeof(((struct sockaddr_un *)0)->sun_path) + 1];
-  /* »ñÈ¡UNIXÓòµÄĞ­ÒéÊı¾İ */
+  /* è·å–UNIXåŸŸçš„åè®®æ•°æ® */
   struct unix_proto_data *upd = UN_DATA(sock);
   unsigned long old_fs;
   int i;
@@ -417,7 +417,7 @@ static int unix_proto_bind(struct socket *sock, struct sockaddr *umyaddr,
   if(er)
   	return er;
   memcpy_fromfs(&upd->sockaddr_un, umyaddr, sockaddr_len);
-  /* ÉèÖÃ×Ö·û´®½áÊø */
+  /* è®¾ç½®å­—ç¬¦ä¸²ç»“æŸ */
   upd->sockaddr_un.sun_path[sockaddr_len-UN_PATH_OFFSET] = '\0';
   if (upd->sockaddr_un.sun_family != AF_UNIX) {
 	dprintf(1, "UNIX: bind: family is %d, not AF_UNIX(%d)\n",
@@ -425,15 +425,15 @@ static int unix_proto_bind(struct socket *sock, struct sockaddr *umyaddr,
 	return(-EINVAL);
   }
 
-  /* ½«Â·¾¶¿½±´µ½fnameµ±ÖĞ */
+  /* å°†è·¯å¾„æ‹·è´åˆ°fnameå½“ä¸­ */
   memcpy(fname, upd->sockaddr_un.sun_path, sockaddr_len-UN_PATH_OFFSET);
   fname[sockaddr_len-UN_PATH_OFFSET] = '\0';
   old_fs = get_fs();
   set_fs(get_ds());
-  /* ×¢ÒâÕâÀïÓÖÖØĞÂ´´½¨ÁËfname */
+  /* æ³¨æ„è¿™é‡Œåˆé‡æ–°åˆ›å»ºäº†fname */
   i = do_mknod(fname, S_IFSOCK | S_IRWXUGO, 0);
-  /* ×¢ÒâÕâÀïÔÚopen_nameiÖ®ºó²¢Ã»ÓĞµ÷ÓÃiput,
-    * Èç¹ûµ÷ÓÃÁË£¬ÔòÔÚ¸ßËÙ»º´æÖĞÎÄ¼ş¶ÔÓ¦µÄinode¾Í±»ÊÍ·ÅÁË£¬Ò²¾ÍÊÇÒıÓÃ¼ÆÊıÎª0 ¡£
+  /* æ³¨æ„è¿™é‡Œåœ¨open_nameiä¹‹åå¹¶æ²¡æœ‰è°ƒç”¨iput,
+    * å¦‚æœè°ƒç”¨äº†ï¼Œåˆ™åœ¨é«˜é€Ÿç¼“å­˜ä¸­æ–‡ä»¶å¯¹åº”çš„inodeå°±è¢«é‡Šæ”¾äº†ï¼Œä¹Ÿå°±æ˜¯å¼•ç”¨è®¡æ•°ä¸º0 ã€‚
     */
   if (i == 0) i = open_namei(fname, 0, S_IFSOCK, &upd->inode, NULL);
   set_fs(old_fs);
@@ -456,14 +456,14 @@ static int unix_proto_bind(struct socket *sock, struct sockaddr *umyaddr,
  * wouldn't be the case!)
  */
 
-/* UNIXÓòµÄÁ¬½Óº¯Êı */
+/* UNIXåŸŸçš„è¿æ¥å‡½æ•° */
 static int
 unix_proto_connect(struct socket *sock, struct sockaddr *uservaddr,
 		   int sockaddr_len, int flags)
 {
   char fname[sizeof(((struct sockaddr_un *)0)->sun_path) + 1];
   struct sockaddr_un sockun;
-  /* server¶ÔÓ¦µÄĞ­ÒéÊı¾İ */
+  /* serverå¯¹åº”çš„åè®®æ•°æ® */
   struct unix_proto_data *serv_upd;
   struct inode *inode;
   unsigned long old_fs;
@@ -478,16 +478,16 @@ unix_proto_connect(struct socket *sock, struct sockaddr *uservaddr,
 	return(-EINVAL);
   }
 
-  /* ÕıÔÚÁ¬½Ó»òÒÑ¾­Á¬½ÓÉÏÁË£¬ÔòÖ±½Ó·µ»Ø */
+  /* æ­£åœ¨è¿æ¥æˆ–å·²ç»è¿æ¥ä¸Šäº†ï¼Œåˆ™ç›´æ¥è¿”å› */
   if (sock->state == SS_CONNECTING) return(-EINPROGRESS);
   if (sock->state == SS_CONNECTED) return(-EISCONN);
 
   er=verify_area(VERIFY_READ, uservaddr, sockaddr_len);
   if(er)
   	return er;
-  /* ½«Êı¾İ¿½±´µ½sockunµ±ÖĞ */
+  /* å°†æ•°æ®æ‹·è´åˆ°sockunå½“ä¸­ */
   memcpy_fromfs(&sockun, uservaddr, sockaddr_len);
-  /* ÉèÖÃÂ·¾¶½áÊø·û */
+  /* è®¾ç½®è·¯å¾„ç»“æŸç¬¦ */
   sockun.sun_path[sockaddr_len-UN_PATH_OFFSET] = '\0';
   if (sockun.sun_family != AF_UNIX) {
 	dprintf(1, "UNIX: connect: family is %d, not AF_UNIX(%d)\n",
@@ -505,14 +505,14 @@ unix_proto_connect(struct socket *sock, struct sockaddr *uservaddr,
   fname[sockaddr_len-UN_PATH_OFFSET] = '\0';
   old_fs = get_fs();
   set_fs(get_ds());
-  /* ´ò¿ªÂ·¾¶¶ÔÓ¦ÎÄ¼şµÄinode */
+  /* æ‰“å¼€è·¯å¾„å¯¹åº”æ–‡ä»¶çš„inode */
   i = open_namei(fname, 0, S_IFSOCK, &inode, NULL);
   set_fs(old_fs);
   if (i < 0) {
 	dprintf(1, "UNIX: connect: can't open socket %s\n", fname);
 	return(i);
   }
-  /* ²éÕÒµÃµ½·şÎñÆ÷¶ËµÄupd */
+  /* æŸ¥æ‰¾å¾—åˆ°æœåŠ¡å™¨ç«¯çš„upd */
   serv_upd = unix_data_lookup(&sockun, sockaddr_len, inode);
   iput(inode);
   if (!serv_upd) {
@@ -525,7 +525,7 @@ unix_proto_connect(struct socket *sock, struct sockaddr *uservaddr,
 	return(i);
   }
   if (sock->conn) {
-        /* Ôö¼Ó·şÎñ¶ËsocketµÄĞ­ÒéÊı¾İµÄÒıÓÃ¼ÆÊı */
+        /* å¢åŠ æœåŠ¡ç«¯socketçš„åè®®æ•°æ®çš„å¼•ç”¨è®¡æ•° */
 	unix_data_ref(UN_DATA(sock->conn));
 	UN_DATA(sock)->peerupd = UN_DATA(sock->conn); /* ref server */
   }
@@ -542,13 +542,13 @@ unix_proto_connect(struct socket *sock, struct sockaddr *uservaddr,
 static int
 unix_proto_socketpair(struct socket *sock1, struct socket *sock2)
 {
-  /* ÏÖ»ñÈ¡Á½¸ösocketµÄĞ­ÒéÊı¾İ */
+  /* ç°è·å–ä¸¤ä¸ªsocketçš„åè®®æ•°æ® */
   struct unix_proto_data *upd1 = UN_DATA(sock1), *upd2 = UN_DATA(sock2);
 
-  /* Ôö¼ÓÒıÓÃ¼ÆÊı£¬ÒòÎªÃ¿¸öunix_proto_data¶¼ÓĞ×Ô¼º±¾ÉíºÍ¶ÔµÈµÄpeerupdÖ¸Ïò */
+  /* å¢åŠ å¼•ç”¨è®¡æ•°ï¼Œå› ä¸ºæ¯ä¸ªunix_proto_dataéƒ½æœ‰è‡ªå·±æœ¬èº«å’Œå¯¹ç­‰çš„peerupdæŒ‡å‘ */
   unix_data_ref(upd1);
   unix_data_ref(upd2);
-  /* ÉèÖÃÏà»¥µÄ¶ÔµÈÁ¬½Ó */
+  /* è®¾ç½®ç›¸äº’çš„å¯¹ç­‰è¿æ¥ */
   upd1->peerupd = upd2;
   upd2->peerupd = upd1;
   return(0);
@@ -556,7 +556,7 @@ unix_proto_socketpair(struct socket *sock1, struct socket *sock2)
 
 
 /* On accept, we ref the peer's data for safe writes. */
-/* unixĞ­ÒéÓòµÄacceptº¯Êı */
+/* unixåè®®åŸŸçš„acceptå‡½æ•° */
 static int
 unix_proto_accept(struct socket *sock, struct socket *newsock, int flags)
 {
@@ -569,8 +569,8 @@ unix_proto_accept(struct socket *sock, struct socket *newsock, int flags)
    * If there aren't any sockets awaiting connection,
    * then wait for one, unless nonblocking.
    */
-  /* Èç¹ûÃ»ÓĞµÈ´ıÁ¬½ÓµÄsocket£¬ÇÒÌ×½Ó×ÖÊÇ·Ç×èÈûµÄÔòÖ±½Ó·µ»Ø
-    * ·ñÔòË¯Ãß
+  /* å¦‚æœæ²¡æœ‰ç­‰å¾…è¿æ¥çš„socketï¼Œä¸”å¥—æ¥å­—æ˜¯éé˜»å¡çš„åˆ™ç›´æ¥è¿”å›
+    * å¦åˆ™ç¡çœ 
     */
   while(!(clientsock = sock->iconn)) {
 	if (flags & O_NONBLOCK) return(-EAGAIN);
@@ -585,27 +585,27 @@ unix_proto_accept(struct socket *sock, struct socket *newsock, int flags)
    * Great. Finish the connection relative to server and client,
    * wake up the client and return the new fd to the server.
    */
-  /* È¡³öÆäÖĞÒ»¸öÁ¬½ÓµÄsocket */
+  /* å–å‡ºå…¶ä¸­ä¸€ä¸ªè¿æ¥çš„socket */
   sock->iconn = clientsock->next;
   clientsock->next = NULL;
 
-  /* ÉèÖÃÁ½¶ËÌ×½Ó×ÖµÄ¶ÔµÈÁ¬½Óconn×Ö¶Î£¬Í¬Ê±ÉèÖÃ×´Ì¬ÎªÁ¬½Ó×´Ì¬ */
+  /* è®¾ç½®ä¸¤ç«¯å¥—æ¥å­—çš„å¯¹ç­‰è¿æ¥connå­—æ®µï¼ŒåŒæ—¶è®¾ç½®çŠ¶æ€ä¸ºè¿æ¥çŠ¶æ€ */
   newsock->conn = clientsock;
   clientsock->conn = newsock;
-  /* ÏÈÉèÖÃ¿Í»§¶ËÌ×½Ó×ÖµÄ×´Ì¬ÎªÁ¬½Ó×´Ì¬£¬
-    * ÒòÎª´ËÊ±¿Í»§¶ËÌ×½Ó×ÖÕıÔÚ×èÈûµÄµÈ´ı·şÎñ¶ËµÄaccept 
-    * ÔÚ¸Éº¯Êı×îºóÒ»¾ä»½ĞÑµÈ´ı¿Í»§¶ËÌ×½Ó×ÖµÄ½ø³Ì 
+  /* å…ˆè®¾ç½®å®¢æˆ·ç«¯å¥—æ¥å­—çš„çŠ¶æ€ä¸ºè¿æ¥çŠ¶æ€ï¼Œ
+    * å› ä¸ºæ­¤æ—¶å®¢æˆ·ç«¯å¥—æ¥å­—æ­£åœ¨é˜»å¡çš„ç­‰å¾…æœåŠ¡ç«¯çš„accept 
+    * åœ¨å¹²å‡½æ•°æœ€åä¸€å¥å”¤é†’ç­‰å¾…å®¢æˆ·ç«¯å¥—æ¥å­—çš„è¿›ç¨‹ 
     */
   clientsock->state = SS_CONNECTED;
   newsock->state = SS_CONNECTED;
-  /* Ôö¼Ó¿Í»§¶ËµÄÒıÓÃ¼ÆÊıºÍĞÂµÄÌ×½Ó×Ö¶ÔµÈÁ¬½ÓÌ×½Ó×Ö£¬
-    * ÒòÎª´ËÊ±ĞÂµÄÌ×½Ó×ÖÓĞ¸öÖ¸ÕëÖ¸Ïòclient
+  /* å¢åŠ å®¢æˆ·ç«¯çš„å¼•ç”¨è®¡æ•°å’Œæ–°çš„å¥—æ¥å­—å¯¹ç­‰è¿æ¥å¥—æ¥å­—ï¼Œ
+    * å› ä¸ºæ­¤æ—¶æ–°çš„å¥—æ¥å­—æœ‰ä¸ªæŒ‡é’ˆæŒ‡å‘client
     */
   unix_data_ref(UN_DATA(clientsock));
   UN_DATA(newsock)->peerupd	       = UN_DATA(clientsock);
   UN_DATA(newsock)->sockaddr_un        = UN_DATA(sock)->sockaddr_un;
   UN_DATA(newsock)->sockaddr_len       = UN_DATA(sock)->sockaddr_len;
-  /* »½ĞÑµÈ´ı¿Í»§¶ËÌ×½Ó×ÖµÄ½ø³Ì */
+  /* å”¤é†’ç­‰å¾…å®¢æˆ·ç«¯å¥—æ¥å­—çš„è¿›ç¨‹ */
   wake_up_interruptible(clientsock->wait);
   return(0);
 }
@@ -656,7 +656,7 @@ unix_proto_read(struct socket *sock, char *ubuf, int size, int nonblock)
 
   if ((todo = size) <= 0) return(0);
   upd = UN_DATA(sock);
-  /* Èç¹û»º´æÖĞÃ»ÓĞÊı¾İ¿É¶Á£¬Ôò»áµÈ´ı£¬Èç¹ûÊÇ·Ç×èÈû£¬ÔòÖ±½Ó·µ»Ø */
+  /* å¦‚æœç¼“å­˜ä¸­æ²¡æœ‰æ•°æ®å¯è¯»ï¼Œåˆ™ä¼šç­‰å¾…ï¼Œå¦‚æœæ˜¯éé˜»å¡ï¼Œåˆ™ç›´æ¥è¿”å› */
   while(!(avail = UN_BUF_AVAIL(upd))) {
 	if (sock->state != SS_CONNECTED) {
 		dprintf(1, "UNIX: read: socket not connected\n");
@@ -680,13 +680,13 @@ unix_proto_read(struct socket *sock, char *ubuf, int size, int nonblock)
   do {
 	int part, cando;
 
-        /* ³öÏÖÎÊÌâÉ±ËÀ½ø³Ì */
+        /* å‡ºç°é—®é¢˜æ€æ­»è¿›ç¨‹ */
 	if (avail <= 0) {
 		printk("UNIX: read: AVAIL IS NEGATIVE!!!\n");
 		send_sig(SIGKILL, current, 1);
 		return(-EPIPE);
 	}
-        /* »ñÈ¡¿ÉÒÔ¶ÁÈ¡×Ö½ÚµÄÊıÁ¿ */
+        /* è·å–å¯ä»¥è¯»å–å­—èŠ‚çš„æ•°é‡ */
 	if ((cando = todo) > avail) cando = avail;
 	if (cando >(part = BUF_SIZE - upd->bp_tail)) cando = part;
 	dprintf(1, "UNIX: read: avail=%d, todo=%d, cando=%d\n",
@@ -696,19 +696,19 @@ unix_proto_read(struct socket *sock, char *ubuf, int size, int nonblock)
 		unix_unlock(upd);
 		return er;
 	}
-        /* ÏÈ°Ñupd->bp_tailÖ®ºócando´óĞ¡µÄ»º´æ¿½±´µ½ubufµ±ÖĞ */
+        /* å…ˆæŠŠupd->bp_tailä¹‹åcandoå¤§å°çš„ç¼“å­˜æ‹·è´åˆ°ubufå½“ä¸­ */
 	memcpy_tofs(ubuf, upd->buf + upd->bp_tail, cando);
-        /* ´Ë´¦ÒÆ¶¯ÒÑ´¦Àí×Ö½ÚµÄÄ©Î² */
+        /* æ­¤å¤„ç§»åŠ¨å·²å¤„ç†å­—èŠ‚çš„æœ«å°¾ */
 	upd->bp_tail =(upd->bp_tail + cando) &(BUF_SIZE-1);
 	ubuf += cando;
 	todo -= cando;
-        /* »½ĞÑ¶ÔµÈsocketµÄ½ø³ÌµÈ´ı¶ÓÁĞ */
+        /* å”¤é†’å¯¹ç­‰socketçš„è¿›ç¨‹ç­‰å¾…é˜Ÿåˆ— */
 	if (sock->state == SS_CONNECTED)
 		wake_up_interruptible(sock->conn->wait);
 	avail = UN_BUF_AVAIL(upd);
   } while(todo && avail);
   unix_unlock(upd);
-  /* ·µ»ØÊµ¼Ê¶ÁÈ¡µÄ×Ö½ÚÊı */
+  /* è¿”å›å®é™…è¯»å–çš„å­—èŠ‚æ•° */
   return(size - todo);
 }
 
@@ -736,7 +736,7 @@ unix_proto_write(struct socket *sock, char *ubuf, int size, int nonblock)
   }
   pupd = UN_DATA(sock)->peerupd;	/* safer than sock->conn */
 
-  /* ¼ÆËã»¹¿ÉÒÔĞ´¶àÉÙ×Ö½Ú */
+  /* è®¡ç®—è¿˜å¯ä»¥å†™å¤šå°‘å­—èŠ‚ */
   while(!(space = UN_BUF_SPACE(pupd))) {
 	dprintf(1, "UNIX: write: no space left...\n");
 	if (nonblock) return(-EAGAIN);
@@ -787,9 +787,9 @@ unix_proto_write(struct socket *sock, char *ubuf, int size, int nonblock)
 		unix_unlock(pupd);
 		return er;
 	}
-        /* ½«»º´æ¿½±´µ½pupd->bufµ±ÖĞ */
+        /* å°†ç¼“å­˜æ‹·è´åˆ°pupd->bufå½“ä¸­ */
 	memcpy_fromfs(pupd->buf + pupd->bp_head, ubuf, cando);
-        /* ÒÆ¶¯headµÄÎ»ÖÃ */
+        /* ç§»åŠ¨headçš„ä½ç½® */
 	pupd->bp_head =(pupd->bp_head + cando) &(BUF_SIZE-1);
 	ubuf += cando;
 	todo -= cando;
@@ -983,8 +983,8 @@ static struct proto_ops unix_proto_ops = {
   NULL				/* unix_proto_fcntl	*/
 };
 
-/* AF_UNIX×åĞ­Òé²Ù×÷º¯Êı£¬Í¬Ê±×¢²áÉè±¸µÄÎÄ¼ş²Ù×÷·û
-  * ºÍ¶ÔÓ¦µÄUNIXĞ­Òé×åµÄ²Ù×÷º¯Êı¼¯ºÏ
+/* AF_UNIXæ—åè®®æ“ä½œå‡½æ•°ï¼ŒåŒæ—¶æ³¨å†Œè®¾å¤‡çš„æ–‡ä»¶æ“ä½œç¬¦
+  * å’Œå¯¹åº”çš„UNIXåè®®æ—çš„æ“ä½œå‡½æ•°é›†åˆ
   */
 void unix_proto_init(struct ddi_proto *pro)
 {

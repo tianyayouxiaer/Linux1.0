@@ -51,45 +51,45 @@
  * Most of it is for TCP, and not used by any of
  * the other protocols.
  */
-/* ÍøÂç²ãÊı¾İ½á¹¹ 
+/* ç½‘ç»œå±‚æ•°æ®ç»“æ„ 
  */
 struct sock {
   struct options		*opt;
-  /*wmem_allocÊÇÒ»¸ö¼ÆÊıÆ÷£¬ÓÃÀ´ÀÛ¼ÆÎª±¾²å¿Ú·ÖÅäµÄsk_buff´æ´¢¿Õ¼ä£¬
-    * Ò»°ã²»Ó¦¸Ã³¬¹ıÏŞ¶îsndbuf
+  /*wmem_allocæ˜¯ä¸€ä¸ªè®¡æ•°å™¨ï¼Œç”¨æ¥ç´¯è®¡ä¸ºæœ¬æ’å£åˆ†é…çš„sk_buffå­˜å‚¨ç©ºé—´ï¼Œ
+    * ä¸€èˆ¬ä¸åº”è¯¥è¶…è¿‡é™é¢sndbuf
     */
   volatile unsigned long	wmem_alloc;
-  /* µ±Ç°¶Á»º³åÇø´óĞ¡£¬¸ÃÖµ²»¿É´óÓÚÏµÍ³¹æ¶¨µÄ×î´óÖµ
+  /* å½“å‰è¯»ç¼“å†²åŒºå¤§å°ï¼Œè¯¥å€¼ä¸å¯å¤§äºç³»ç»Ÿè§„å®šçš„æœ€å¤§å€¼
     */
   volatile unsigned long	rmem_alloc;
-  /* ±íÊ¾Ó¦ÓÃ³ÌĞòÏÂÒ»´ÎĞ´Êı¾İÊ±Ëù¶ÔÓ¦µÄµÚÒ»¸ö×Ö½ÚµÄĞòÁĞºÅ
+  /* è¡¨ç¤ºåº”ç”¨ç¨‹åºä¸‹ä¸€æ¬¡å†™æ•°æ®æ—¶æ‰€å¯¹åº”çš„ç¬¬ä¸€ä¸ªå­—èŠ‚çš„åºåˆ—å·
     */
   unsigned long			write_seq;
-  /* ±íÊ¾±¾µØ½«Òª·¢ËÍµÄÏÂÒ»¸öÊı¾İ°üÖĞµÚÒ»¸ö×Ö½Ú¶ÔÓ¦µÄĞòÁĞºÅ
+  /* è¡¨ç¤ºæœ¬åœ°å°†è¦å‘é€çš„ä¸‹ä¸€ä¸ªæ•°æ®åŒ…ä¸­ç¬¬ä¸€ä¸ªå­—èŠ‚å¯¹åº”çš„åºåˆ—å·
     */
   unsigned long			sent_seq;
-  /* ±íÊ¾±¾µØÏ£Íû´ÓÔ¶¶Ë½ÓÊÕµÄÏÂÒ»¸öÊı¾İµÄĞòÁĞºÅ
+  /* è¡¨ç¤ºæœ¬åœ°å¸Œæœ›ä»è¿œç«¯æ¥æ”¶çš„ä¸‹ä¸€ä¸ªæ•°æ®çš„åºåˆ—å·
     */
   unsigned long			acked_seq;
-  /* Ó¦ÓÃ³ÌĞòÓĞ´ı¶ÁÈ¡(µ«ÉĞÎ´¶ÁÈ¡)Êı¾İµÄµÚÒ»¸öĞòÁĞºÅ£¬
-    * Èç¹ûcopied_seq=100£¬ÔòĞòÁĞºÅ100Ö®Ç°µÄÊı¾İ¾ùÒÑ±»ÓÃ»§¶ÁÈ¡
-    * ĞòÁĞºÅ100Ö®ºóµÄÊı¾İ¶¼Ã»ÓĞ±»¶ÁÈ¡ 
+  /* åº”ç”¨ç¨‹åºæœ‰å¾…è¯»å–(ä½†å°šæœªè¯»å–)æ•°æ®çš„ç¬¬ä¸€ä¸ªåºåˆ—å·ï¼Œ
+    * å¦‚æœcopied_seq=100ï¼Œåˆ™åºåˆ—å·100ä¹‹å‰çš„æ•°æ®å‡å·²è¢«ç”¨æˆ·è¯»å–
+    * åºåˆ—å·100ä¹‹åçš„æ•°æ®éƒ½æ²¡æœ‰è¢«è¯»å– 
     */
   unsigned long			copied_seq;
-  /* ±íÊ¾Ä¿Ç°±¾µØ½ÓÊÕµ½µÄ¶Ô±¾µØ·¢ËÍÊı¾İµÄÓ¦´ğĞòÁĞºÅ
+  /* è¡¨ç¤ºç›®å‰æœ¬åœ°æ¥æ”¶åˆ°çš„å¯¹æœ¬åœ°å‘é€æ•°æ®çš„åº”ç­”åºåˆ—å·
     */
   unsigned long			rcv_ack_seq;
-  /* ´°¿Ú´óĞ¡£¬ÊÇÒ»¸ö¾ø¶ÔÖµ£¬±íÊ¾±¾µØ½«Òª·¢ËÍÊı¾İ°üÖĞËù°üº¬×îºóÒ»¸öÊı¾İµÄĞòÁĞºÅ£¬
-    * ²»¿É´óÓÚwindow_seq
+  /* çª—å£å¤§å°ï¼Œæ˜¯ä¸€ä¸ªç»å¯¹å€¼ï¼Œè¡¨ç¤ºæœ¬åœ°å°†è¦å‘é€æ•°æ®åŒ…ä¸­æ‰€åŒ…å«æœ€åä¸€ä¸ªæ•°æ®çš„åºåˆ—å·ï¼Œ
+    * ä¸å¯å¤§äºwindow_seq
     */
   unsigned long			window_seq;
-  /* ¸Ã×Ö¶ÎÔÚ¶Ô·½·¢ËÍFINÊı¾İ°üÊ±Ê¹ÓÃ£¬ÔÚ½ÓÊÕµ½Ô¶¶Ë·¢ËÍµÄ FINÊı¾İ°üºó£¬
-    * fin_seq ±»³õÊ¼»¯Îª¶Ô·½µÄ FIN Êı¾İ°ü×îºóÒ»¸ö×Ö½ÚµÄĞòÁĞºÅ¼Ó 1£¬±íÊ¾±¾µØ¶Ô´Ë FIN Êı¾İ°ü½øĞĞÓ¦´ğµÄĞòÁĞºÅ
+  /* è¯¥å­—æ®µåœ¨å¯¹æ–¹å‘é€FINæ•°æ®åŒ…æ—¶ä½¿ç”¨ï¼Œåœ¨æ¥æ”¶åˆ°è¿œç«¯å‘é€çš„ FINæ•°æ®åŒ…åï¼Œ
+    * fin_seq è¢«åˆå§‹åŒ–ä¸ºå¯¹æ–¹çš„ FIN æ•°æ®åŒ…æœ€åä¸€ä¸ªå­—èŠ‚çš„åºåˆ—å·åŠ  1ï¼Œè¡¨ç¤ºæœ¬åœ°å¯¹æ­¤ FIN æ•°æ®åŒ…è¿›è¡Œåº”ç­”çš„åºåˆ—å·
     */
   unsigned long			fin_seq;
 
-  /*  ÒÔÉÏÁ½¸ö×Ö¶ÎÓÃÓÚ½ô¼±Êı¾İ´¦Àí£¬urg_seq ±íÊ¾½ô¼±Êı¾İ×î´óĞòÁĞºÅ¡£
-    * urg_data ÊÇÒ»¸ö±êÖ¾Î»£¬µ±ÉèÖÃÎª 1 Ê±£¬±íÊ¾½ÓÊÕµ½½ô¼±Êı¾İ¡£
+  /*  ä»¥ä¸Šä¸¤ä¸ªå­—æ®µç”¨äºç´§æ€¥æ•°æ®å¤„ç†ï¼Œurg_seq è¡¨ç¤ºç´§æ€¥æ•°æ®æœ€å¤§åºåˆ—å·ã€‚
+    * urg_data æ˜¯ä¸€ä¸ªæ ‡å¿—ä½ï¼Œå½“è®¾ç½®ä¸º 1 æ—¶ï¼Œè¡¨ç¤ºæ¥æ”¶åˆ°ç´§æ€¥æ•°æ®ã€‚
     */
   unsigned long			urg_seq;
   unsigned long			urg_data;
@@ -98,114 +98,114 @@ struct sock {
    * Not all are volatile, but some are, so we
    * might as well say they all are.
    */
-  /* inuse=1 ±íÊ¾ÆäËü½ø³ÌÕıÔÚÊ¹ÓÃ¸Ã sock ½á¹¹£¬±¾½ø³ÌĞèµÈ´ı */
+  /* inuse=1 è¡¨ç¤ºå…¶å®ƒè¿›ç¨‹æ­£åœ¨ä½¿ç”¨è¯¥ sock ç»“æ„ï¼Œæœ¬è¿›ç¨‹éœ€ç­‰å¾… */
   volatile char                 inuse,
-				dead, /* dead=1 ±íÊ¾¸Ã sock ½á¹¹ÒÑ´¦ÓÚÊÍ·Å×´Ì¬*/
-				urginline,/* urginline=1 ±íÊ¾½ô¼±Êı¾İ½«±»µ±×÷ÆÕÍ¨Êı¾İ´¦Àí¡£*/
+				dead, /* dead=1 è¡¨ç¤ºè¯¥ sock ç»“æ„å·²å¤„äºé‡Šæ”¾çŠ¶æ€*/
+				urginline,/* urginline=1 è¡¨ç¤ºç´§æ€¥æ•°æ®å°†è¢«å½“ä½œæ™®é€šæ•°æ®å¤„ç†ã€‚*/
 				intr,
-				blog,/* blog=1 ±íÊ¾¶ÔÓ¦Ì×½Ó×Ö´¦ÓÚ½ÚÖÆ×´Ì¬£¬´ËÊ±½ÓÊÕµÄÊı¾İ°ü¾ù±»¶ªÆú*/
+				blog,/* blog=1 è¡¨ç¤ºå¯¹åº”å¥—æ¥å­—å¤„äºèŠ‚åˆ¶çŠ¶æ€ï¼Œæ­¤æ—¶æ¥æ”¶çš„æ•°æ®åŒ…å‡è¢«ä¸¢å¼ƒ*/
 				done,
-				reuse,  /* ×¢ÒâºÍinuseµÄÇø±ğ */
-				keepopen,/* keepopen=1 ±íÊ¾Ê¹ÓÃ±£»î¶¨Ê±Æ÷ */
-				linger,/* linger=1 ±íÊ¾ÔÚ¹Ø±ÕÌ×½Ó×ÖÊ±ĞèÒªµÈ´ıÒ»¶ÎÊ±¼äÒÔÈ·ÈÏÆäÒÑ¹Ø±Õ¡£*/
-				delay_acks,/* delay_acks=1±íÊ¾ÑÓ³ÙÓ¦´ğ£¬¿ÉÒ»´Î¶Ô¶à¸öÊı¾İ°ü½øĞĞÓ¦´ğ */
-				destroy,/* destroy=1 ±íÊ¾¸Ã sock ½á¹¹µÈ´ıÏú»Ù*/
+				reuse,  /* æ³¨æ„å’Œinuseçš„åŒºåˆ« */
+				keepopen,/* keepopen=1 è¡¨ç¤ºä½¿ç”¨ä¿æ´»å®šæ—¶å™¨ */
+				linger,/* linger=1 è¡¨ç¤ºåœ¨å…³é—­å¥—æ¥å­—æ—¶éœ€è¦ç­‰å¾…ä¸€æ®µæ—¶é—´ä»¥ç¡®è®¤å…¶å·²å…³é—­ã€‚*/
+				delay_acks,/* delay_acks=1è¡¨ç¤ºå»¶è¿Ÿåº”ç­”ï¼Œå¯ä¸€æ¬¡å¯¹å¤šä¸ªæ•°æ®åŒ…è¿›è¡Œåº”ç­” */
+				destroy,/* destroy=1 è¡¨ç¤ºè¯¥ sock ç»“æ„ç­‰å¾…é”€æ¯*/
 				ack_timed,
 				no_check,
-				/* Èç¹ûzapped=1£¬Ôò±íÊ¾¸ÃÌ×½Ó×ÖÒÑ±»Ô¶¶Ë¸´Î»£¬Òª·¢ËÍÊı¾İ°ü£¬±ØĞëÖØĞÂ½¨Á¢
-                                  * Á¬½Ó£¬Ò²¾ÍÊÇ±íÊ¾½ÓÊÕµ½ÁËÒ»¸örst 
+				/* å¦‚æœzapped=1ï¼Œåˆ™è¡¨ç¤ºè¯¥å¥—æ¥å­—å·²è¢«è¿œç«¯å¤ä½ï¼Œè¦å‘é€æ•°æ®åŒ…ï¼Œå¿…é¡»é‡æ–°å»ºç«‹
+                                  * è¿æ¥ï¼Œä¹Ÿå°±æ˜¯è¡¨ç¤ºæ¥æ”¶åˆ°äº†ä¸€ä¸ªrst 
                                   */
 				zapped,	/* In ax25 & ipx means not linked */
 				broadcast,
-				nonagle;/* noagle=1 ±íÊ¾²»Ê¹ÓÃ NAGLE Ëã·¨*/
-  unsigned long		        lingertime;/*±íÊ¾µÈ´ı¹Ø±Õ²Ù×÷µÄÊ±¼ä£¬Ö»ÓĞµ± linger ±êÖ¾Î»Îª 1 Ê±£¬¸Ã×Ö¶Î²ÅÓĞÒâÒå¡£*/
-  int				proc;/* ¸Ã sock ½á¹¹£¨¼´¸ÃÌ×½Ó×Ö£©ËùÊôµÄ½ø³ÌµÄ½ø³ÌºÅ¡£*/
-  struct sock			*next;   /* ĞÎ³Éstruct sockµÄÒ»¸öÁ´±í */
-  /* ÔÚRAWÌ×½Ó×Ö´´½¨ºÍ¹Ø±ÕµÄÊ±ºòÓÃÀ´¼ÇÂ¼struct inet_protocolÖ¸Õë
-    * ÔÚPACKETÌ×½Ó×Ö´´½¨ºÍ¹Ø±ÕÊ±ÓÃÀ´¼ÇÂ¼struct packet_typeÖ¸Õë 
+				nonagle;/* noagle=1 è¡¨ç¤ºä¸ä½¿ç”¨ NAGLE ç®—æ³•*/
+  unsigned long		        lingertime;/*è¡¨ç¤ºç­‰å¾…å…³é—­æ“ä½œçš„æ—¶é—´ï¼Œåªæœ‰å½“ linger æ ‡å¿—ä½ä¸º 1 æ—¶ï¼Œè¯¥å­—æ®µæ‰æœ‰æ„ä¹‰ã€‚*/
+  int				proc;/* è¯¥ sock ç»“æ„ï¼ˆå³è¯¥å¥—æ¥å­—ï¼‰æ‰€å±çš„è¿›ç¨‹çš„è¿›ç¨‹å·ã€‚*/
+  struct sock			*next;   /* å½¢æˆstruct sockçš„ä¸€ä¸ªé“¾è¡¨ */
+  /* åœ¨RAWå¥—æ¥å­—åˆ›å»ºå’Œå…³é—­çš„æ—¶å€™ç”¨æ¥è®°å½•struct inet_protocolæŒ‡é’ˆ
+    * åœ¨PACKETå¥—æ¥å­—åˆ›å»ºå’Œå…³é—­æ—¶ç”¨æ¥è®°å½•struct packet_typeæŒ‡é’ˆ 
     */
   struct sock			*pair;   
 
-  /* send_head, send_tail ÓÃÓÚ TCPĞ­ÒéÖØ·¢¶ÓÁĞ¡£
-    * send_head Ö¸ÏòµÄ¶ÓÁĞ £¨send_tail Ö¸Ïò¸Ã¶ÓÁĞµÄÎ²²¿£©£¬ 
-    * ¸Ã¶ÓÁĞ»º´æÒÑ·¢ËÍ³öÈ¥µ«ÉĞÎ´µÃµ½¶Ô·½Ó¦´ğµÄÊı¾İ°ü¡£
+  /* send_head, send_tail ç”¨äº TCPåè®®é‡å‘é˜Ÿåˆ—ã€‚
+    * send_head æŒ‡å‘çš„é˜Ÿåˆ— ï¼ˆsend_tail æŒ‡å‘è¯¥é˜Ÿåˆ—çš„å°¾éƒ¨ï¼‰ï¼Œ 
+    * è¯¥é˜Ÿåˆ—ç¼“å­˜å·²å‘é€å‡ºå»ä½†å°šæœªå¾—åˆ°å¯¹æ–¹åº”ç­”çš„æ•°æ®åŒ…ã€‚
     */
   struct sk_buff		*volatile send_tail;
   struct sk_buff		*volatile send_head;
 
-  /* back_logÎª½ÓÊÕµÄÊı¾İ°ü»º´æ¶ÓÁĞ£¬ÔÚº¯Êıtcp_dataÖĞÈç¹ûstruct sockµÄinuseÎª1£¬
-    * Ôò½«½ÓÊÕµ½µÄskb²åÈëµ½back_logÖĞ
+  /* back_logä¸ºæ¥æ”¶çš„æ•°æ®åŒ…ç¼“å­˜é˜Ÿåˆ—ï¼Œåœ¨å‡½æ•°tcp_dataä¸­å¦‚æœstruct sockçš„inuseä¸º1ï¼Œ
+    * åˆ™å°†æ¥æ”¶åˆ°çš„skbæ’å…¥åˆ°back_logä¸­
     */
   struct sk_buff		*volatile back_log;
 
-  /* partial ¶ÓÁĞÖĞ»º´æµÄµ¥¸öÊı¾İ°üÔ´ÓÚ TCP Ğ­ÒéµÄÁ÷Ê½´«Êä£¬¶ÔÓÚ TCP Ğ­Òé£¬ÎªÁË±ÜÃâÔÚÍøÂçÖĞ
-    * ´«ÊäĞ¡Êı¾İ°ü£¬³ä·ÖÀûÓÃÍøÂçĞ§ÂÊ£¬µ×²ãÍøÂçÕ»ÊµÏÖ¶ÔÓÚÓÃ»§Ó¦ÓÃ³ÌĞò·¢ËÍµÄÉÙÁ¿Êı¾İ½øĞĞÊÕ
-    * ¼¯»º´æ£¬µ±»ıÀÛµ½Ò»¶¨ÊıÁ¿ºó£¨MSS£© £¬·½²Å×÷ÎªÕû¸ö°ü·¢ËÍ³öÈ¥¡£partial ¶ÓÁĞÖĞÊı¾İ°üµÄÒâÒå
-    * ¼´ÔÚÓÚ´Ë£¬¶ÔÓÚÉÙÁ¿Êı¾İ£¬Èç¹ûÊı¾İ²¢·ÇÊÇ OOB Êı¾İ£¨¼´ÎŞĞèÁ¢¿Ì·¢ËÍ¸øÔ¶¶Ë£© £¬ÔòÔİÊ±·ÖÅä
-    * Ò»¸ö´óÈİÁ¿µÄÊı¾İ°ü£¬½«Êı¾İ¿½±´µ½¸Ã´óÊı¾İ°üÖĞ£¬Ö®ºó½«¸ÃÊı¾İ°ü»º´æµ½ partial ¶ÓÁĞÖĞ£¬µ±
-    * ÏÂ´ÎÓÃ»§¼ÌĞø·¢ËÍÊı¾İÊ±£¬ÄÚºËÊ×ÏÈ¼ì²é partial ¶ÓÁĞÖĞÊÇ·ñÓĞÖ®Ç°Î´Ìî³äÂúµÄÊı¾İ°ü£¬ÔòÕâĞ©
-    * Êı¾İ¿ÉÒÔ¼ÌĞøÌî³äµ½¸ÃÊı¾İ°ü£¬Ö±µ½ÌîÂú²Å½«Æä·¢ËÍ³öÈ¥¡£µ±È»ÎªÁË¾¡Á¿¼õÉÙ¶ÔÓ¦ÓÃ³ÌĞòĞ§ÂÊ
-    * µÄÓ°Ïì£¬Õâ¸öµÈ´ıÌîÂúµÄÊ±¼äÊÇÒ»¶¨µÄ£¬ÔÚÊµÏÖÉÏ£¬ÄÚºËÉèÖÃÒ»¸ö¶¨Ê±Æ÷£¬µ±¶¨Ê±Æ÷³¬Ê±Ê±£¬
-    * Èç¹û partial ¶ÓÁĞÖĞ»º´æÓĞÎ´ÌîÂúµÄÊı¾İ°ü£¬ ÈÔÈ»½«Æä·¢ËÍ³öÈ¥£¬ ³¬Ê±·¢ËÍº¯ÊıÎª tcp_send_partial.
-    * ´ËÍâÔÚÆäËüÌõ¼şÏÂ£¬µ±ĞèÒª·¢ËÍ partial ÖĞÊı¾İ°üÊ±£¬ÄÚºËÒ²Ö±½Óµ÷ÓÃ tcp_send_partial º¯Êı½øĞĞ
-    * ·¢ËÍ¡£*/
-  struct sk_buff		*partial;  /* ´´½¨×î´ó³¤¶ÈµÄ´ı·¢ËÍÊı¾İ°ü¡£
-  								     * ¼´Ê¹ÓÃ×î´óMTUÖµ´´½¨µÄÊı¾İ°ü
+  /* partial é˜Ÿåˆ—ä¸­ç¼“å­˜çš„å•ä¸ªæ•°æ®åŒ…æºäº TCP åè®®çš„æµå¼ä¼ è¾“ï¼Œå¯¹äº TCP åè®®ï¼Œä¸ºäº†é¿å…åœ¨ç½‘ç»œä¸­
+    * ä¼ è¾“å°æ•°æ®åŒ…ï¼Œå……åˆ†åˆ©ç”¨ç½‘ç»œæ•ˆç‡ï¼Œåº•å±‚ç½‘ç»œæ ˆå®ç°å¯¹äºç”¨æˆ·åº”ç”¨ç¨‹åºå‘é€çš„å°‘é‡æ•°æ®è¿›è¡Œæ”¶
+    * é›†ç¼“å­˜ï¼Œå½“ç§¯ç´¯åˆ°ä¸€å®šæ•°é‡åï¼ˆMSSï¼‰ ï¼Œæ–¹æ‰ä½œä¸ºæ•´ä¸ªåŒ…å‘é€å‡ºå»ã€‚partial é˜Ÿåˆ—ä¸­æ•°æ®åŒ…çš„æ„ä¹‰
+    * å³åœ¨äºæ­¤ï¼Œå¯¹äºå°‘é‡æ•°æ®ï¼Œå¦‚æœæ•°æ®å¹¶éæ˜¯ OOB æ•°æ®ï¼ˆå³æ— éœ€ç«‹åˆ»å‘é€ç»™è¿œç«¯ï¼‰ ï¼Œåˆ™æš‚æ—¶åˆ†é…
+    * ä¸€ä¸ªå¤§å®¹é‡çš„æ•°æ®åŒ…ï¼Œå°†æ•°æ®æ‹·è´åˆ°è¯¥å¤§æ•°æ®åŒ…ä¸­ï¼Œä¹‹åå°†è¯¥æ•°æ®åŒ…ç¼“å­˜åˆ° partial é˜Ÿåˆ—ä¸­ï¼Œå½“
+    * ä¸‹æ¬¡ç”¨æˆ·ç»§ç»­å‘é€æ•°æ®æ—¶ï¼Œå†…æ ¸é¦–å…ˆæ£€æŸ¥ partial é˜Ÿåˆ—ä¸­æ˜¯å¦æœ‰ä¹‹å‰æœªå¡«å……æ»¡çš„æ•°æ®åŒ…ï¼Œåˆ™è¿™äº›
+    * æ•°æ®å¯ä»¥ç»§ç»­å¡«å……åˆ°è¯¥æ•°æ®åŒ…ï¼Œç›´åˆ°å¡«æ»¡æ‰å°†å…¶å‘é€å‡ºå»ã€‚å½“ç„¶ä¸ºäº†å°½é‡å‡å°‘å¯¹åº”ç”¨ç¨‹åºæ•ˆç‡
+    * çš„å½±å“ï¼Œè¿™ä¸ªç­‰å¾…å¡«æ»¡çš„æ—¶é—´æ˜¯ä¸€å®šçš„ï¼Œåœ¨å®ç°ä¸Šï¼Œå†…æ ¸è®¾ç½®ä¸€ä¸ªå®šæ—¶å™¨ï¼Œå½“å®šæ—¶å™¨è¶…æ—¶æ—¶ï¼Œ
+    * å¦‚æœ partial é˜Ÿåˆ—ä¸­ç¼“å­˜æœ‰æœªå¡«æ»¡çš„æ•°æ®åŒ…ï¼Œ ä»ç„¶å°†å…¶å‘é€å‡ºå»ï¼Œ è¶…æ—¶å‘é€å‡½æ•°ä¸º tcp_send_partial.
+    * æ­¤å¤–åœ¨å…¶å®ƒæ¡ä»¶ä¸‹ï¼Œå½“éœ€è¦å‘é€ partial ä¸­æ•°æ®åŒ…æ—¶ï¼Œå†…æ ¸ä¹Ÿç›´æ¥è°ƒç”¨ tcp_send_partial å‡½æ•°è¿›è¡Œ
+    * å‘é€ã€‚*/
+  struct sk_buff		*partial;  /* åˆ›å»ºæœ€å¤§é•¿åº¦çš„å¾…å‘é€æ•°æ®åŒ…ã€‚
+  								     * å³ä½¿ç”¨æœ€å¤§MTUå€¼åˆ›å»ºçš„æ•°æ®åŒ…
   								     */
-  struct timer_list		partial_timer;  /*°´Ê±·¢ËÍ partial Ö¸ÕëÖ¸ÏòµÄÊı¾İ°ü£¬ÒÔÃâ»º´æ£¨µÈ´ı£©Ê±¼ä¹ı³¤¡£*/
-  long				retransmits; /* ÖØ·¢´ÎÊı*/
-  struct sk_buff		*volatile wback,  /* wback,wfront±íÊ¾Ğ´¶ÓÁĞµÄÇ°ºÍºó */
+  struct timer_list		partial_timer;  /*æŒ‰æ—¶å‘é€ partial æŒ‡é’ˆæŒ‡å‘çš„æ•°æ®åŒ…ï¼Œä»¥å…ç¼“å­˜ï¼ˆç­‰å¾…ï¼‰æ—¶é—´è¿‡é•¿ã€‚*/
+  long				retransmits; /* é‡å‘æ¬¡æ•°*/
+  struct sk_buff		*volatile wback,  /* wback,wfrontè¡¨ç¤ºå†™é˜Ÿåˆ—çš„å‰å’Œå */
 				*volatile wfront,
-				*volatile rqueue; /* socket½ÓÊÕ°ü¶ÓÁĞ£¬¶ÁÈ¡µÄÊ±ºòÊÇ´ÓÕâ¸ö¶ÓÁĞÖĞ¶ÁÈ¡µÄ */
-  /* ²»Í¬Ğ­ÒéµÄĞ­Òé²Ù×÷º¯Êı£¬×¢ÒâºÍstruct proto_ops½á¹¹Çø·Ö
+				*volatile rqueue; /* socketæ¥æ”¶åŒ…é˜Ÿåˆ—ï¼Œè¯»å–çš„æ—¶å€™æ˜¯ä»è¿™ä¸ªé˜Ÿåˆ—ä¸­è¯»å–çš„ */
+  /* ä¸åŒåè®®çš„åè®®æ“ä½œå‡½æ•°ï¼Œæ³¨æ„å’Œstruct proto_opsç»“æ„åŒºåˆ†
     */
   struct proto			*prot;
-  /* Èç¹û»¹Ã»ÓĞÊÕµ½Êı¾İ£¬ÔòÔÚ¸ÃµÈ´ı¶ÓÁĞÖĞµÈ´ı
+  /* å¦‚æœè¿˜æ²¡æœ‰æ”¶åˆ°æ•°æ®ï¼Œåˆ™åœ¨è¯¥ç­‰å¾…é˜Ÿåˆ—ä¸­ç­‰å¾…
    */
-  struct wait_queue		**sleep;/*½ø³ÌµÈ´ısockµÄµØÎ»*/
-  unsigned long			daddr;   /*Ì×½Ó×ÖµÄÔ¶¶ËµØÖ·*/
-  /*°ó¶¨µØÖ·*/
-  unsigned long			saddr;  /*Ì×½Ó×ÖµÄ±¾µØµØÖ·*/
-  unsigned short		max_unacked;/* ×î´óÎ´´¦ÀíÇëÇóÁ¬½ÓÊı£¨Ó¦´ğÊı£© */
-  unsigned short		window; /* Ô¶¶Ë´°¿Ú´óĞ¡ */
-  unsigned short		bytes_rcv;  /* ÒÑ½ÓÊÕ×Ö½Ú×ÜÊı*/
+  struct wait_queue		**sleep;/*è¿›ç¨‹ç­‰å¾…sockçš„åœ°ä½*/
+  unsigned long			daddr;   /*å¥—æ¥å­—çš„è¿œç«¯åœ°å€*/
+  /*ç»‘å®šåœ°å€*/
+  unsigned long			saddr;  /*å¥—æ¥å­—çš„æœ¬åœ°åœ°å€*/
+  unsigned short		max_unacked;/* æœ€å¤§æœªå¤„ç†è¯·æ±‚è¿æ¥æ•°ï¼ˆåº”ç­”æ•°ï¼‰ */
+  unsigned short		window; /* è¿œç«¯çª—å£å¤§å° */
+  unsigned short		bytes_rcv;  /* å·²æ¥æ”¶å­—èŠ‚æ€»æ•°*/
 /* mss is min(mtu, max_window) */
-  unsigned short		mtu;  /*×î´ó´«Êäµ¥Ôª*/     /* mss negotiated in the syn's */
+  unsigned short		mtu;  /*æœ€å¤§ä¼ è¾“å•å…ƒ*/     /* mss negotiated in the syn's */
 
-  /* ×î´ó±¨ÎÄ³¤¶È£ºMSS=MTU-IPÊ×²¿³¤¶È-TCPÊ×²¿³¤¶È,MSS=TCP±¨ÎÄ¶Î³¤¶È-TCPÊ×²¿³¤¶È¡£
+  /* æœ€å¤§æŠ¥æ–‡é•¿åº¦ï¼šMSS=MTU-IPé¦–éƒ¨é•¿åº¦-TCPé¦–éƒ¨é•¿åº¦,MSS=TCPæŠ¥æ–‡æ®µé•¿åº¦-TCPé¦–éƒ¨é•¿åº¦ã€‚
     * current eff. mss - can change  
     */
   volatile unsigned short	mss; 
-  volatile unsigned short	user_mss; /*ÓÃ»§Ö¸¶¨µÄ MSSÖµ*/ /* mss requested by user in ioctl */
+  volatile unsigned short	user_mss; /*ç”¨æˆ·æŒ‡å®šçš„ MSSå€¼*/ /* mss requested by user in ioctl */
   volatile unsigned short	max_window;
-  unsigned short		num;  		/*¶ÔÓ¦±¾µØ¶Ë¿ÚºÅ*/
+  unsigned short		num;  		/*å¯¹åº”æœ¬åœ°ç«¯å£å·*/
   volatile unsigned short	cong_window;
   volatile unsigned short	cong_count;
   volatile unsigned short	ssthresh;
   volatile unsigned short	packets_out;
   volatile unsigned short	shutdown;
-  volatile unsigned long	rtt;/* Íù·µÊ±¼ä¹À¼ÆÖµ*/
-  volatile unsigned long	mdev;/* mean deviation, ¼´RTTD,  ¾ø¶ÔÆ«²î*/
+  volatile unsigned long	rtt;/* å¾€è¿”æ—¶é—´ä¼°è®¡å€¼*/
+  volatile unsigned long	mdev;/* mean deviation, å³RTTD,  ç»å¯¹åå·®*/
   volatile unsigned long	rto;
 /* currently backoff isn't used, but I'm maintaining it in case
  * we want to go back to a backoff formula that needs it
  */
-  volatile unsigned short	backoff;/* ÍË±ÜËã·¨¶ÈÁ¿Öµ */
-  volatile short		err; /* ´íÎó±êÖ¾Öµ*/
-  unsigned char			protocol; /* ´«Êä²ãĞ­ÒéÖµ ±íÊ¾µ±Ç°ÓòÖĞÌ×½Ó×ÖËùÊôµÄĞ­Òé */
-  /* Ì×½Ó×Ö×´Ì¬ */
+  volatile unsigned short	backoff;/* é€€é¿ç®—æ³•åº¦é‡å€¼ */
+  volatile short		err; /* é”™è¯¯æ ‡å¿—å€¼*/
+  unsigned char			protocol; /* ä¼ è¾“å±‚åè®®å€¼ è¡¨ç¤ºå½“å‰åŸŸä¸­å¥—æ¥å­—æ‰€å±çš„åè®® */
+  /* å¥—æ¥å­—çŠ¶æ€ */
   volatile unsigned char	state;
 
-  /* ack_backlog×Ö¶Î¼ÇÂ¼Ä¿Ç°ÀÛ¼ÆµÄÓ¦·¢ËÍ¶øÎ´·¢ËÍµÄ
-    * Ó¦´ğÊı¾İ°üµÄ¸öÊı
+  /* ack_backlogå­—æ®µè®°å½•ç›®å‰ç´¯è®¡çš„åº”å‘é€è€Œæœªå‘é€çš„
+    * åº”ç­”æ•°æ®åŒ…çš„ä¸ªæ•°
     */
   volatile unsigned char	ack_backlog; 
-  unsigned char			max_ack_backlog;  /*±íÊ¾×î´óÕìÌı¶ÓÁĞ*/
+  unsigned char			max_ack_backlog;  /*è¡¨ç¤ºæœ€å¤§ä¾¦å¬é˜Ÿåˆ—*/
   unsigned char			priority;
   unsigned char			debug;
-  unsigned short		rcvbuf;  /*±íÊ¾½ÓÊÕ»º³åÇøµÄ×Ö½Ú³¤¶È*/
-  unsigned short		sndbuf;  /*±íÊ¾·¢ËÍ»º³åÇøµÄ×Ö½Ú³¤¶È*/
-  unsigned short		type;  /* ±íÊ¾Ì×½Ó×ÖµÄÀàĞÍ */
+  unsigned short		rcvbuf;  /*è¡¨ç¤ºæ¥æ”¶ç¼“å†²åŒºçš„å­—èŠ‚é•¿åº¦*/
+  unsigned short		sndbuf;  /*è¡¨ç¤ºå‘é€ç¼“å†²åŒºçš„å­—èŠ‚é•¿åº¦*/
+  unsigned short		type;  /* è¡¨ç¤ºå¥—æ¥å­—çš„ç±»å‹ */
 #ifdef CONFIG_IPX
   ipx_address			ipx_source_addr,ipx_dest_addr;
   unsigned short		ipx_type;
@@ -224,32 +224,32 @@ struct sock {
   ax25_digi			*ax25_digipeat;
 #endif  
 /* IP 'private area' or will be eventually */
-  int				ip_ttl;	 /* IPÊ×²¿ TTL ×Ö¶ÎÖµ£¬Êµ¼ÊÉÏ±íÊ¾Â·ÓÉÆ÷ÌøÊı*/	/* TTL setting */
-  int				ip_tos;	/* IPÊ×²¿ TOS×Ö¶ÎÖµ£¬·şÎñÀàĞÍÖµ*/	/* TOS */
-  struct tcphdr			dummy_th;/* »º´æµÄ TCPÊ×²¿£¬ÔÚ TCPĞ­ÒéÖĞ´´½¨Ò»¸ö·¢ËÍÊı¾İ°üÊ±¿ÉÒÔÀûÓÃ´Ë×Ö¶Î¿ìËÙ´´½¨ TCP Ê×²¿¡£*/
+  int				ip_ttl;	 /* IPé¦–éƒ¨ TTL å­—æ®µå€¼ï¼Œå®é™…ä¸Šè¡¨ç¤ºè·¯ç”±å™¨è·³æ•°*/	/* TTL setting */
+  int				ip_tos;	/* IPé¦–éƒ¨ TOSå­—æ®µå€¼ï¼ŒæœåŠ¡ç±»å‹å€¼*/	/* TOS */
+  struct tcphdr			dummy_th;/* ç¼“å­˜çš„ TCPé¦–éƒ¨ï¼Œåœ¨ TCPåè®®ä¸­åˆ›å»ºä¸€ä¸ªå‘é€æ•°æ®åŒ…æ—¶å¯ä»¥åˆ©ç”¨æ­¤å­—æ®µå¿«é€Ÿåˆ›å»º TCP é¦–éƒ¨ã€‚*/
 
   /* This part is used for the timeout functions (timer.c). */
-  /* ±íÊ¾struct sockÊÇÊ²Ã´ÀàĞÍµÄÊ±ÖÓ£¬ÈçTIME_WRITEµÈµÈ */
+  /* è¡¨ç¤ºstruct sockæ˜¯ä»€ä¹ˆç±»å‹çš„æ—¶é’Ÿï¼Œå¦‚TIME_WRITEç­‰ç­‰ */
   int				timeout;	/* What are we waiting for? */
   struct timer_list		timer;
 
   /* identd */
-  /* Ğ­ÒéÊı¾İ¶ÔÓ¦µÄsocketÖ¸Õë */
+  /* åè®®æ•°æ®å¯¹åº”çš„socketæŒ‡é’ˆ */
   struct socket			*socket;
   
   /* Callbacks */
-  /* »½ĞÑµÈ´ısocketµÄ½ø³Ì£¬Ò²¾ÍÊÇsockµÄ×´Ì¬·¢Éú¸Ä±ä */
+  /* å”¤é†’ç­‰å¾…socketçš„è¿›ç¨‹ï¼Œä¹Ÿå°±æ˜¯sockçš„çŠ¶æ€å‘ç”Ÿæ”¹å˜ */
   void				(*state_change)(struct sock *sk);
-  /* ±íÊ¾sockµÄÊı¾İÒÑ¾­×¼±¸ºÃ */
+  /* è¡¨ç¤ºsockçš„æ•°æ®å·²ç»å‡†å¤‡å¥½ */
   void				(*data_ready)(struct sock *sk,int bytes);
   void				(*write_space)(struct sock *sk);
-  /* ´íÎó±¨¸æº¯Êı£¬Í¨¹ıicmp_rcvº¯Êıµ÷ÓÃ */
+  /* é”™è¯¯æŠ¥å‘Šå‡½æ•°ï¼Œé€šè¿‡icmp_rcvå‡½æ•°è°ƒç”¨ */
   void				(*error_report)(struct sock *sk);
   
 };
 
-/* ¾ßÌåÍøÂçĞ­ÒéµÄ²Ù×÷º¯Êı,±íÊ¾´«Êä²ãº¯ÊıµÄ²Ù×÷¼¯µÄÒ»¸ö½á¹¹
- * ¶ÔÓÚ²»Í¬Ğ­Òé¿ÉÒÔÊ¹ÓÃÏàÍ¬µÄ¶Ë¿ÚºÅTCP£¬UDP¿ÉÒÔÍ¬Ê±Ê¹ÓÃ1000¶Ë¿Ú
+/* å…·ä½“ç½‘ç»œåè®®çš„æ“ä½œå‡½æ•°,è¡¨ç¤ºä¼ è¾“å±‚å‡½æ•°çš„æ“ä½œé›†çš„ä¸€ä¸ªç»“æ„
+ * å¯¹äºä¸åŒåè®®å¯ä»¥ä½¿ç”¨ç›¸åŒçš„ç«¯å£å·TCPï¼ŒUDPå¯ä»¥åŒæ—¶ä½¿ç”¨1000ç«¯å£
  */
 struct proto {
   struct sk_buff *	(*wmalloc)(struct sock *sk,
@@ -306,25 +306,25 @@ struct proto {
   int			(*getsockopt)(struct sock *sk, int level, int optname,
   				char *optval, int *option);  	 
   unsigned short	max_header;
-  unsigned long		retransmits;      /* ±íÊ¾Ğ­Òé³¬Ê±ÖØ´«µÄ´ÎÊı */
-  /* Í¨¹ı¶Ë¿ÚºÅºÍSOCK_ARRAY_SIZEÈ¡ÓëµÃµ½Ë÷Òı */
+  unsigned long		retransmits;      /* è¡¨ç¤ºåè®®è¶…æ—¶é‡ä¼ çš„æ¬¡æ•° */
+  /* é€šè¿‡ç«¯å£å·å’ŒSOCK_ARRAY_SIZEå–ä¸å¾—åˆ°ç´¢å¼• */
   struct sock *		sock_array[SOCK_ARRAY_SIZE];
-  char			name[80];   /* Ğ­ÒéÃû³ÆÈçTCP,UDPµÈµÈ */
+  char			name[80];   /* åè®®åç§°å¦‚TCP,UDPç­‰ç­‰ */
 };
 
-#define TIME_WRITE	1  /* ³¬Ê±ÖØ´« */
-#define TIME_CLOSE	2   /* µÈ´ı¹Ø±Õ */
-#define TIME_KEEPOPEN	3  /* ±£»î */
-#define TIME_DESTROY	4  /* Ì×½Ó×ÖÊÍ·Å */
+#define TIME_WRITE	1  /* è¶…æ—¶é‡ä¼  */
+#define TIME_CLOSE	2   /* ç­‰å¾…å…³é—­ */
+#define TIME_KEEPOPEN	3  /* ä¿æ´» */
+#define TIME_DESTROY	4  /* å¥—æ¥å­—é‡Šæ”¾ */
 #define TIME_DONE	5	/* used to absorb those last few packets */
-#define TIME_PROBE0	6   /* ·Ç0´°¿ÚÌ½²â */
+#define TIME_PROBE0	6   /* é0çª—å£æ¢æµ‹ */
 #define SOCK_DESTROY_TIME 1000	/* about 10 seconds			*/
 
 #define PROT_SOCK	1024	/* Sockets 0-1023 can't be bound too unless you are superuser */
 
-#define SHUTDOWN_MASK	3   /* ÍêÈ«¹Ø±Õ */
-#define RCV_SHUTDOWN	1     /* ½ÓÊÕÍ¨µÀ¹Ø±Õ */
-#define SEND_SHUTDOWN	2   /* ·¢ËÍÍ¨µÀ¹Ø±Õ */
+#define SHUTDOWN_MASK	3   /* å®Œå…¨å…³é—­ */
+#define RCV_SHUTDOWN	1     /* æ¥æ”¶é€šé“å…³é—­ */
+#define SEND_SHUTDOWN	2   /* å‘é€é€šé“å…³é—­ */
 
 
 extern void			destroy_sock(struct sock *sk);

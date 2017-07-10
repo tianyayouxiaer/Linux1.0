@@ -92,9 +92,9 @@ print_udp(struct udphdr *uh)
  * header points to the first 8 bytes of the udp header.  We need
  * to find the appropriate port.
  */
-/* udp´íÎó´¦Àíº¯Êý£¬ÍøÂç²ãµ½´«Êä²ãµÄ´íÎó´¦Àí¹ý³Ì
-  * ÈçudpÐ­Òé·¢ËÍÊý¾ÝÊ±£¬³öÏÖÎÊÌâ£¬¸ù¾ÝÏàÓ¦µÄ·´À¡À´¸ø³ö 
-  * ´íÎóÌáÊ¾»ò´¦Àí 
+/* udpé”™è¯¯å¤„ç†å‡½æ•°ï¼Œç½‘ç»œå±‚åˆ°ä¼ è¾“å±‚çš„é”™è¯¯å¤„ç†è¿‡ç¨‹
+  * å¦‚udpåè®®å‘é€æ•°æ®æ—¶ï¼Œå‡ºçŽ°é—®é¢˜ï¼Œæ ¹æ®ç›¸åº”çš„åé¦ˆæ¥ç»™å‡º 
+  * é”™è¯¯æç¤ºæˆ–å¤„ç† 
   */
 void
 udp_err(int err, unsigned char *header, unsigned long daddr,
@@ -138,7 +138,7 @@ sport=%d,dport=%d", err, header, daddr, saddr, protocol, (int)th->source,(int)th
   sk->error_report(sk);
 }
 
-/* udpÐ­ÒéµÄÊý¾ÝÐ£Ñéº¯Êý£¬¾ÍÊÇ²úÉúÐ£ÑéÊý¾Ý */
+/* udpåè®®çš„æ•°æ®æ ¡éªŒå‡½æ•°ï¼Œå°±æ˜¯äº§ç”Ÿæ ¡éªŒæ•°æ® */
 static unsigned short
 udp_check(struct udphdr *uh, int len,
 	  unsigned long saddr, unsigned long daddr)
@@ -204,7 +204,7 @@ udp_check(struct udphdr *uh, int len,
 }
 
 
-/* udpÊý¾ÝÐ£Ñé */
+/* udpæ•°æ®æ ¡éªŒ */
 static void
 udp_send_check(struct udphdr *uh, unsigned long saddr, 
 	       unsigned long daddr, int len, struct sock *sk)
@@ -216,7 +216,7 @@ udp_send_check(struct udphdr *uh, unsigned long saddr,
   if (uh->check == 0) uh->check = 0xffff;
 }
 
-/* udp·¢ËÍÊý¾Ýº¯Êý */
+/* udpå‘é€æ•°æ®å‡½æ•° */
 static int
 udp_send(struct sock *sk, struct sockaddr_in *sin,
 	 unsigned char *from, int len)
@@ -246,11 +246,11 @@ udp_send(struct sock *sk, struct sockaddr_in *sin,
   skb->mem_len  = size;
   skb->sk       = NULL;	/* to avoid changing sk->saddr */
   skb->free     = 1;
-  /* ²»Öª°üÖÐmacµØÖ· */
+  /* ä¸çŸ¥åŒ…ä¸­macåœ°å€ */
   skb->arp      = 0;
 
   /* Now build the IP and MAC header. */
-  /* buffÖ¸ÏòskbÖÐÊý¾ÝµÄÆðÊ¼Î»ÖÃ */
+  /* buffæŒ‡å‘skbä¸­æ•°æ®çš„èµ·å§‹ä½ç½® */
   buff = skb->data;
   saddr = 0;
   dev = NULL;
@@ -268,7 +268,7 @@ udp_send(struct sock *sk, struct sockaddr_in *sin,
   saddr = dev->pa_addr;
   DPRINTF((DBG_UDP, "UDP: >> MAC+IP len=%d\n", tmp));
 
-  /* ÉèÖÃskbÖÐÓÐÐ§Êý¾Ý³¤¶È */
+  /* è®¾ç½®skbä¸­æœ‰æ•ˆæ•°æ®é•¿åº¦ */
   skb->len = tmp + sizeof(struct udphdr) + len;	/* len + UDP + IP + MAC */
   skb->dev = dev;
 #ifdef OLD
@@ -288,7 +288,7 @@ udp_send(struct sock *sk, struct sockaddr_in *sin,
   }
 
   /* Fill in the UDP header. */
-  /* Ìî³äudpµÄÍ· */
+  /* å¡«å……udpçš„å¤´ */
   uh = (struct udphdr *) buff;
   uh->len = htons(len + sizeof(struct udphdr));
   uh->source = sk->dummy_th.source;
@@ -302,7 +302,7 @@ udp_send(struct sock *sk, struct sockaddr_in *sin,
   udp_send_check(uh, saddr, sin->sin_addr.s_addr, skb->len - tmp, sk);
 
   /* Send the datagram to the interface. */
-  /* ·¢ËÍÊý¾Ý°ü£¬ÕâÀïÊý¾Ý¾Íµ½ÁËip²ãÁË */
+  /* å‘é€æ•°æ®åŒ…ï¼Œè¿™é‡Œæ•°æ®å°±åˆ°äº†ipå±‚äº† */
   sk->prot->queue_xmit(sk, dev, skb, 1);
 
   return(len);
@@ -339,7 +339,7 @@ udp_sendto(struct sock *sk, unsigned char *from, int len, int noblock,
 	if (sin.sin_port == 0) 
 		return(-EINVAL);
   } else {
-    /* ÅÐ¶ÏskµÄ×´Ì¬ */
+    /* åˆ¤æ–­skçš„çŠ¶æ€ */
 	if (sk->state != TCP_ESTABLISHED) return(-EINVAL);
 	sin.sin_family = AF_INET;
 	sin.sin_port = sk->dummy_th.dest;
@@ -366,7 +366,7 @@ udp_write(struct sock *sk, unsigned char *buff, int len, int noblock,
   return(udp_sendto(sk, buff, len, noblock, flags, NULL, 0));
 }
 
-/* ioctlÏµÍ³µ÷ÓÃudpµÄ¾ßÌåÊµÏÖ */
+/* ioctlç³»ç»Ÿè°ƒç”¨udpçš„å…·ä½“å®žçŽ° */
 int
 udp_ioctl(struct sock *sk, int cmd, unsigned long arg)
 {
@@ -485,12 +485,12 @@ udp_recvfrom(struct sock *sk, unsigned char *to, int len,
   if(er)
   	return er;
 
-  /* »ñÈ¡½ÓÊÕ¶ÓÁÐÖÐµÄÒ»¸öskb */
+  /* èŽ·å–æŽ¥æ”¶é˜Ÿåˆ—ä¸­çš„ä¸€ä¸ªskb */
   skb=skb_recv_datagram(sk,flags,noblock,&er);
   if(skb==NULL)
   	return er;
 
-  /* È·¶¨Êµ¼Ê¶ÁÈ¡µÄ×Ö½ÚÊý */
+  /* ç¡®å®šå®žé™…è¯»å–çš„å­—èŠ‚æ•° */
   copied = min(len, skb->len);
 
   /* FIXME : should use udp header size info value */
@@ -520,8 +520,8 @@ udp_read(struct sock *sk, unsigned char *buff, int len, int noblock,
 }
 
 
-/* udpÐ­ÒéµÄÁ¬½Óº¯Êý£¬ÔÚudpµÄÁ¬½Óº¯Êýµ±ÖÐ²¢Ã»ÓÐÏñtcpÄÇÑù
- * È¥·¢ËÍÊý¾Ý°ü½øÐÐÁ¬½Ó¶øÊÇÖ±½Ó¾ÍÊÇ¸ü¸Ä×´Ì¬ÎªTCP_ESTABLISHED
+/* udpåè®®çš„è¿žæŽ¥å‡½æ•°ï¼Œåœ¨udpçš„è¿žæŽ¥å‡½æ•°å½“ä¸­å¹¶æ²¡æœ‰åƒtcpé‚£æ ·
+ * åŽ»å‘é€æ•°æ®åŒ…è¿›è¡Œè¿žæŽ¥è€Œæ˜¯ç›´æŽ¥å°±æ˜¯æ›´æ”¹çŠ¶æ€ä¸ºTCP_ESTABLISHED
  */
 int
 udp_connect(struct sock *sk, struct sockaddr_in *usin, int addr_len)
@@ -538,7 +538,7 @@ udp_connect(struct sock *sk, struct sockaddr_in *usin, int addr_len)
 
   memcpy_fromfs(&sin, usin, sizeof(sin));
 
-  /* ÒªÊÇAF_INETÐ­Òé×å */
+  /* è¦æ˜¯AF_INETåè®®æ— */
   if (sin.sin_family && sin.sin_family != AF_INET) 
   	return(-EAFNOSUPPORT);
 
@@ -552,7 +552,7 @@ udp_connect(struct sock *sk, struct sockaddr_in *usin, int addr_len)
 }
 
 
-/* udpÁ¬½Ó¹Ø±Õ */
+/* udpè¿žæŽ¥å…³é—­ */
 static void
 udp_close(struct sock *sk, int timeout)
 {
@@ -564,7 +564,7 @@ udp_close(struct sock *sk, int timeout)
 
 
 /* All we need to do is get the socket, and then do a checksum. */
-/* udpÐ­ÒéµÄ½ÓÊÕº¯Êý£¬ºÍtcpµÄtcp_rcvº¯Êý¹¦ÄÜÏàÍ¬ */
+/* udpåè®®çš„æŽ¥æ”¶å‡½æ•°ï¼Œå’Œtcpçš„tcp_rcvå‡½æ•°åŠŸèƒ½ç›¸åŒ */
 int
 udp_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
 	unsigned long daddr, unsigned short len,
@@ -573,9 +573,9 @@ udp_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
   struct sock *sk;
   struct udphdr *uh;
 
-  /* »ñÈ¡udpÐ­ÒéµÄÍ·²¿ */
+  /* èŽ·å–udpåè®®çš„å¤´éƒ¨ */
   uh = (struct udphdr *) skb->h.uh;
-  /* »ñÈ¡udpÐ­ÒéÉÏ·þÎñÆ÷°ó¶¨µÄÌ×½Ó×Ö */
+  /* èŽ·å–udpåè®®ä¸ŠæœåŠ¡å™¨ç»‘å®šçš„å¥—æŽ¥å­— */
   sk = get_sock(&udp_prot, uh->dest, saddr, uh->source, daddr);
   if (sk == NULL) 
   {
@@ -610,7 +610,7 @@ udp_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
 
 
   /* Charge it to the socket. */
-  /* ÅÐ¶ÏÊÇ·ñ³¬¹ýÁË½ÓÊÕ»º³åµÄ´óÐ¡ */
+  /* åˆ¤æ–­æ˜¯å¦è¶…è¿‡äº†æŽ¥æ”¶ç¼“å†²çš„å¤§å° */
   if (sk->rmem_alloc + skb->mem_len >= sk->rcvbuf) 
   {
 	skb->sk = NULL;
@@ -630,7 +630,7 @@ udp_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
 
   skb->len = len - sizeof(*uh);
 
-  /* Í¨Öª½ø³ÌÊý¾ÝÒÑ¾­½ÓÊÕµ½ */
+  /* é€šçŸ¥è¿›ç¨‹æ•°æ®å·²ç»æŽ¥æ”¶åˆ° */
   if (!sk->dead) 
   	sk->data_ready(sk,skb->len);
   	

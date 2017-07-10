@@ -156,14 +156,14 @@ asmlinkage int sys_utime(char * filename, struct utimbuf * times)
  * path.  Now we only use them for the final component of the path.
  */
 
-/* ÅĞ¶ÏÎÄ¼şµÄ·ÃÎÊÈ¨ÏŞ
+/* åˆ¤æ–­æ–‡ä»¶çš„è®¿é—®æƒé™
   */
 asmlinkage int sys_access(const char * filename,int mode)
 {
 	struct inode * inode;
 	int res, i_mode;
 
-	/*ÅĞ¶ÏmodeÇ°ÈıÎ»µÄÓĞĞ§ĞÔ*/
+	/*åˆ¤æ–­modeå‰ä¸‰ä½çš„æœ‰æ•ˆæ€§*/
 	if (mode != (mode & S_IRWXO))	/* where's F_OK, X_OK, W_OK, R_OK? */
 		return -EINVAL;
 	res = namei(filename,&inode);
@@ -194,7 +194,7 @@ asmlinkage int sys_access(const char * filename,int mode)
 }
 
 
-/* ¸ü¸Äµ±Ç°½ø³ÌµÄ¹¤×÷Ä¿Â¼ */
+/* æ›´æ”¹å½“å‰è¿›ç¨‹çš„å·¥ä½œç›®å½• */
 asmlinkage int sys_chdir(const char * filename)
 {
 	struct inode * inode;
@@ -235,9 +235,9 @@ asmlinkage int sys_fchdir(unsigned int fd)
 	return (0);
 }
 
-/* ¸ü¸Ä½ø³ÌµÄrootÄ¿Â¼£¬Ä¬ÈÏµÄ·ÃÎÊ/etc,ÔòÊÇÕæÕıµÄÏµÍ³/etcÄ¿Â¼£¬
- * Èç¹ûÊ¹ÓÃ¸Ãº¯Êı¸ü¸Ä³É/home/demo,Ôò·ÃÎÊ/etcÄ¿Â¼ÔòÊµ¼ÊÊÇ/home/demo/etc
- * ÏëÏóÒ»ÏÂftpµÄ¸ùÄ¿Â¼
+/* æ›´æ”¹è¿›ç¨‹çš„rootç›®å½•ï¼Œé»˜è®¤çš„è®¿é—®/etc,åˆ™æ˜¯çœŸæ­£çš„ç³»ç»Ÿ/etcç›®å½•ï¼Œ
+ * å¦‚æœä½¿ç”¨è¯¥å‡½æ•°æ›´æ”¹æˆ/home/demo,åˆ™è®¿é—®/etcç›®å½•åˆ™å®é™…æ˜¯/home/demo/etc
+ * æƒ³è±¡ä¸€ä¸‹ftpçš„æ ¹ç›®å½•
  */
 asmlinkage int sys_chroot(const char * filename)
 {
@@ -248,7 +248,7 @@ asmlinkage int sys_chroot(const char * filename)
 	if (error)
 		return error;
 
-    /* ²»ÊÇÄ¿Â¼ÔòÊ§°Ü·µ»Ø */
+    /* ä¸æ˜¯ç›®å½•åˆ™å¤±è´¥è¿”å› */
 	if (!S_ISDIR(inode->i_mode)) {
 		iput(inode);
 		return -ENOTDIR;
@@ -262,7 +262,7 @@ asmlinkage int sys_chroot(const char * filename)
 	return (0);
 }
 
-/* ¸ü¸ÄÎÄ¼şµÄmode */
+/* æ›´æ”¹æ–‡ä»¶çš„mode */
 asmlinkage int sys_fchmod(unsigned int fd, mode_t mode)
 {
 	struct inode * inode;
@@ -274,7 +274,7 @@ asmlinkage int sys_fchmod(unsigned int fd, mode_t mode)
 		return -ENOENT;
 	if ((current->euid != inode->i_uid) && !suser())
 		return -EPERM;
-    /* ÅĞ¶ÏÎÄ¼şÏµÍ³ÊÇ²»ÊÇÖ»¶ÁµÄ */
+    /* åˆ¤æ–­æ–‡ä»¶ç³»ç»Ÿæ˜¯ä¸æ˜¯åªè¯»çš„ */
 	if (IS_RDONLY(inode))
 		return -EROFS;
 	if (mode == (mode_t) -1)
@@ -287,17 +287,17 @@ asmlinkage int sys_fchmod(unsigned int fd, mode_t mode)
 	return notify_change(NOTIFY_MODE, inode);
 }
 
-/* ¸Ä±äÎÄ¼ş»òÄ¿Â¼µÄ²Ù×÷È¨ÏŞ£¬ÔÚLinuxÖĞÄ¿Â¼ÊÇÒ»ÖÖÌØÊâµÄÎÄ¼ş */
+/* æ”¹å˜æ–‡ä»¶æˆ–ç›®å½•çš„æ“ä½œæƒé™ï¼Œåœ¨Linuxä¸­ç›®å½•æ˜¯ä¸€ç§ç‰¹æ®Šçš„æ–‡ä»¶ */
 asmlinkage int sys_chmod(const char * filename, mode_t mode)
 {
 	struct inode * inode;
 	int error;
 
-	/* ÕÒµ½Â·¾¶¶ÔÓ¦ÎÄ¼şµÄinode */
+	/* æ‰¾åˆ°è·¯å¾„å¯¹åº”æ–‡ä»¶çš„inode */
 	error = namei(filename,&inode);
 	if (error)
 		return error;
-	/* Ö»ÓĞÎÄ¼şÊôÖ÷µÄ½ø³Ì»òÕß³¬¼¶ÓÃ»§²Å¿ÉÒÔĞŞ¸Ä */
+	/* åªæœ‰æ–‡ä»¶å±ä¸»çš„è¿›ç¨‹æˆ–è€…è¶…çº§ç”¨æˆ·æ‰å¯ä»¥ä¿®æ”¹ */
 	if ((current->euid != inode->i_uid) && !suser()) {
 		iput(inode);
 		return -EPERM;
@@ -311,7 +311,7 @@ asmlinkage int sys_chmod(const char * filename, mode_t mode)
 	inode->i_mode = (mode & S_IALLUGO) | (inode->i_mode & ~S_IALLUGO);
 	if (!suser() && !in_group_p(inode->i_gid))
 		inode->i_mode &= ~S_ISGID;
-	/* ĞŞ¸ÄinodeµÄĞŞ¸ÄÊ±¼äºÍÔà±ê¼Ç£¬ÒÔ±ã»ØĞ´Êı¾İ */
+	/* ä¿®æ”¹inodeçš„ä¿®æ”¹æ—¶é—´å’Œè„æ ‡è®°ï¼Œä»¥ä¾¿å›å†™æ•°æ® */
 	inode->i_ctime = CURRENT_TIME;
 	inode->i_dirt = 1;
 	error = notify_change(NOTIFY_MODE, inode);
@@ -346,7 +346,7 @@ asmlinkage int sys_fchown(unsigned int fd, uid_t user, gid_t group)
 	return -EPERM;
 }
 
-/* ¸ü¸ÄÎÄ¼şÊôÖ÷ */
+/* æ›´æ”¹æ–‡ä»¶å±ä¸» */
 asmlinkage int sys_chown(const char * filename, uid_t user, gid_t group)
 {
 	struct inode * inode;
@@ -414,7 +414,7 @@ int do_open(const char * filename,int flags,int mode)
 		flag++;
 	if (flag & (O_TRUNC | O_CREAT))
 		flag |= 2;
-	/* Í¨¹ıÒ»¸öÂ·¾¶filenameÀ´´ò¿ªÒ»¸öÎÄ¼ş£¬²¢»ñÈ¡ÎÄ¼şµÄinode
+	/* é€šè¿‡ä¸€ä¸ªè·¯å¾„filenameæ¥æ‰“å¼€ä¸€ä¸ªæ–‡ä»¶ï¼Œå¹¶è·å–æ–‡ä»¶çš„inode
 	 */
 	error = open_namei(filename,flag,mode,&inode,NULL);
 	if (error) {
@@ -423,17 +423,17 @@ int do_open(const char * filename,int flags,int mode)
 		return error;
 	}
 
-	/* ÔÚopenº¯Êıµ±ÖĞ£¬ÏÈÍ¨¹ıopen_nameiº¯Êı»ñÈ¡¶ÔÓ¦Â·¾¶ÎÄ¼şµÄinode
-	 * ÔÚ»ñÈ¡µÄinodeµ±ÖĞ»áÓĞf_opµÄ²Ù×÷·û£¬LinuxµÄÎÄ¼şÏµÍ³ÊÇ¸ù¾İËùÒª
-	 * ²Ù×÷ÎÄ¼şµÄÀàĞÍÀ´È·¶¨ÎÄ¼ş²Ù×÷µÄf_opºÍi_op£¬ÒòÎªLinuxÖ§³ÖµÄÎÄ¼şÏµÍ³ÖÚ¶à
-	 * Ã¿ÖÖÎÄ¼şÏµÍ³µÄf_opºÍi_op¶¼ÓĞÌØ¶¨µÄÊµÏÖ£¬ÎÄ¼şÏµÍ³¾ßÌåº¯ÊıµÄÊµÏÖÔÚÏàÓ¦µÄ
-	 * ÎÄ¼ş¼Ğµ±ÖĞ£¬Èçext2ÎÄ¼şÏµÍ³µÄÊµÏÖÔÚ/fs/ext2/µ±ÖĞ
+	/* åœ¨openå‡½æ•°å½“ä¸­ï¼Œå…ˆé€šè¿‡open_nameiå‡½æ•°è·å–å¯¹åº”è·¯å¾„æ–‡ä»¶çš„inode
+	 * åœ¨è·å–çš„inodeå½“ä¸­ä¼šæœ‰f_opçš„æ“ä½œç¬¦ï¼ŒLinuxçš„æ–‡ä»¶ç³»ç»Ÿæ˜¯æ ¹æ®æ‰€è¦
+	 * æ“ä½œæ–‡ä»¶çš„ç±»å‹æ¥ç¡®å®šæ–‡ä»¶æ“ä½œçš„f_opå’Œi_opï¼Œå› ä¸ºLinuxæ”¯æŒçš„æ–‡ä»¶ç³»ç»Ÿä¼—å¤š
+	 * æ¯ç§æ–‡ä»¶ç³»ç»Ÿçš„f_opå’Œi_opéƒ½æœ‰ç‰¹å®šçš„å®ç°ï¼Œæ–‡ä»¶ç³»ç»Ÿå…·ä½“å‡½æ•°çš„å®ç°åœ¨ç›¸åº”çš„
+	 * æ–‡ä»¶å¤¹å½“ä¸­ï¼Œå¦‚ext2æ–‡ä»¶ç³»ç»Ÿçš„å®ç°åœ¨/fs/ext2/å½“ä¸­
 	 */
 	f->f_inode = inode;
 	f->f_pos = 0;
 	f->f_reada = 0;
 	f->f_op = NULL;
-        /* ¸ù¾İinodeÀ´ÉèÖÃfileµÄf_opÖ¸Õë */
+        /* æ ¹æ®inodeæ¥è®¾ç½®fileçš„f_opæŒ‡é’ˆ */
 	if (inode->i_op)
 		f->f_op = inode->i_op->default_file_ops;
 	if (f->f_op && f->f_op->open) {
@@ -449,9 +449,9 @@ int do_open(const char * filename,int flags,int mode)
 	return (fd);
 }
 
-/* flagÎª´ò¿ªÎÄ¼ş·½Ê½£¬Èç¿É¶Á£¬¿ÉĞ´£¬¿É¶ÁĞ´£¬
- * Èç¹ûÎÄ¼şÃ»ÓĞÔò»áÈ¥´´½¨Ò»¸öĞÂµÄÎÄ¼ş
- * modeÖĞÓĞÔÚ´´½¨ĞÂµÄÎÄ¼şÊ±ºò²ÅÆğ×÷ÓÃ£¬Ò²¾ÍÊÇÈ·¶¨ĞÂ½¨ÎÄ¼şµÄÈ¨ÏŞ
+/* flagä¸ºæ‰“å¼€æ–‡ä»¶æ–¹å¼ï¼Œå¦‚å¯è¯»ï¼Œå¯å†™ï¼Œå¯è¯»å†™ï¼Œ
+ * å¦‚æœæ–‡ä»¶æ²¡æœ‰åˆ™ä¼šå»åˆ›å»ºä¸€ä¸ªæ–°çš„æ–‡ä»¶
+ * modeä¸­æœ‰åœ¨åˆ›å»ºæ–°çš„æ–‡ä»¶æ—¶å€™æ‰èµ·ä½œç”¨ï¼Œä¹Ÿå°±æ˜¯ç¡®å®šæ–°å»ºæ–‡ä»¶çš„æƒé™
  */
 asmlinkage int sys_open(const char * filename,int flags,int mode)
 {
@@ -471,8 +471,8 @@ asmlinkage int sys_creat(const char * pathname, int mode)
 	return sys_open(pathname, O_CREAT | O_WRONLY | O_TRUNC, mode);
 }
 
-/* ÔÚ¹Ø±ÕµÄÊ±ºò»á¿¼ÂÇÁ½¸ö±È½ÏµÄÖØÒªµÄ¶«Î÷£¬
- * f_countºÍi_count
+/* åœ¨å…³é—­çš„æ—¶å€™ä¼šè€ƒè™‘ä¸¤ä¸ªæ¯”è¾ƒçš„é‡è¦çš„ä¸œè¥¿ï¼Œ
+ * f_countå’Œi_count
  */
 int close_fp(struct file *filp, unsigned int fd)
 {
@@ -485,16 +485,16 @@ int close_fp(struct file *filp, unsigned int fd)
 	inode = filp->f_inode;
 	if (inode && S_ISREG(inode->i_mode))
 		fcntl_remove_locks(current, filp, fd);
-	/*Èç¹ûÒıÓÃ¼ÆÊı´óÓÚ1,Ôò¼õĞ¡Ò»¸ö¼´¿É*/
+	/*å¦‚æœå¼•ç”¨è®¡æ•°å¤§äº1,åˆ™å‡å°ä¸€ä¸ªå³å¯*/
 	if (filp->f_count > 1) {
 		filp->f_count--;
 		return 0;
 	}
 	if (filp->f_op && filp->f_op->release)
 		filp->f_op->release(inode,filp);
-	/* ÉèÖÃstruct fileÖĞµÄf_countºÍf_inodeÖ¸Õë£¬
-	 * ´Ë´¦Ö»ÊÇÕ¶¶ÏÁËstruct fileºÍstruct inodeµÄ¹ØÏµ£¬
-	 * f_inode²¢²»Ò»¶¨¾ÍÊÍ·ÅÁË¡£
+	/* è®¾ç½®struct fileä¸­çš„f_countå’Œf_inodeæŒ‡é’ˆï¼Œ
+	 * æ­¤å¤„åªæ˜¯æ–©æ–­äº†struct fileå’Œstruct inodeçš„å…³ç³»ï¼Œ
+	 * f_inodeå¹¶ä¸ä¸€å®šå°±é‡Šæ”¾äº†ã€‚
 	 */
 	filp->f_count--;
 	filp->f_inode = NULL;
@@ -502,7 +502,7 @@ int close_fp(struct file *filp, unsigned int fd)
 	return 0;
 }
 
-/* ¹Ø±ÕfdÃèÊö·ûÖ¸ÏòµÄÎÄ¼ş£¬Í¬Ê±½«¶ÔÓ¦µÄstruct fileÖ¸ÕëÉèÖÃÎªNULL */
+/* å…³é—­fdæè¿°ç¬¦æŒ‡å‘çš„æ–‡ä»¶ï¼ŒåŒæ—¶å°†å¯¹åº”çš„struct fileæŒ‡é’ˆè®¾ç½®ä¸ºNULL */
 asmlinkage int sys_close(unsigned int fd)
 {	
 	struct file * filp;
@@ -521,7 +521,7 @@ asmlinkage int sys_close(unsigned int fd)
  * are given clean terminals at login time.
  */
 
-/* ¹ÒÆğµ±Ç°ÖĞ¶Ï */
+/* æŒ‚èµ·å½“å‰ä¸­æ–­ */
 asmlinkage int sys_vhangup(void)
 {
 	struct tty_struct *tty;

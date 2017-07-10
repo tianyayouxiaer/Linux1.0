@@ -66,7 +66,7 @@ unsigned long lance_init(unsigned long mem_start, unsigned long mem_end);
   and returns the new start of free memory.
   */
 
-/* ÍøÂçÉè±¸µÄ³õÊ¼»¯£¬´Ë´¦¾ÍÊÇÍø¿¨µÄ³õÊ¼»¯ */
+/* ç½‘ç»œè®¾å¤‡çš„åˆå§‹åŒ–ï¼Œæ­¤å¤„å°±æ˜¯ç½‘å¡çš„åˆå§‹åŒ– */
 unsigned long net_dev_init (unsigned long mem_start, unsigned long mem_end)
 {
 
@@ -77,7 +77,7 @@ unsigned long net_dev_init (unsigned long mem_start, unsigned long mem_end)
 #endif
 
 #if defined(CONFIG_LANCE)			/* Note this is _not_ CONFIG_AT1500. */
-	/* ÎªÍø¿¨·ÖÅäµÄµØÖ·¿Õ¼ä */
+	/* ä¸ºç½‘å¡åˆ†é…çš„åœ°å€ç©ºé—´ */
 	mem_start = lance_init(mem_start, mem_end);
 #endif
 
@@ -94,19 +94,19 @@ unsigned long net_dev_init (unsigned long mem_start, unsigned long mem_end)
    long.
  */
 
-/* ³õÊ¼»¯ÒÔÌ«ÍøÉè±¸º¯Êı 
- * Õâ¸öº¯ÊıÖ´ĞĞÍê±ÏÖ®ºó£¬Linux¾Í¿ÉÒÔÕıÈ·²Ù×÷Íø¿¨£¬
- * ¶øÍø¿¨ÒÑ¾­×÷ÎªÒ»¸ödev¶ÔÏóÇ¶Èëµ½LinuxÄÚºË  
+/* åˆå§‹åŒ–ä»¥å¤ªç½‘è®¾å¤‡å‡½æ•° 
+ * è¿™ä¸ªå‡½æ•°æ‰§è¡Œå®Œæ¯•ä¹‹åï¼ŒLinuxå°±å¯ä»¥æ­£ç¡®æ“ä½œç½‘å¡ï¼Œ
+ * è€Œç½‘å¡å·²ç»ä½œä¸ºä¸€ä¸ªdevå¯¹è±¡åµŒå…¥åˆ°Linuxå†…æ ¸  
  */
 struct device *init_etherdev(struct device *dev, int sizeof_private,
 							 unsigned long *mem_startp)
 {
 	int i;
-        /* ±íÊ¾ÊÇ·ñÊÇÒ»¸öĞÂµÄÉè±¸ */
+        /* è¡¨ç¤ºæ˜¯å¦æ˜¯ä¸€ä¸ªæ–°çš„è®¾å¤‡ */
 	int new_device = 0;
 
 	if (dev == NULL) {
-                /* eth%d±íÊ¾Íø¿¨µÄÃû³Æ£¬×¢ÒâÃ¿¸öÉè±¸ºóÃæµÄÄÚ´æ²¼¾Ö */
+                /* eth%dè¡¨ç¤ºç½‘å¡çš„åç§°ï¼Œæ³¨æ„æ¯ä¸ªè®¾å¤‡åé¢çš„å†…å­˜å¸ƒå±€ */
 		int alloc_size = sizeof(struct device) + sizeof("eth%d ")
 			+ sizeof_private;
 		if (mem_startp && *mem_startp ) {
@@ -124,11 +124,11 @@ struct device *init_etherdev(struct device *dev, int sizeof_private,
 	if (dev->name  &&  dev->name[0] == '\0')
 		sprintf(dev->name, "eth%d", next_ethdev_number++);
 
-        /* ³õÊ¼»¯Éè±¸µÄskb */
+        /* åˆå§‹åŒ–è®¾å¤‡çš„skb */
 	for (i = 0; i < DEV_NUMBUFFS; i++)
 		dev->buffs[i] = NULL;
 	
-        /* ÉèÖÃÁ´Â·²ã»Øµ÷º¯Êı */
+        /* è®¾ç½®é“¾è·¯å±‚å›è°ƒå‡½æ•° */
 	dev->hard_header	= eth_header;
 	dev->add_arp		= eth_add_arp;
 	dev->queue_xmit		= dev_queue_xmit;
@@ -151,11 +151,11 @@ struct device *init_etherdev(struct device *dev, int sizeof_private,
 	dev->pa_mask		= 0;
 	dev->pa_alen		= sizeof(unsigned long);
 
-	/* ½«Íø¿¨Éè±¸Ç¶Èëµ½LinuxÄÚºËÉè±¸ÁĞ±íµ±ÖĞ */
+	/* å°†ç½‘å¡è®¾å¤‡åµŒå…¥åˆ°Linuxå†…æ ¸è®¾å¤‡åˆ—è¡¨å½“ä¸­ */
 	if (new_device) {
 		/* Append the device to the device queue. */
 		struct device **old_devp = &dev_base;
-                /* ½«ĞÂµÄÉè±¸Ìí¼Óµ½Éè±¸Á´±íµÄÄ©Î² */
+                /* å°†æ–°çš„è®¾å¤‡æ·»åŠ åˆ°è®¾å¤‡é“¾è¡¨çš„æœ«å°¾ */
 		while ((*old_devp)->next)
 			old_devp = & (*old_devp)->next;
 		(*old_devp)->next = dev;

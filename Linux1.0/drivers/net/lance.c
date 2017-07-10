@@ -258,7 +258,7 @@ unsigned long lance_probe1(short ioaddr, unsigned long mem_start)
     if (inw(ioaddr+LANCE_DATA) != 0x0004)
 	return mem_start;
 
-	/* ÕæÕýµÄ×¢²áÍø¿¨ */
+	/* çœŸæ­£çš„æ³¨å†Œç½‘å¡ */
     dev = init_etherdev(0, sizeof(struct lance_private)
 			+ PKT_BUF_SZ*(RX_RING_SIZE + TX_RING_SIZE),
 			&mem_start);
@@ -368,16 +368,16 @@ unsigned long lance_probe1(short ioaddr, unsigned long mem_start)
 }
 
 
-/* ´ò¿ªlanceÍø¿¨Éè±¸ */
+/* æ‰“å¼€lanceç½‘å¡è®¾å¤‡ */
 static int
 lance_open(struct device *dev)
 {
-    /* ´ÓÉè±¸µÄË½ÓÐÊý¾ÝÈ¡³östruct lance_private½á¹¹ */
+    /* ä»Žè®¾å¤‡çš„ç§æœ‰æ•°æ®å–å‡ºstruct lance_privateç»“æž„ */
     struct lance_private *lp = (struct lance_private *)dev->priv;
     int ioaddr = dev->base_addr;
     int i;
 
-    /* ×¢²álanceÉè±¸µÄÖÐ¶ÏÇëÇó */
+    /* æ³¨å†Œlanceè®¾å¤‡çš„ä¸­æ–­è¯·æ±‚ */
     if (request_irq(dev->irq, &lance_interrupt)) {
 	return -EAGAIN;
     }
@@ -588,7 +588,7 @@ lance_start_xmit(struct sk_buff *skb, struct device *dev)
 }
 
 /* The LANCE interrupt handler. */
-/* lanceÍø¿¨Éè±¸µÄÖÐ¶Ï´¦Àí */
+/* lanceç½‘å¡è®¾å¤‡çš„ä¸­æ–­å¤„ç† */
 static void
 lance_interrupt(int reg_ptr)
 {
@@ -656,7 +656,7 @@ lance_interrupt(int reg_ptr)
 	    if (databuff >= (void*)(&lp->tx_bounce_buffs[TX_RING_SIZE])
 		|| databuff < (void*)(lp->tx_bounce_buffs)) {
 		struct sk_buff *skb = ((struct sk_buff *)databuff) - 1;
-		/* ·¢ËÍÖ®ºó²»¹ÜÊÇ·ñ³É¹¦£¬ÔòÁ¢¼´ÊÍ·Å */
+		/* å‘é€ä¹‹åŽä¸ç®¡æ˜¯å¦æˆåŠŸï¼Œåˆ™ç«‹å³é‡Šæ”¾ */
 		if (skb->free)
 		    kfree_skb(skb, FREE_WRITE);
 		else
@@ -698,7 +698,7 @@ lance_interrupt(int reg_ptr)
 	       dev->name, inw(ioaddr + LANCE_ADDR),
 	       inw(dev->base_addr + LANCE_DATA));
 
-    /* ÍË³öÖÐ¶Ï´¦Àí */
+    /* é€€å‡ºä¸­æ–­å¤„ç† */
     dev->interrupt = 0;
     return;
 }

@@ -86,7 +86,7 @@ static int get_loadavg(char * buffer)
 		LOAD_INT(c), LOAD_FRAC(c));
 }
 
-/* »ñÈ¡ÄÚºË×´Ì¬ */
+/* è·å–å†…æ ¸çŠ¶æ€ */
 static int get_kstat(char * buffer)
 {
         return sprintf(buffer,	"cpu  %u %u %u %lu\n"
@@ -517,7 +517,7 @@ static int array_read(struct inode * inode, struct file * file,char * buf, int c
 	return count;
 }
 
-/* procÎÄ¼şÏµÍ³µÄÎÄ¼ş²Ù×÷·û */
+/* procæ–‡ä»¶ç³»ç»Ÿçš„æ–‡ä»¶æ“ä½œç¬¦ */
 static struct file_operations proc_array_operations = {
 	NULL,		/* array_lseek */
 	array_read,
@@ -531,7 +531,7 @@ static struct file_operations proc_array_operations = {
 	NULL		/* can't fsync */
 };
 
-/* procÎÄ¼şÏµÍ³µÄinode²Ù×÷·û */
+/* procæ–‡ä»¶ç³»ç»Ÿçš„inodeæ“ä½œç¬¦ */
 struct inode_operations proc_array_inode_operations = {
 	&proc_array_operations,	/* default base directory file-ops */
 	NULL,			/* create */

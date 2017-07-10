@@ -38,10 +38,10 @@
 static unsigned char cache_21 = 0xff;
 static unsigned char cache_A1 = 0xff;
 
-/* ÄÚºËÖĞÖĞ¶ÏÊıÁ¿ */
+/* å†…æ ¸ä¸­ä¸­æ–­æ•°é‡ */
 unsigned long intr_count = 0;
 
-/* ÖĞ¶ÏÏÂ°ë²¿·Ö´¦ÀíµÄÈ«¾Ö±äÁ¿,×Ü¹²ÓĞ32ÖĞ²»Í¬µÄÏÂ°ë²¿·Ö´¦Àí
+/* ä¸­æ–­ä¸‹åŠéƒ¨åˆ†å¤„ç†çš„å…¨å±€å˜é‡,æ€»å…±æœ‰32ä¸­ä¸åŒçš„ä¸‹åŠéƒ¨åˆ†å¤„ç†
  * http://www.tldp.org/LDP/tlk/kernel/kernel.html 
  */
 /* There can be up to 32 different bottom half handlers; 
@@ -50,13 +50,13 @@ unsigned long intr_count = 0;
  * If bit N of bh_mask is set then the Nth element of bh_base contains the address of a bottom half routine. 
  * If bit N of bh_active is set then the N'th bottom half handler routine should be called as soon as the scheduler deems reasonable.
  */
-/* ±íÊ¾ÊÇ·ñ¿ÉÒÔ´¦ÀíÄ³¸öÖĞ¶ÏµÄÏÂ°ë²¿·Ö£¬ÊÇ·ñ¿ÉÒÔ´¦ÀíÍ¨¹ı
-  * bh_active & hb_maskÀ´ÅĞ¶Ï
+/* è¡¨ç¤ºæ˜¯å¦å¯ä»¥å¤„ç†æŸä¸ªä¸­æ–­çš„ä¸‹åŠéƒ¨åˆ†ï¼Œæ˜¯å¦å¯ä»¥å¤„ç†é€šè¿‡
+  * bh_active & hb_maskæ¥åˆ¤æ–­
   */
 unsigned long bh_active = 0;
-/* mask±íÊ¾bh_baseÖĞ°üº¬ÓĞµØÖ·ÊµÀı */
+/* maskè¡¨ç¤ºbh_baseä¸­åŒ…å«æœ‰åœ°å€å®ä¾‹ */
 unsigned long bh_mask = 0xFFFFFFFF;
-/* ÖĞ¶ÏµÄÏÂ°ë²¿·ÖÊı×é */
+/* ä¸­æ–­çš„ä¸‹åŠéƒ¨åˆ†æ•°ç»„ */
 struct bh_struct bh_base[32]; 
 
 void disable_irq(unsigned int irq_nr)
@@ -106,7 +106,7 @@ void enable_irq(unsigned int irq_nr)
  */
 
 /* http://www.tldp.org/LDP/tlk/kernel/kernel.html */
-/* Ö´ĞĞÖĞ¶ÏµÄÏÂ°ë²¿·Ö */
+/* æ‰§è¡Œä¸­æ–­çš„ä¸‹åŠéƒ¨åˆ† */
 asmlinkage void do_bottom_half(void)
 {
 	unsigned long active;
@@ -114,7 +114,7 @@ asmlinkage void do_bottom_half(void)
 	struct bh_struct *bh;
 
 	bh = bh_base;
-	/* »ñÈ¡ĞèÒª´¦ÀíµÄÏÂ°ë²¿·ÖÎ»Í¼ */
+	/* è·å–éœ€è¦å¤„ç†çš„ä¸‹åŠéƒ¨åˆ†ä½å›¾ */
 	active = bh_active & bh_mask;
 	for (mask = 1, left = ~0 ; left & active ; bh++,mask += mask,left += left) {
 		if (mask & active) {
@@ -217,7 +217,7 @@ static struct sigaction irq_sigaction[16] = {
  * IRQ's should use this format: notably the keyboard/timer
  * routines.
  */
-/* ´¦ÀíÖĞ¶Ï */
+/* å¤„ç†ä¸­æ–­ */
 asmlinkage void do_IRQ(int irq, struct pt_regs * regs)
 {
 	struct sigaction * sa = irq + irq_sigaction;
@@ -239,7 +239,7 @@ asmlinkage void do_fast_IRQ(int irq)
 	sa->sa_handler(irq);
 }
 
-/* ×¢²áÖĞ¶Ï */
+/* æ³¨å†Œä¸­æ–­ */
 int irqaction(unsigned int irq, struct sigaction * new_sa)
 {
 	struct sigaction * sa;
@@ -273,9 +273,9 @@ int irqaction(unsigned int irq, struct sigaction * new_sa)
 	return 0;
 }
 		
-/* ×¢²áÖĞ¶ÏÇëÇó
-  * irqÎªÖĞ¶ÏÇëÇóºÅ 
-  * handleÎªÖĞ¶Ï´¦Àí¾ä±ú  
+/* æ³¨å†Œä¸­æ–­è¯·æ±‚
+  * irqä¸ºä¸­æ–­è¯·æ±‚å· 
+  * handleä¸ºä¸­æ–­å¤„ç†å¥æŸ„  
   */
 int request_irq(unsigned int irq, void (*handler)(int))
 {
@@ -346,7 +346,7 @@ static struct sigaction ignore_IRQ = {
 	NULL
 };
 
-/* ÖĞ¶ÏÇëÇóµÄ³õÊ¼»¯ */
+/* ä¸­æ–­è¯·æ±‚çš„åˆå§‹åŒ– */
 void init_IRQ(void)
 {
 	int i;

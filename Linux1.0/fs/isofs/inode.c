@@ -120,7 +120,7 @@ static int parse_options(char *options,char *map,char *conversion, char * rock, 
 	return 1;
 }
 
-/* ISOÎÄ¼şÏµÍ³³¬¼¶¿é¶ÁÈ¡º¯Êı */
+/* ISOæ–‡ä»¶ç³»ç»Ÿè¶…çº§å—è¯»å–å‡½æ•° */
 struct super_block *isofs_read_super(struct super_block *s,void *data,
 				     int silent)
 {

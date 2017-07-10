@@ -19,7 +19,7 @@
  * second extended file system inode data in memory
  */
 struct ext2_inode_info {
-	/* ext2ÎÄ¼şµÄÊı¾İ¿é */
+	/* ext2æ–‡ä»¶çš„æ•°æ®å— */
 	unsigned long  i_data[15];
 	unsigned long  i_flags;
 	unsigned long  i_faddr;
@@ -30,11 +30,11 @@ struct ext2_inode_info {
 	unsigned long  i_dir_acl;
 	unsigned long  i_dtime;
 	unsigned long  i_version;
-	unsigned long  i_block_group;  /* Êı¾İËùÔÚ¿é×éºÅ */
-	unsigned long  i_next_alloc_block;  /* ÏÂÒ»¸öÎÄ¼ş·ÖÅäµÄÂß¼­¿éºÅ */
-	unsigned long  i_next_alloc_goal; /* ÏÂÒ»¸ö·ÖÅäµÄÉè±¸Âß¼­¿éºÅ */
-	unsigned long  i_prealloc_block; /*´æ·ÅÏÂÒ»´ÎÒªÊ¹ÓÃµÄÔ¤·ÖÅäµÄÂß¼­¿éºÅ */
-	unsigned long  i_prealloc_count; /*´æ·ÅÔ¤·ÖÅä¸øÎÄ¼şµÄ»¹Ã»ÓĞÊ¹ÓÃµÄÊı¾İ¿éµÄÊıÁ¿ */
+	unsigned long  i_block_group;  /* æ•°æ®æ‰€åœ¨å—ç»„å· */
+	unsigned long  i_next_alloc_block;  /* ä¸‹ä¸€ä¸ªæ–‡ä»¶åˆ†é…çš„é€»è¾‘å—å· */
+	unsigned long  i_next_alloc_goal; /* ä¸‹ä¸€ä¸ªåˆ†é…çš„è®¾å¤‡é€»è¾‘å—å· */
+	unsigned long  i_prealloc_block; /*å­˜æ”¾ä¸‹ä¸€æ¬¡è¦ä½¿ç”¨çš„é¢„åˆ†é…çš„é€»è¾‘å—å· */
+	unsigned long  i_prealloc_count; /*å­˜æ”¾é¢„åˆ†é…ç»™æ–‡ä»¶çš„è¿˜æ²¡æœ‰ä½¿ç”¨çš„æ•°æ®å—çš„æ•°é‡ */
 };
 
 #endif	/* _LINUX_EXT2_FS_I */

@@ -16,13 +16,13 @@
 #include <linux/errno.h>
 
 
-/* Éè±¸½á¹¹Ìå nameÎªÉè±¸Ãû³Æ£¬fopsÎªÉè±¸µÄÎÄ¼ş²Ù×÷º¯Êı */
+/* è®¾å¤‡ç»“æ„ä½“ nameä¸ºè®¾å¤‡åç§°ï¼Œfopsä¸ºè®¾å¤‡çš„æ–‡ä»¶æ“ä½œå‡½æ•° */
 struct device_struct {
 	const char * name;
 	struct file_operations * fops;
 };
 
-/* Êı×éÖĞµÄË÷Òı±íÊ¾Éè±¸µÄÖ÷Éè±¸ºÅ */
+/* æ•°ç»„ä¸­çš„ç´¢å¼•è¡¨ç¤ºè®¾å¤‡çš„ä¸»è®¾å¤‡å· */
 static struct device_struct chrdevs[MAX_CHRDEV] = {
 	{ NULL, NULL },
 };
@@ -31,7 +31,7 @@ static struct device_struct blkdevs[MAX_BLKDEV] = {
 	{ NULL, NULL },
 };
 
-/* »ñÈ¡¿éÉè±¸µÄÎÄ¼ş²Ù×÷º¯Êı*/
+/* è·å–å—è®¾å¤‡çš„æ–‡ä»¶æ“ä½œå‡½æ•°*/
 struct file_operations * get_blkfops(unsigned int major)
 {
 	if (major >= MAX_BLKDEV)
@@ -39,7 +39,7 @@ struct file_operations * get_blkfops(unsigned int major)
 	return blkdevs[major].fops;
 }
 
-/* »ñÈ¡×Ö·ûÉè±¸µÄÎÄ¼ş²Ù×÷º¯Êı*/
+/* è·å–å­—ç¬¦è®¾å¤‡çš„æ–‡ä»¶æ“ä½œå‡½æ•°*/
 struct file_operations * get_chrfops(unsigned int major)
 {
 	if (major >= MAX_CHRDEV)
@@ -47,10 +47,10 @@ struct file_operations * get_chrfops(unsigned int major)
 	return chrdevs[major].fops;
 }
 
-/* ×¢²á×Ö·ûÉè±¸µÄÃû³ÆºÍÎÄ¼ş²Ù×÷º¯Êı
- * majorÎªÖ÷Éè±¸ºÅ
- * nameÉè±¸Ãû³Æ
- * fopsÉè±¸ÎÄ¼ş²Ù×÷º¯Êı
+/* æ³¨å†Œå­—ç¬¦è®¾å¤‡çš„åç§°å’Œæ–‡ä»¶æ“ä½œå‡½æ•°
+ * majorä¸ºä¸»è®¾å¤‡å·
+ * nameè®¾å¤‡åç§°
+ * fopsè®¾å¤‡æ–‡ä»¶æ“ä½œå‡½æ•°
  */
 int register_chrdev(unsigned int major, const char * name, struct file_operations *fops)
 {
@@ -63,10 +63,10 @@ int register_chrdev(unsigned int major, const char * name, struct file_operation
 	return 0;
 }
 
-/* ×¢²á¿éÉè±¸µÄÃû³ÆºÍÎÄ¼ş²Ù×÷º¯Êı
- * majorÎªÖ÷Éè±¸ºÅ
- * nameÉè±¸Ãû³Æ
- * fopsÉè±¸ÎÄ¼ş²Ù×÷º¯Êı
+/* æ³¨å†Œå—è®¾å¤‡çš„åç§°å’Œæ–‡ä»¶æ“ä½œå‡½æ•°
+ * majorä¸ºä¸»è®¾å¤‡å·
+ * nameè®¾å¤‡åç§°
+ * fopsè®¾å¤‡æ–‡ä»¶æ“ä½œå‡½æ•°
  */
 
 int register_blkdev(unsigned int major, const char * name, struct file_operations *fops)
@@ -80,7 +80,7 @@ int register_blkdev(unsigned int major, const char * name, struct file_operation
 	return 0;
 }
 
-/* È¡Ïû×Ö·ûÉè±¸×¢²á
+/* å–æ¶ˆå­—ç¬¦è®¾å¤‡æ³¨å†Œ
  */
 int unregister_chrdev(unsigned int major, const char * name)
 {
@@ -162,16 +162,16 @@ struct inode_operations blkdev_inode_operations = {
 /*
  * Called every time a character special file is opened
  */
-/* ´ò¿ª×Ö·ûÉè±¸ */
+/* æ‰“å¼€å­—ç¬¦è®¾å¤‡ */
 int chrdev_open(struct inode * inode, struct file * filp)
 {
 	int i;
 
-	/* ÔÚÕâÀï¸ù¾İinodeÖĞµÄÊµ¼ÊÉè±¸ºÅ£¬À´»ñÈ¡Ö÷Éè±¸ºÅ£¬
-	  * È»ºó¸ù¾İÖ÷Éè±¸ºÅ£¬À´¾ö¶¨µ÷ÓÃ¾ßÌåµÄfop£¬ÒòÎªÔÚLinux 
-	  * µ±ÖĞ¿ÉÄÜ¶à¸ö×Ö·ûÉè±¸µÄÖ÷Éè±¸ºÅÊÇ²»Í¬µÄ£¬¶øÔÚread_inode 
-	  * µÄÊ±ºò½ö½öÅĞ¶ÏÁËÊÇ×Ö·ûÉè±¸£¬È»ºóÔÚ×Ö·ûÉè±¸µÄ²Ù×÷º¯Êı¼¯ºÏ 
-	  * ÖĞÀ´¾ßÌåµÄÑ¡Ôñ²Ù×÷µÄfop£¬¿éÉè±¸Ò²ÊÇÍ¬ÑùµÄµÀÀí  
+	/* åœ¨è¿™é‡Œæ ¹æ®inodeä¸­çš„å®é™…è®¾å¤‡å·ï¼Œæ¥è·å–ä¸»è®¾å¤‡å·ï¼Œ
+	  * ç„¶åæ ¹æ®ä¸»è®¾å¤‡å·ï¼Œæ¥å†³å®šè°ƒç”¨å…·ä½“çš„fopï¼Œå› ä¸ºåœ¨Linux 
+	  * å½“ä¸­å¯èƒ½å¤šä¸ªå­—ç¬¦è®¾å¤‡çš„ä¸»è®¾å¤‡å·æ˜¯ä¸åŒçš„ï¼Œè€Œåœ¨read_inode 
+	  * çš„æ—¶å€™ä»…ä»…åˆ¤æ–­äº†æ˜¯å­—ç¬¦è®¾å¤‡ï¼Œç„¶ååœ¨å­—ç¬¦è®¾å¤‡çš„æ“ä½œå‡½æ•°é›†åˆ 
+	  * ä¸­æ¥å…·ä½“çš„é€‰æ‹©æ“ä½œçš„fopï¼Œå—è®¾å¤‡ä¹Ÿæ˜¯åŒæ ·çš„é“ç†  
 	  */
 	i = MAJOR(inode->i_rdev);
 	if (i >= MAX_CHRDEV || !chrdevs[i].fops)
@@ -187,7 +187,7 @@ int chrdev_open(struct inode * inode, struct file * filp)
  * is contain the open that then fills in the correct operations
  * depending on the special file...
  */
-/* Ä¬ÈÏµÄ×Ö·ûÉè±¸²Ù×÷º¯Êı¼¯ */
+/* é»˜è®¤çš„å­—ç¬¦è®¾å¤‡æ“ä½œå‡½æ•°é›† */
 struct file_operations def_chr_fops = {
 	NULL,		/* lseek */
 	NULL,		/* read */

@@ -72,8 +72,8 @@ static int ext2_match (int len, const char * const name,
  * itself (as a parameter - res_dir). It does NOT read the inode of the
  * entry - you'll have to do that yourself if you want to.
  */
-/* ¸Ãº¯Êı´ÓÒ»¸ö¸¸Ä¿Â¼dirµ±ÖĞ²éÕÒÒ»¸öÃû³ÆÎªname³¤¶ÈÎªnamelenµÄÎÄ¼ş»òÄ¿Â¼
- * È»ºó½«²éÕÒµ½µÄ½á¹û´æ·ÅÔÚres_dirµ±ÖĞ
+/* è¯¥å‡½æ•°ä»ä¸€ä¸ªçˆ¶ç›®å½•dirå½“ä¸­æŸ¥æ‰¾ä¸€ä¸ªåç§°ä¸ºnameé•¿åº¦ä¸ºnamelençš„æ–‡ä»¶æˆ–ç›®å½•
+ * ç„¶åå°†æŸ¥æ‰¾åˆ°çš„ç»“æœå­˜æ”¾åœ¨res_dirå½“ä¸­
  */
 static struct buffer_head * ext2_find_entry (struct inode * dir,
 					     const char * const name, int namelen,
@@ -100,15 +100,15 @@ static struct buffer_head * ext2_find_entry (struct inode * dir,
 
 	memset (bh_use, 0, sizeof (bh_use));
 	toread = 0;
-	/* ¶ÁÈ¡Ä¿Â¼ÎÄ¼şµÄ¿é£¬È»ºó½«¶ÁÈ¡µÄÓĞĞ§¸ßËÙ»º´æ´æ·ÅÔÚbh_readµ±ÖĞ */
+	/* è¯»å–ç›®å½•æ–‡ä»¶çš„å—ï¼Œç„¶åå°†è¯»å–çš„æœ‰æ•ˆé«˜é€Ÿç¼“å­˜å­˜æ”¾åœ¨bh_readå½“ä¸­ */
 	for (block = 0; block < NAMEI_RA_SIZE; ++block) {
 		struct buffer_head * bh;
 
-		/* Èç¹û³¬¹ıÎÄ¼ş´óĞ¡ */
+		/* å¦‚æœè¶…è¿‡æ–‡ä»¶å¤§å° */
 		if ((block << EXT2_BLOCK_SIZE_BITS (sb)) >= dir->i_size)
 			break;
 		bh = ext2_getblk (dir, block, 0, &err);
-		/* bh_useÖĞ´æ·ÅµÄÖ¸Õë²»Ò»¶¨ÓĞĞ§ */
+		/* bh_useä¸­å­˜æ”¾çš„æŒ‡é’ˆä¸ä¸€å®šæœ‰æ•ˆ */
 		bh_use[block] = bh;
 		if (bh && !bh->b_uptodate)
 			bh_read[toread++] = bh;
@@ -116,8 +116,8 @@ static struct buffer_head * ext2_find_entry (struct inode * dir,
 
 	block = 0;
 	offset = 0;
-	/* ´ÓÄ¿Â¼ÎÄ¼şµÄµÚ0¿é£¬0´¦Æ«ÒÆ¿ªÊ¼£¬Ò»¿éÒ»¿éµÄ¿ªÊ¼²éÕÒ£¬
-	 * Èç¹ûÕÒµ½ÁË£¬ÔòÖ±½Ó·µ»Ø 
+	/* ä»ç›®å½•æ–‡ä»¶çš„ç¬¬0å—ï¼Œ0å¤„åç§»å¼€å§‹ï¼Œä¸€å—ä¸€å—çš„å¼€å§‹æŸ¥æ‰¾ï¼Œ
+	 * å¦‚æœæ‰¾åˆ°äº†ï¼Œåˆ™ç›´æ¥è¿”å› 
 	 */
 	while (offset < dir->i_size) {
 		struct buffer_head * bh;
@@ -133,7 +133,7 @@ static struct buffer_head * ext2_find_entry (struct inode * dir,
 			ext2_panic (sb, "ext2_find_entry",
 				    "buffer head pointer is NULL");
 		wait_on_buffer (bh);
-		/* ¸ßËÙ»º´æÊ×ÏÈÒªÊÇ×îĞÂµÄ */
+		/* é«˜é€Ÿç¼“å­˜é¦–å…ˆè¦æ˜¯æœ€æ–°çš„ */
 		if (!bh->b_uptodate) {
 			/*
 			 * read error: all bets are off
@@ -141,15 +141,15 @@ static struct buffer_head * ext2_find_entry (struct inode * dir,
 			break;
 		}
 
-		/* Ñ­»·´¦ÀíÄ¿Â¼ÎÄ¼şµÄÒ»¿é£¬Èç¹ûÕÒµ½ÁË£¬Ôò·µ»Ø  */
+		/* å¾ªç¯å¤„ç†ç›®å½•æ–‡ä»¶çš„ä¸€å—ï¼Œå¦‚æœæ‰¾åˆ°äº†ï¼Œåˆ™è¿”å›  */
 		de = (struct ext2_dir_entry *) bh->b_data;
 		dlimit = bh->b_data + sb->s_blocksize;
 		while ((char *) de < dlimit) {
-			/* ¼ì²éext2_dir_entryµÄÓĞĞ§ĞÔ */
+			/* æ£€æŸ¥ext2_dir_entryçš„æœ‰æ•ˆæ€§ */
 			if (!ext2_check_dir_entry ("ext2_find_entry", dir,
 						   de, bh, offset))
 				goto failure;
-			/* Èç¹ûinodeºÅ²»Îª0£¬ÇÒÃû³ÆºÍ³¤¶ÈÆ¥Åä£¬ÔòËµÃ÷ÕÒµ½ÁË£¬²¢·µ»Ø */
+			/* å¦‚æœinodeå·ä¸ä¸º0ï¼Œä¸”åç§°å’Œé•¿åº¦åŒ¹é…ï¼Œåˆ™è¯´æ˜æ‰¾åˆ°äº†ï¼Œå¹¶è¿”å› */
 			if (de->inode != 0 && ext2_match (namelen, name, de)) {
 				for (i = 0; i < NAMEI_RA_SIZE; ++i) {
 					if (bh_use[i] != bh)
@@ -158,12 +158,12 @@ static struct buffer_head * ext2_find_entry (struct inode * dir,
 				*res_dir = de;
 				return bh;
 			}
-			/* Ã»ÕÒµ½Ôò¼ÌĞø´¦ÀíÏÂÒ»¸öext2_dir_entry */
+			/* æ²¡æ‰¾åˆ°åˆ™ç»§ç»­å¤„ç†ä¸‹ä¸€ä¸ªext2_dir_entry */
 			offset += de->rec_len;
 			de = (struct ext2_dir_entry *)
 				((char *) de + de->rec_len);
 		}
-		/* Èç¹ûÕâÒ»¿é»¹Ã»ÓĞÕÒµ½£¬Ôò¼ÌĞøÕÒÏÂÒ»¿é */
+		/* å¦‚æœè¿™ä¸€å—è¿˜æ²¡æœ‰æ‰¾åˆ°ï¼Œåˆ™ç»§ç»­æ‰¾ä¸‹ä¸€å— */
 		brelse (bh);
 		if (((block + NAMEI_RA_SIZE) << EXT2_BLOCK_SIZE_BITS (sb)) >=
 		    dir->i_size)
@@ -181,7 +181,7 @@ failure:
 	return NULL;
 }
 
-/* ´ÓÄ¿Â¼ÖĞ²éÕÒÃû³ÆÎªname³¤¶ÈÎªlenµÄÎÄ¼ş»òÄ¿Â¼ */
+/* ä»ç›®å½•ä¸­æŸ¥æ‰¾åç§°ä¸ºnameé•¿åº¦ä¸ºlençš„æ–‡ä»¶æˆ–ç›®å½• */
 int ext2_lookup (struct inode * dir, const char * name, int len,
 		 struct inode ** result)
 {
@@ -192,21 +192,21 @@ int ext2_lookup (struct inode * dir, const char * name, int len,
 	*result = NULL;
 	if (!dir)
 		return -ENOENT;
-	/* Èç¹ûdir¶ÔÓ¦µÄ²»ÊÇÄ¿Â¼µÄinodeÔò·µ»Ø³ö´í */
+	/* å¦‚æœdirå¯¹åº”çš„ä¸æ˜¯ç›®å½•çš„inodeåˆ™è¿”å›å‡ºé”™ */
 	if (!S_ISDIR(dir->i_mode)) {
 		iput (dir);
 		return -ENOENT;
 	}
-	/* Õâ¸öºêÒÑ±»¶¨Òå */
+	/* è¿™ä¸ªå®å·²è¢«å®šä¹‰ */
 #ifndef DONT_USE_DCACHE
 	if (!(ino = ext2_dcache_lookup (dir->i_dev, dir->i_ino, name, len))) {
 #endif
-		/* ÕÒµ½·ûºÏÌõ¼şµÄext2_dir_entry */
+		/* æ‰¾åˆ°ç¬¦åˆæ¡ä»¶çš„ext2_dir_entry */
 		if (!(bh = ext2_find_entry (dir, name, len, &de))) {
 			iput (dir);
 			return -ENOENT;
 		}
-		/* »ñÈ¡ÕÒµ½µÄÎÄ¼ş»òÄ¿Â¼µÄinodeºÅ */
+		/* è·å–æ‰¾åˆ°çš„æ–‡ä»¶æˆ–ç›®å½•çš„inodeå· */
 		ino = de->inode;
 #ifndef DONT_USE_DCACHE
 		ext2_dcache_add (dir->i_dev, dir->i_ino, de->name,
@@ -216,13 +216,13 @@ int ext2_lookup (struct inode * dir, const char * name, int len,
 #ifndef DONT_USE_DCACHE
 	}
 #endif
-	/* ´Ó³¬¼¶¿é¶ÔÓ¦µÄ´ÅÅÌÖĞ¶ÁÈ¡i½ÚµãºÅÎªinoµÄinode
+	/* ä»è¶…çº§å—å¯¹åº”çš„ç£ç›˜ä¸­è¯»å–ièŠ‚ç‚¹å·ä¸ºinoçš„inode
 	 */
 	if (!(*result = iget (dir->i_sb, ino))) {
 		iput (dir);
 		return -EACCES;
 	}
-	/* ½«¸¸Ä¿Â¼inodeÊÍ·Å*/
+	/* å°†çˆ¶ç›®å½•inodeé‡Šæ”¾*/
 	iput (dir);
 	return 0;
 }
@@ -237,9 +237,9 @@ int ext2_lookup (struct inode * dir, const char * name, int len,
  * may not sleep between calling this and putting something into
  * the entry, as someone else might have used it while you slept.
  */
-/* ¸øÄ¿Â¼ÎÄ¼şÖĞÌí¼ÓÒ»¸öÏî£¬È»ºó½«Ìí¼ÓµÄÕâÏîËùÔÚµÄ¸ßËÙ»º´æÖ¸Õë·µ»Ø£¬
- * ÒÔ±ãÆäËûº¯ÊıÀ´ÉèÖÃÊı¾İ£¬ÔÚÌí¼ÓÏîµÄ¹ı³Ìµ±ÖĞ£¬Ê×ÏÈ»áÅĞ¶Ï¸ÃÄ¿Â¼ÎÄ¼şÏÂÊÇ·ñ
- * ÒÑ¾­´æÔÚname£¬namelenµÄÏî
+/* ç»™ç›®å½•æ–‡ä»¶ä¸­æ·»åŠ ä¸€ä¸ªé¡¹ï¼Œç„¶åå°†æ·»åŠ çš„è¿™é¡¹æ‰€åœ¨çš„é«˜é€Ÿç¼“å­˜æŒ‡é’ˆè¿”å›ï¼Œ
+ * ä»¥ä¾¿å…¶ä»–å‡½æ•°æ¥è®¾ç½®æ•°æ®ï¼Œåœ¨æ·»åŠ é¡¹çš„è¿‡ç¨‹å½“ä¸­ï¼Œé¦–å…ˆä¼šåˆ¤æ–­è¯¥ç›®å½•æ–‡ä»¶ä¸‹æ˜¯å¦
+ * å·²ç»å­˜åœ¨nameï¼Œnamelençš„é¡¹
  */
 static struct buffer_head * ext2_add_entry (struct inode * dir,
 					    const char * name, int namelen,
@@ -274,10 +274,10 @@ static struct buffer_head * ext2_add_entry (struct inode * dir,
 		*err = -ENOENT;
 		return NULL;
 	}
-	/* ½«Ä¿Â¼ÎÄ¼şµÄµÚ0¿é¶ÁÈëµ½¸ßËÙ»º´æ£¬²¢·µ»Ø¸ßËÙ»º´æÖ¸Õë£¬
-	 * °´ÕÕÕı³£µÀÀíÀ´Ëµ£¬Ò»¸ö¿ÕÎÄ¼ş¼ĞÊÇÃ»ÓĞÊı¾İ¿éµÄ£¬µ«ÊÇÔÚĞÂ½¨Ò»¸ö
-	 * ÎÄ¼ş¼ĞÊ±£¬ÏµÍ³»áÄ¬ÈÏ´øÉÏÁ½¸öÌØÊâµÄÎÄ¼ş.´ú±í×Ô¼º..´ú±íÉÏÒ»¼¶Ä¿Â¼
-	 * ËùÒÔ´Ë´¦ÔÚ¶ÁÈ¡µÄÊ±ºò²ÎÊı0,0»á¶ÁÈ¡µ½¸ßËÙ»º´æ
+	/* å°†ç›®å½•æ–‡ä»¶çš„ç¬¬0å—è¯»å…¥åˆ°é«˜é€Ÿç¼“å­˜ï¼Œå¹¶è¿”å›é«˜é€Ÿç¼“å­˜æŒ‡é’ˆï¼Œ
+	 * æŒ‰ç…§æ­£å¸¸é“ç†æ¥è¯´ï¼Œä¸€ä¸ªç©ºæ–‡ä»¶å¤¹æ˜¯æ²¡æœ‰æ•°æ®å—çš„ï¼Œä½†æ˜¯åœ¨æ–°å»ºä¸€ä¸ª
+	 * æ–‡ä»¶å¤¹æ—¶ï¼Œç³»ç»Ÿä¼šé»˜è®¤å¸¦ä¸Šä¸¤ä¸ªç‰¹æ®Šçš„æ–‡ä»¶.ä»£è¡¨è‡ªå·±..ä»£è¡¨ä¸Šä¸€çº§ç›®å½•
+	 * æ‰€ä»¥æ­¤å¤„åœ¨è¯»å–çš„æ—¶å€™å‚æ•°0,0ä¼šè¯»å–åˆ°é«˜é€Ÿç¼“å­˜
 	 */
 	bh = ext2_bread (dir, 0, 0, err);
 	if (!bh)
@@ -287,8 +287,8 @@ static struct buffer_head * ext2_add_entry (struct inode * dir,
 	de = (struct ext2_dir_entry *) bh->b_data;
 	*err = -ENOSPC;
 	while (1) {
-		/* µ±Ç°¸ßËÙ»º´æ¿éÒÑ¾­´æÂúÁË£¬ËùÒÔĞèÒªÔÚ¶ÁÈ¡ÁíÒ»¸ö¸ßËÙ»º´æ¿é£¬
-		 * Ò²¾ÍÏàµ±ÓÚÓÃ1µÄ·½Ê½ÎªÄ¿Â¼ÎÄ¼şĞÂ·ÖÅäÁËÒ»¸öÊı¾İ¿é
+		/* å½“å‰é«˜é€Ÿç¼“å­˜å—å·²ç»å­˜æ»¡äº†ï¼Œæ‰€ä»¥éœ€è¦åœ¨è¯»å–å¦ä¸€ä¸ªé«˜é€Ÿç¼“å­˜å—ï¼Œ
+		 * ä¹Ÿå°±ç›¸å½“äºç”¨1çš„æ–¹å¼ä¸ºç›®å½•æ–‡ä»¶æ–°åˆ†é…äº†ä¸€ä¸ªæ•°æ®å—
 		 */
 		if ((char *)de >= sb->s_blocksize + bh->b_data) {
 			brelse (bh);
@@ -296,7 +296,7 @@ static struct buffer_head * ext2_add_entry (struct inode * dir,
 			bh = ext2_bread (dir, offset >> EXT2_BLOCK_SIZE_BITS(sb), 1, err);
 			if (!bh)
 				return NULL;
-			/* Èç¹ûÆ«ÒÆÁ¿³¬¹ıÎÄ¼ş´óĞ¡ */
+			/* å¦‚æœåç§»é‡è¶…è¿‡æ–‡ä»¶å¤§å° */
 			if (dir->i_size <= offset) {
 				if (dir->i_size == 0) {
 					*err = -ENOENT;
@@ -304,9 +304,9 @@ static struct buffer_head * ext2_add_entry (struct inode * dir,
 				}
 
 				ext2_debug ("creating next block\n");
-				/* ÔÚĞÂµÄÒ»¿éÖĞ£¬ÉèÖÃÄ¿Â¼ÏîµÄÊı¾İ£¬´Ë´¦ºÜÖØÒªµÄÒ»µã¾ÍÊÇinodeºÅÎª0£¬
-				 * ÕâÀïÖ»ÊÇÕÒµ½ÁËÒ»¸ö´æ·Åext2_dir_entryµÄÎ»ÖÃ£¬ºóÃæ²Å»á½«²ÎÊıÖĞµÄname£¬namelen
-				 * Ğ´Èë¸ßËÙ»º´æ
+				/* åœ¨æ–°çš„ä¸€å—ä¸­ï¼Œè®¾ç½®ç›®å½•é¡¹çš„æ•°æ®ï¼Œæ­¤å¤„å¾ˆé‡è¦çš„ä¸€ç‚¹å°±æ˜¯inodeå·ä¸º0ï¼Œ
+				 * è¿™é‡Œåªæ˜¯æ‰¾åˆ°äº†ä¸€ä¸ªå­˜æ”¾ext2_dir_entryçš„ä½ç½®ï¼Œåé¢æ‰ä¼šå°†å‚æ•°ä¸­çš„nameï¼Œnamelen
+				 * å†™å…¥é«˜é€Ÿç¼“å­˜
 				 */
 				de = (struct ext2_dir_entry *) bh->b_data;
 				de->inode = 0;
@@ -329,7 +329,7 @@ static struct buffer_head * ext2_add_entry (struct inode * dir,
 			brelse (bh);
 			return NULL;
 		}
-		/* Èç¹ûÒÑ¾­´æÔÚÁË£¬Ôò·µ»Ø³ö´í */
+		/* å¦‚æœå·²ç»å­˜åœ¨äº†ï¼Œåˆ™è¿”å›å‡ºé”™ */
 		if (de->inode != 0 && ext2_match (namelen, name, de)) {
 				*err = -EEXIST;
 				brelse (bh);
@@ -346,8 +346,8 @@ static struct buffer_head * ext2_add_entry (struct inode * dir,
 				de->rec_len = EXT2_DIR_REC_LEN(de->name_len);
 				de = de1;
 			}
-			/* ÕâÀïµÄinodeÒÀÈ»ÊÇ0£¬ÒòÎªÕâ¸öº¯Êı½ö½öÊÇÔÚÄ¿Â¼µÄÊı¾İ¿éÖĞÌí¼ÓÁËÒ»¸ö
-			 * ext2_inode_entry½á¹¹£¬inodeºÅÔÚext2_createº¯ÊıÖĞÉèÖÃ
+			/* è¿™é‡Œçš„inodeä¾ç„¶æ˜¯0ï¼Œå› ä¸ºè¿™ä¸ªå‡½æ•°ä»…ä»…æ˜¯åœ¨ç›®å½•çš„æ•°æ®å—ä¸­æ·»åŠ äº†ä¸€ä¸ª
+			 * ext2_inode_entryç»“æ„ï¼Œinodeå·åœ¨ext2_createå‡½æ•°ä¸­è®¾ç½®
 			 */
 			de->inode = 0;
 			de->name_len = namelen;
@@ -370,7 +370,7 @@ static struct buffer_head * ext2_add_entry (struct inode * dir,
 			*err = 0;
 			return bh;
 		}
-		/* ´¦ÀíÏÂÒ»¸öÏî */
+		/* å¤„ç†ä¸‹ä¸€ä¸ªé¡¹ */
 		offset += de->rec_len;
 		de = (struct ext2_dir_entry *) ((char *) de + de->rec_len);
 	}
@@ -382,8 +382,8 @@ static struct buffer_head * ext2_add_entry (struct inode * dir,
  * ext2_delete_entry deletes a directory entry by merging it with the
  * previous entry
  */
-/* É¾³ıÔòÊÇ½ö½ö¸Ä±äÁËext2_dir_entryÖĞµÄrec_len£¬
- * Ò²¾ÍÊÇÖ±½Ó°ÑÉ¾³ıµÄÄÇ¸ödir¸øÌø¹ıÁË¡£
+/* åˆ é™¤åˆ™æ˜¯ä»…ä»…æ”¹å˜äº†ext2_dir_entryä¸­çš„rec_lenï¼Œ
+ * ä¹Ÿå°±æ˜¯ç›´æ¥æŠŠåˆ é™¤çš„é‚£ä¸ªdirç»™è·³è¿‡äº†ã€‚
  */
 static int ext2_delete_entry (struct ext2_dir_entry * dir,
 			      struct buffer_head * bh)
@@ -411,9 +411,9 @@ static int ext2_delete_entry (struct ext2_dir_entry * dir,
 	return -ENOENT;
 }
 
-/* ¸Ãº¯ÊıÊ×ÏÈÔÚ´ÅÅÌÉÏÎªÎÄ¼ş·ÖÅäÒ»¸öinode£¬È»ºóµ÷ÓÃext2_add_entryº¯Êı
- * ÎªÄ¿Â¼Ìí¼ÓÒ»¸öÏî£¬Í¬Ê±ÉèÖÃÏîµÄinodeºÅ£¬È»ºó½«ĞÂ½¨ÎÄ¼şµÄinode·ÅÔÚresultÖĞ·µ»Ø
- * ´´½¨µÄÖ»ÄÜÊÇÆÕÍ¨ÎÄ¼ş
+/* è¯¥å‡½æ•°é¦–å…ˆåœ¨ç£ç›˜ä¸Šä¸ºæ–‡ä»¶åˆ†é…ä¸€ä¸ªinodeï¼Œç„¶åè°ƒç”¨ext2_add_entryå‡½æ•°
+ * ä¸ºç›®å½•æ·»åŠ ä¸€ä¸ªé¡¹ï¼ŒåŒæ—¶è®¾ç½®é¡¹çš„inodeå·ï¼Œç„¶åå°†æ–°å»ºæ–‡ä»¶çš„inodeæ”¾åœ¨resultä¸­è¿”å›
+ * åˆ›å»ºçš„åªèƒ½æ˜¯æ™®é€šæ–‡ä»¶
  */
 int ext2_create (struct inode * dir,const char * name, int len, int mode,
 		 struct inode ** result)
@@ -442,7 +442,7 @@ int ext2_create (struct inode * dir,const char * name, int len, int mode,
 		iput (dir);
 		return err;
 	}
-	/* ÉèÖÃÎÄ¼şµÄinodeºÅ
+	/* è®¾ç½®æ–‡ä»¶çš„inodeå·
 	 */
 	de->inode = inode->i_ino;
 #ifndef DONT_USE_DCACHE
@@ -460,7 +460,7 @@ int ext2_create (struct inode * dir,const char * name, int len, int mode,
 	return 0;
 }
 
-/* ºÍext2_createÇø±ğ£¬¿ÉÒÔ´´½¨×Ö·ûÉè±¸ÎÄ¼ş£¬¿éÎÄ¼ş½áµãµÈµÈ */
+/* å’Œext2_createåŒºåˆ«ï¼Œå¯ä»¥åˆ›å»ºå­—ç¬¦è®¾å¤‡æ–‡ä»¶ï¼Œå—æ–‡ä»¶ç»“ç‚¹ç­‰ç­‰ */
 int ext2_mknod (struct inode * dir, const char * name, int len, int mode,
 		int rdev)
 {
@@ -535,7 +535,7 @@ int ext2_mknod (struct inode * dir, const char * name, int len, int mode,
 	return 0;
 }
 
-/* ´´½¨Ò»¸öÄ¿Â¼ */
+/* åˆ›å»ºä¸€ä¸ªç›®å½• */
 int ext2_mkdir (struct inode * dir, const char * name, int len, int mode)
 {
 	struct inode * inode;
@@ -560,13 +560,13 @@ int ext2_mkdir (struct inode * dir, const char * name, int len, int mode)
 		iput (dir);
 		return -ENOSPC;
 	}
-	/* ÉèÖÃÄ¿Â¼ÎÄ¼şµÄi_op */
+	/* è®¾ç½®ç›®å½•æ–‡ä»¶çš„i_op */
 	inode->i_op = &ext2_dir_inode_operations;
 	inode->i_size = inode->i_sb->s_blocksize;
 #if 0 /* XXX as above */
 	inode->i_mtime = inode->i_atime = CURRENT_TIME;
 #endif
-	/* Ä¿Â¼ÎÄ¼şµÄµÚ0¿éÊı¾İ¿é»º³å */
+	/* ç›®å½•æ–‡ä»¶çš„ç¬¬0å—æ•°æ®å—ç¼“å†² */
 	dir_block = ext2_bread (inode, 0, 1, &err);
 	if (!dir_block) {
 		iput (dir);
@@ -575,7 +575,7 @@ int ext2_mkdir (struct inode * dir, const char * name, int len, int mode)
 		iput (inode);
 		return err;
 	}
-	/* »á×Ô¶¯´´½¨Á½¸öÎÄ¼ş .ºÍ..*/
+	/* ä¼šè‡ªåŠ¨åˆ›å»ºä¸¤ä¸ªæ–‡ä»¶ .å’Œ..*/
 	inode->i_blocks = inode->i_sb->s_blocksize / 512;
 	de = (struct ext2_dir_entry *) dir_block->b_data;
 	de->inode = inode->i_ino;
@@ -602,7 +602,7 @@ int ext2_mkdir (struct inode * dir, const char * name, int len, int mode)
 		iput (inode);
 		return err;
 	}
-	/* ÉèÖÃÄ¿Â¼ÎÄ¼şµÄinodeºÅ */
+	/* è®¾ç½®ç›®å½•æ–‡ä»¶çš„inodeå· */
 	de->inode = inode->i_ino;
 #ifndef DONT_USE_DCACHE
 	ext2_dcache_add (dir->i_dev, dir->i_ino, de->name, de->name_len,
@@ -904,7 +904,7 @@ int ext2_symlink (struct inode * dir, const char * name, int len,
 }
 
 
-/* ½«oldinode½ÚµãÁ¬½Óµ½dirÄ¿Â¼½ÚµãÏÂÃæ£¬Ãû³ÆÎªname,³¤¶ÈÎªlen
+/* å°†oldinodeèŠ‚ç‚¹è¿æ¥åˆ°dirç›®å½•èŠ‚ç‚¹ä¸‹é¢ï¼Œåç§°ä¸ºname,é•¿åº¦ä¸ºlen
  */
 int ext2_link (struct inode * oldinode, struct inode * dir,
 	       const char * name, int len)
@@ -913,20 +913,20 @@ int ext2_link (struct inode * oldinode, struct inode * dir,
 	struct buffer_head * bh;
 	int err;
 
-	/*²»ÄÜÊÇÄ¿Â¼ÎÄ¼ş*/
+	/*ä¸èƒ½æ˜¯ç›®å½•æ–‡ä»¶*/
 	if (S_ISDIR(oldinode->i_mode)) {
 		iput (oldinode);
 		iput (dir);
 		return -EPERM;
 	}
 
-	/*²»ÄÜ³¬¹ı×î´óÁ´½ÓÊı*/
+	/*ä¸èƒ½è¶…è¿‡æœ€å¤§é“¾æ¥æ•°*/
 	if (oldinode->i_nlink >= EXT2_LINK_MAX) {
 		iput (oldinode);
 		iput (dir);
 		return -EMLINK;
 	}
-	/*ÏÈÅĞ¶ÏĞèÒªÁ´½ÓµÄÎÄ¼şÊÇ·ñ´æÔÚ£¬Èç¹û´æÔÚÔò·µ»ØÒÑ´æÔÚµÄ´íÎó*/
+	/*å…ˆåˆ¤æ–­éœ€è¦é“¾æ¥çš„æ–‡ä»¶æ˜¯å¦å­˜åœ¨ï¼Œå¦‚æœå­˜åœ¨åˆ™è¿”å›å·²å­˜åœ¨çš„é”™è¯¯*/
 	bh = ext2_find_entry (dir, name, len, &de);
 	if (bh) {
 		brelse (bh);
@@ -934,7 +934,7 @@ int ext2_link (struct inode * oldinode, struct inode * dir,
 		iput (oldinode);
 		return -EEXIST;
 	}
-	/* ÏòÄ¿Â¼ÖĞÌí¼ÓÒ»¸öÎÄ¼şÁ´½Ó
+	/* å‘ç›®å½•ä¸­æ·»åŠ ä¸€ä¸ªæ–‡ä»¶é“¾æ¥
 	 */ 
 	bh = ext2_add_entry (dir, name, len, &de, &err);
 	if (!bh) {
@@ -942,7 +942,7 @@ int ext2_link (struct inode * oldinode, struct inode * dir,
 		iput (oldinode);
 		return err;
 	}
-	/* Ö¸ÏòÍ¬Ò»¸öinodeºÅ
+	/* æŒ‡å‘åŒä¸€ä¸ªinodeå·
 	 */
 	de->inode = oldinode->i_ino;
 #ifndef DONT_USE_DCACHE

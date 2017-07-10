@@ -46,10 +46,10 @@
  * A block header. This is in front of every malloc-block, whether free or not.
  */
 struct block_header {
-	unsigned long bh_flags;              /*ÎïÀíÒ³ÖĞ·ÖÅäµÄ¿éµÄ×´Ì¬*/
+	unsigned long bh_flags;              /*ç‰©ç†é¡µä¸­åˆ†é…çš„å—çš„çŠ¶æ€*/
 	union {
-		unsigned long ubh_length;        /*±»Ê¹ÓÃÊ±¼ÇÂ¼Êµ¼ÊÊ¹ÓÃ´óĞ¡*/
-		struct block_header *fbh_next;   /*¿ÕÏĞÊ±ÏÂÒ»¸ö¿éµÄ´óĞ¡*/
+		unsigned long ubh_length;        /*è¢«ä½¿ç”¨æ—¶è®°å½•å®é™…ä½¿ç”¨å¤§å°*/
+		struct block_header *fbh_next;   /*ç©ºé—²æ—¶ä¸‹ä¸€ä¸ªå—çš„å¤§å°*/
 	} vp;
 };
 
@@ -63,15 +63,15 @@ struct block_header {
  * The page descriptor is at the front of every page that malloc has in use. 
  */
 
-/* Ã¿¸öÍ°¶ÔÓ¦µÄÓĞÎïÀíÒ³µÄµØÖ·£¬¶øÃ¿¸öÎïÀíÒ³·Ö³ÉµÄ¿éµÄ´óĞ¡¾ÍÊÇsize_descriptor.size
- * µÄ´óĞ¡£¬ÔÚ¿ÕÏĞ×´Ì¬ÏÂÊ±Ã¿¿éÇ°Ãæ´æ·ÅµÄÊÇblock_head½á¹¹£¬Ã¿Ò³×îÇ°Ãæ»¹´æ·ÅÓĞpage_descriptor½á¹¹Ìå,
- * ±íÊ¾¸ÃÒ³µÄÊ¹ÓÃÇé¿ö
+/* æ¯ä¸ªæ¡¶å¯¹åº”çš„æœ‰ç‰©ç†é¡µçš„åœ°å€ï¼Œè€Œæ¯ä¸ªç‰©ç†é¡µåˆ†æˆçš„å—çš„å¤§å°å°±æ˜¯size_descriptor.size
+ * çš„å¤§å°ï¼Œåœ¨ç©ºé—²çŠ¶æ€ä¸‹æ—¶æ¯å—å‰é¢å­˜æ”¾çš„æ˜¯block_headç»“æ„ï¼Œæ¯é¡µæœ€å‰é¢è¿˜å­˜æ”¾æœ‰page_descriptorç»“æ„ä½“,
+ * è¡¨ç¤ºè¯¥é¡µçš„ä½¿ç”¨æƒ…å†µ
  */
 struct page_descriptor {
 	struct page_descriptor *next;
 	struct block_header *firstfree;
-	int order;             /*ÕâÒ»Ò³·ÖÅäµÄÊÇ¶à´ó¿éºÅ*/
-	int nfree;             /*Ò»Ò³ÖĞ¿ÕÏĞ¿éµÄÊıÁ¿*/
+	int order;             /*è¿™ä¸€é¡µåˆ†é…çš„æ˜¯å¤šå¤§å—å·*/
+	int nfree;             /*ä¸€é¡µä¸­ç©ºé—²å—çš„æ•°é‡*/
 };
 
 
@@ -83,22 +83,22 @@ struct page_descriptor {
  * Each class of sizes has its own freelist.
  */
 struct size_descriptor {
-	struct page_descriptor *firstfree;   /*·ÖÅäsize´óĞ¡¿éµÄÎïÀíÒ³µØÖ·*/
+	struct page_descriptor *firstfree;   /*åˆ†é…sizeå¤§å°å—çš„ç‰©ç†é¡µåœ°å€*/
 	int size;
-	int nblocks;						/*Ò»Ò³×Ü¹²ÄÜ·ÖÅä¶àÉÙ¿é*/
+	int nblocks;						/*ä¸€é¡µæ€»å…±èƒ½åˆ†é…å¤šå°‘å—*/
 
-	int nmallocs;						/*ÒÑ¾­Ê¹ÓÃsize´óĞ¡µÄ¿éÓĞ¶àÉÙ¿é*/
+	int nmallocs;						/*å·²ç»ä½¿ç”¨sizeå¤§å°çš„å—æœ‰å¤šå°‘å—*/
 	int nfrees;
-	int nbytesmalloced;                 /*Êµ¼Ê·ÖÅäµÄ×Ö½ÚÊı*/
-	int npages;							/*Ê¹ÓÃÁË¶àÉÙÒ³*/
+	int nbytesmalloced;                 /*å®é™…åˆ†é…çš„å­—èŠ‚æ•°*/
+	int npages;							/*ä½¿ç”¨äº†å¤šå°‘é¡µ*/
 };
 
-/* kmallocÄÚ´æ·ÖÅäÔ­Àí£¬Ê×ÏÈÊÇÒ»Ò³4KBÎªµ¥Î»£¬¼´Ò»Ò³È«²¿ÓÃÀ´·ÖÅäÏàÍ¬´óĞ¡µÄsize£¬
- * Èçsize_descriptorÖĞÒ»Ò³ÓÃÀ´·ÖÅä32×Ö½ÚµÄ¿éÊ±¿ÉÒÔ·ÖÅä127¿é£¬ÓÃÀ´·ÖÅä64×Ö½ÚµÄÒ»¿é
- * Ê±¿ÉÒÔ·ÖÅä63¿é£¬ÒÀ´ÎÀàÍÆ£¬µ±·ÖÅä32×Ö½ÚµÄÒ»¿éÓÃÍêÊ±£¬Ôòget_free_pageÒ»¿éÀ´·ÖÅä32×Ö½ÚµÄ¿é
- * ÍøÉÏºÜ¶à×ÊÁÏ°ÑÕâ¸ö½Ğ×ö´æ´¢Í°£¬¾ÍÊÇÃ¿¸öÍ°ÀïÃæ×°µÄ´óĞ¡¶¼ÊÇÒ»ÑùµÄ
- * ´ÓÕâÀï½á¹¹ÌåÀïÃæ¾Í¿ÉÒÔ¿´³ö£¬Ò»Ò³µÄÎïÀíÄÚ´æÊÇ²»¿ÉÄÜÍêÈ«ÓÃÍêµÄ£¬×ÜÓĞºÜĞ¡Ò»²¿·ÖÊÇÎŞ·¨ÀûÓÃµÄ
- * Õâ¾ÍÊÇËùÎ½µÄÒ³ÄÚËéÆ¬
+/* kmallocå†…å­˜åˆ†é…åŸç†ï¼Œé¦–å…ˆæ˜¯ä¸€é¡µ4KBä¸ºå•ä½ï¼Œå³ä¸€é¡µå…¨éƒ¨ç”¨æ¥åˆ†é…ç›¸åŒå¤§å°çš„sizeï¼Œ
+ * å¦‚size_descriptorä¸­ä¸€é¡µç”¨æ¥åˆ†é…32å­—èŠ‚çš„å—æ—¶å¯ä»¥åˆ†é…127å—ï¼Œç”¨æ¥åˆ†é…64å­—èŠ‚çš„ä¸€å—
+ * æ—¶å¯ä»¥åˆ†é…63å—ï¼Œä¾æ¬¡ç±»æ¨ï¼Œå½“åˆ†é…32å­—èŠ‚çš„ä¸€å—ç”¨å®Œæ—¶ï¼Œåˆ™get_free_pageä¸€å—æ¥åˆ†é…32å­—èŠ‚çš„å—
+ * ç½‘ä¸Šå¾ˆå¤šèµ„æ–™æŠŠè¿™ä¸ªå«åšå­˜å‚¨æ¡¶ï¼Œå°±æ˜¯æ¯ä¸ªæ¡¶é‡Œé¢è£…çš„å¤§å°éƒ½æ˜¯ä¸€æ ·çš„
+ * ä»è¿™é‡Œç»“æ„ä½“é‡Œé¢å°±å¯ä»¥çœ‹å‡ºï¼Œä¸€é¡µçš„ç‰©ç†å†…å­˜æ˜¯ä¸å¯èƒ½å®Œå…¨ç”¨å®Œçš„ï¼Œæ€»æœ‰å¾ˆå°ä¸€éƒ¨åˆ†æ˜¯æ— æ³•åˆ©ç”¨çš„
+ * è¿™å°±æ˜¯æ‰€è°“çš„é¡µå†…ç¢ç‰‡
  */
 
 struct size_descriptor sizes[] = { 
@@ -128,11 +128,11 @@ long kmalloc_init (long start_mem,long end_mem)
  * incorrect. This is a late "compile time" check.....
  */
 
-/* Ñ­»·É¨Ãèsizes½á¹¹Ìå£¬¶ÔÃ¿¸ö½á¹¹ÌåÀïÃæµÄÊı¾İ×ö³öÅĞ¶Ï
+/* å¾ªç¯æ‰«æsizesç»“æ„ä½“ï¼Œå¯¹æ¯ä¸ªç»“æ„ä½“é‡Œé¢çš„æ•°æ®åšå‡ºåˆ¤æ–­
  */
 for (order = 0;BLOCKSIZE(order);order++)
     {
-    /*´Ë´¦¿ÉÒÔÌåÏÖÒ»¸öÎïÀíÒ³ÖĞ¿éµÄ·ÖÅäÇé¿ö*/
+    /*æ­¤å¤„å¯ä»¥ä½“ç°ä¸€ä¸ªç‰©ç†é¡µä¸­å—çš„åˆ†é…æƒ…å†µ*/
     if ((NBLOCKS (order)*BLOCKSIZE(order) + sizeof (struct page_descriptor)) >
         PAGE_SIZE) 
         {
@@ -148,8 +148,8 @@ return start_mem;
 }
 
 
-/* size¾ÍÊÇÒª·ÖÅä¿éµÄ´óĞ¡£¬È»ºóÔÙsizes½á¹¹ÌåÖĞÕÒ³öÊÊºÏµÄ·ÖÅä¿é
- * ²ÉÓÃÊ×´ÎÊÊÓ¦µÄ·½·¨À´»ñÈ¡¸ÃÓÃÄÄ¸öÍ°
+/* sizeå°±æ˜¯è¦åˆ†é…å—çš„å¤§å°ï¼Œç„¶åå†sizesç»“æ„ä½“ä¸­æ‰¾å‡ºé€‚åˆçš„åˆ†é…å—
+ * é‡‡ç”¨é¦–æ¬¡é€‚åº”çš„æ–¹æ³•æ¥è·å–è¯¥ç”¨å“ªä¸ªæ¡¶
  */
 int get_order (int size)
 {
@@ -177,7 +177,7 @@ void * kmalloc (size_t size, int priority)
 			((unsigned long *)&size)[-1]);
 		priority = GFP_ATOMIC;
 	}
-	/*¶ÔÁ¬ĞøÎïÀíÄÚ´æµÄÉêÇëÓĞÒ»¸öÏŞÖÆ£¬¼´ÊÇ×î´ó²»ÄÜ³¬¹ıÒ»Ò³*/
+	/*å¯¹è¿ç»­ç‰©ç†å†…å­˜çš„ç”³è¯·æœ‰ä¸€ä¸ªé™åˆ¶ï¼Œå³æ˜¯æœ€å¤§ä¸èƒ½è¶…è¿‡ä¸€é¡µ*/
 if (size > MAX_KMALLOC_K * 1024) 
      {
      printk ("kmalloc: I refuse to allocate %d bytes (for now max = %d).\n",
@@ -185,7 +185,7 @@ if (size > MAX_KMALLOC_K * 1024)
      return (NULL);
      }
 
-/*»ñÈ¡Í°µÄĞòºÅ*/
+/*è·å–æ¡¶çš„åºå·*/
 order = get_order (size);
 if (order < 0)
     {
@@ -202,15 +202,15 @@ if (order < 0)
     {
 	    /* Try to allocate a "recently" freed memory block */
 	    cli ();
-		/*ÒÑ¾­¸øÍ°·ÖÅäÁËÎïÀíÒ³£¬²¢ÇÒÎïÀíÒ³»¹Ã»ÓĞÓÃÍê*/
+		/*å·²ç»ç»™æ¡¶åˆ†é…äº†ç‰©ç†é¡µï¼Œå¹¶ä¸”ç‰©ç†é¡µè¿˜æ²¡æœ‰ç”¨å®Œ*/
 	    if ((page = sizes[order].firstfree) &&
 	        (p    =  page->firstfree)) {
-	        /*±íÃ÷ÕÒµ½Ò»¿é¿ÉÓÃ*/
+	        /*è¡¨æ˜æ‰¾åˆ°ä¸€å—å¯ç”¨*/
 	        if (p->bh_flags == MF_FREE) {
-				/*ĞŞ¸ÄµÚÒ»¿é¿ÕÏĞÖ¸Õë£¬²¢¼õĞ¡Ò³µÄ¿ÕÏĞÊıÁ¿*/
+				/*ä¿®æ”¹ç¬¬ä¸€å—ç©ºé—²æŒ‡é’ˆï¼Œå¹¶å‡å°é¡µçš„ç©ºé—²æ•°é‡*/
 	            page->firstfree = p->bh_next;
 	            page->nfree--;
-				/*Èç¹ûµÚÒ»Ò³ÒÑ¾­ÓÃÍê£¬ÔòÖ¸ÏòÏÂÒ»Ò³*/
+				/*å¦‚æœç¬¬ä¸€é¡µå·²ç»ç”¨å®Œï¼Œåˆ™æŒ‡å‘ä¸‹ä¸€é¡µ*/
 	            if (!page->nfree) {
 	                sizes[order].firstfree = page->next;
 	                page->next = NULL;
@@ -221,7 +221,7 @@ if (order < 0)
 	            sizes [order].nbytesmalloced += size;
 	            p->bh_flags =  MF_USED; /* As of now this block is officially in use */
 	            p->bh_length = size;
-				/*·µ»ØÉêÇëÎïÀíµØÖ·µÄÆğÊ¼µØÖ·£¬ÒòÎªÃ¿Ò³µ±ÖĞµÄ¿éµÄ¿éÍ·±»block_headerÕ¼ÓÃ ????? */
+				/*è¿”å›ç”³è¯·ç‰©ç†åœ°å€çš„èµ·å§‹åœ°å€ï¼Œå› ä¸ºæ¯é¡µå½“ä¸­çš„å—çš„å—å¤´è¢«block_headerå ç”¨ ????? */
 	            return p+1; /* Pointer arithmetic: increments past header */
 	        }
         	printk ("Problem: block on freelist at %08lx isn't free.\n",(long)p);
@@ -229,8 +229,8 @@ if (order < 0)
 	    }
 	    restore_flags(flags);
 
-		/* Èç¹ûÃ»ÓĞ·ÖÅäÒ³£¬»òÕß·ÖÅäµÄÒ³ÕıºÃ±»ÓÃÍê£¬ÔòĞèÒª¸øÍ°ÖØĞÂ·ÖÅäÒ³£¬
-		 * Í¬Ê±°ÑÒ³ÖĞµÄÁ´±í¸ø³õÊ¼»¯
+		/* å¦‚æœæ²¡æœ‰åˆ†é…é¡µï¼Œæˆ–è€…åˆ†é…çš„é¡µæ­£å¥½è¢«ç”¨å®Œï¼Œåˆ™éœ€è¦ç»™æ¡¶é‡æ–°åˆ†é…é¡µï¼Œ
+		 * åŒæ—¶æŠŠé¡µä¸­çš„é“¾è¡¨ç»™åˆå§‹åŒ–
 		 */
 		
 	    /* Now we're in trouble: We need to get a new free page..... */
@@ -246,17 +246,17 @@ if (order < 0)
 #if 0
     	printk ("Got page %08x to use for %d byte mallocs....",(long)page,sz);
 #endif
-		/*Ôö¼ÓÍ°·ÖÅäÎïÀíÒ³µÄÊıÁ¿*/
+		/*å¢åŠ æ¡¶åˆ†é…ç‰©ç†é¡µçš„æ•°é‡*/
     	sizes[order].npages++;
 
 	    /* Loop for all but last block: */
-		/* Ò»¸öÎïÀíÒ³ÖĞÄÚ´æµÄ·Ö²¼ÈçÏÂ
-		 * |struct page_descriptor|(struct block_header+¿ÕÏĞ)=size´óĞ¡|.......
-		 * Ò»Ö±µ½°ÑÕûÒ³ÓÃÍê
+		/* ä¸€ä¸ªç‰©ç†é¡µä¸­å†…å­˜çš„åˆ†å¸ƒå¦‚ä¸‹
+		 * |struct page_descriptor|(struct block_header+ç©ºé—²)=sizeå¤§å°|.......
+		 * ä¸€ç›´åˆ°æŠŠæ•´é¡µç”¨å®Œ
 		 */
 	    for (i=NBLOCKS(order),p=BH (page+1);i > 1;i--,p=p->bh_next) {
 	        p->bh_flags = MF_FREE;
-	        p->bh_next = BH ( ((long)p)+sz);   /*´Ë´¦µİÔö£¬²¢Ã»ÓĞ¼ÓÉÏblock_headerµÄ¿Õ¼ä*/
+	        p->bh_next = BH ( ((long)p)+sz);   /*æ­¤å¤„é€’å¢ï¼Œå¹¶æ²¡æœ‰åŠ ä¸Šblock_headerçš„ç©ºé—´*/
 	    }
 	    /* Last block: */
 	    p->bh_flags = MF_FREE;
@@ -302,7 +302,7 @@ void kfree_s (void *ptr,int size)
 	register struct block_header *p=((struct block_header *)ptr) -1;
 	struct page_descriptor *page,*pg2;
 
-	/*»ñÈ¡µ±µØÖ·ËùÔÚµÄÎïÀíÒ³µÄÊ×µØÖ·*/
+	/*è·å–å½“åœ°å€æ‰€åœ¨çš„ç‰©ç†é¡µçš„é¦–åœ°å€*/
 	page = PAGE_DESC (p);
 	order = page->order;
 	if ((order < 0) || 
@@ -324,14 +324,14 @@ void kfree_s (void *ptr,int size)
 	save_flags(flags);
 	cli ();
 
-	/*½«ÊÍ·ÅµÄ¿é²åÈëµ½fristfreeÁ´Ê×£¬²¢Ôö¼ÓÎïÀíÒ³µÄ¿ÕÏĞ¿éÊıÁ¿*/
+	/*å°†é‡Šæ”¾çš„å—æ’å…¥åˆ°fristfreeé“¾é¦–ï¼Œå¹¶å¢åŠ ç‰©ç†é¡µçš„ç©ºé—²å—æ•°é‡*/
 	p->bh_next = page->firstfree;
 	page->firstfree = p;
 	page->nfree ++;
 
-	/* Èç¹ûÎïÀíÒ³ÔÚ´ËÖ®Ç°ÒÑ±»ÓÃÍê£¬¶øÊÍ·ÅµÄ¿éÊÇµÚÒ»¸ö¿ÕÏĞ¿é
-	 * Ôò½«¸ÃÒ³Ìí¼Óµ½sizes.firstfreeÁ´Ê×£¬ÒÔ±ãÏÂ´ÎÔÙ·ÖÅäµÄÊ±ºòÄÜ¹»ÕÒµ½
-	 * ¸ÃÒ³ÖĞµÄ¿ÕÏĞ¿é
+	/* å¦‚æœç‰©ç†é¡µåœ¨æ­¤ä¹‹å‰å·²è¢«ç”¨å®Œï¼Œè€Œé‡Šæ”¾çš„å—æ˜¯ç¬¬ä¸€ä¸ªç©ºé—²å—
+	 * åˆ™å°†è¯¥é¡µæ·»åŠ åˆ°sizes.firstfreeé“¾é¦–ï¼Œä»¥ä¾¿ä¸‹æ¬¡å†åˆ†é…çš„æ—¶å€™èƒ½å¤Ÿæ‰¾åˆ°
+	 * è¯¥é¡µä¸­çš„ç©ºé—²å—
 	 */
 	if (page->nfree == 1) { /* Page went from full to one free block: put it on the freelist */
    		if (page->next) {
@@ -341,8 +341,8 @@ void kfree_s (void *ptr,int size)
 	        sizes[order].firstfree = page;
         }
    	}
-	/* Èç¹ûÊÍ·Å¸Ã¿éÊ±£¬Õû¸öÎïÀíÒ³¶¼ÊÇ¿ÕÏĞµÄ£¬ÔòĞèÒª½«¸ÃÎïÀíÒ³¸øÊÍ·Åµô£¬
-	 * ²¢ÇÒ½«Í°ÖĞÒ³µÄÁ´±íÖĞÉ¾µô¸ÃÒ³
+	/* å¦‚æœé‡Šæ”¾è¯¥å—æ—¶ï¼Œæ•´ä¸ªç‰©ç†é¡µéƒ½æ˜¯ç©ºé—²çš„ï¼Œåˆ™éœ€è¦å°†è¯¥ç‰©ç†é¡µç»™é‡Šæ”¾æ‰ï¼Œ
+	 * å¹¶ä¸”å°†æ¡¶ä¸­é¡µçš„é“¾è¡¨ä¸­åˆ æ‰è¯¥é¡µ
 	 */
 	/* If page is completely free, free it */
 	if (page->nfree == NBLOCKS (page->order)) {
@@ -365,7 +365,7 @@ void kfree_s (void *ptr,int size)
     }
 	restore_flags(flags);
 
-	/*Ôö¼Ó¿ÕÏĞ¿éÊıÁ¿£¬¼õĞ¡ÒÑÊµ¼Ê·ÖÅä´óĞ¡*/
+	/*å¢åŠ ç©ºé—²å—æ•°é‡ï¼Œå‡å°å·²å®é™…åˆ†é…å¤§å°*/
 	sizes[order].nfrees++;      /* Noncritical (monitoring) admin stuff */
 	sizes[order].nbytesmalloced -= size;
 }

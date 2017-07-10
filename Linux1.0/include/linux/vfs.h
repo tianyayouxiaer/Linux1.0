@@ -6,7 +6,7 @@ typedef struct {
 } fsid_t;
 
 
-/* �ļ�ϵͳ����Ϣ�ṹ */
+/* 文件系统的信息结构 */
 struct statfs {
 	long f_type;
 	long f_bsize;

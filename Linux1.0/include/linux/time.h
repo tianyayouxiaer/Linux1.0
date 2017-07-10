@@ -14,10 +14,10 @@ struct timezone {
 #define NFDBITS			__NFDBITS
 
 #define FD_SETSIZE		__FD_SETSIZE
-#define FD_SET(fd,fdsetp)	__FD_SET(fd,fdsetp)  	/*½«fdÉèÖÃµ½fdsetpÎÄ¼ş¼¯ºÏµ±ÖĞ*/
-#define FD_CLR(fd,fdsetp)	__FD_CLR(fd,fdsetp)  	/*½«fd´Ó¼¯ºÏµ±ÖĞÉ¾³ı*/
-#define FD_ISSET(fd,fdsetp)	__FD_ISSET(fd,fdsetp)   /*ÅĞ¶ÏÊÇ·ñ±»ÉèÖÃ*/
-#define FD_ZERO(fdsetp)		__FD_ZERO(fdsetp)		/*½«¼¯ºÏÇå0*/
+#define FD_SET(fd,fdsetp)	__FD_SET(fd,fdsetp)  	/*å°†fdè®¾ç½®åˆ°fdsetpæ–‡ä»¶é›†åˆå½“ä¸­*/
+#define FD_CLR(fd,fdsetp)	__FD_CLR(fd,fdsetp)  	/*å°†fdä»é›†åˆå½“ä¸­åˆ é™¤*/
+#define FD_ISSET(fd,fdsetp)	__FD_ISSET(fd,fdsetp)   /*åˆ¤æ–­æ˜¯å¦è¢«è®¾ç½®*/
+#define FD_ZERO(fdsetp)		__FD_ZERO(fdsetp)		/*å°†é›†åˆæ¸…0*/
 
 /*
  * Names of the interval timers, and structure

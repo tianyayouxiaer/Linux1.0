@@ -45,10 +45,10 @@ void ext2_put_inode (struct inode * inode)
 	ext2_free_inode (inode);
 }
 
-/* »ñÈ¡ÎÄ¼şÂß¼­¿éºÅ¶ÔÓ¦µÄÉè±¸Âß¼­¿éºÅ */
+/* è·å–æ–‡ä»¶é€»è¾‘å—å·å¯¹åº”çš„è®¾å¤‡é€»è¾‘å—å· */
 #define inode_bmap(inode, nr) ((inode)->u.ext2_i.i_data[(nr)])
 
-/* ·µ»Ø¸ßËÙ»º´æµ±ÖĞÆ«ÒÆÎªnrµÄÊı¾İ£¬Ò²¾ÍÊÇÉè±¸µÄÂß¼­¿éºÅ */
+/* è¿”å›é«˜é€Ÿç¼“å­˜å½“ä¸­åç§»ä¸ºnrçš„æ•°æ®ï¼Œä¹Ÿå°±æ˜¯è®¾å¤‡çš„é€»è¾‘å—å· */
 static int block_bmap (struct buffer_head * bh, int nr)
 {
 	int tmp;
@@ -68,7 +68,7 @@ static int block_bmap (struct buffer_head * bh, int nr)
  * can't block until then.
  */
 
-/* ¶ªÆúËùÓĞµÄÔ¤·ÖÅäÊ£ÓàµÄ¿é
+/* ä¸¢å¼ƒæ‰€æœ‰çš„é¢„åˆ†é…å‰©ä½™çš„å—
  */
 void ext2_discard_prealloc (struct inode * inode)
 {
@@ -83,8 +83,8 @@ void ext2_discard_prealloc (struct inode * inode)
 #endif
 }
 
-/* ·µ»ØÒ»¸öÉè±¸µÄÂß¼­¿éºÅ£¬±íÊ¾ĞÂ¿éµÄÊµ¼Ê·ÖÅäÎ»ÖÃ 
- * goalÖ»ÊÇÏ£Íû·ÖÅäµÃµ½µÄ¿éºÅ
+/* è¿”å›ä¸€ä¸ªè®¾å¤‡çš„é€»è¾‘å—å·ï¼Œè¡¨ç¤ºæ–°å—çš„å®é™…åˆ†é…ä½ç½® 
+ * goalåªæ˜¯å¸Œæœ›åˆ†é…å¾—åˆ°çš„å—å·
  */
 static int ext2_alloc_block (struct inode * inode, unsigned long goal)
 {
@@ -97,19 +97,19 @@ static int ext2_alloc_block (struct inode * inode, unsigned long goal)
 	wait_on_super (inode->i_sb);
 
 #ifdef EXT2_PREALLOCATE
-	/* Èç¹ûÏÈÇ°ÓĞÔ¤·ÖÅä£¬ÇÒÏ£Íû·ÖÅäµÄ¿éºÅÕæºÃÊÇÔ¤ÏÈ·ÖÅäµÄ¿éºÅ£¬
-	 * Ôò·µ»ØÔ¤·ÖÅäµÄÂß¼­¿éºÅ 
+	/* å¦‚æœå…ˆå‰æœ‰é¢„åˆ†é…ï¼Œä¸”å¸Œæœ›åˆ†é…çš„å—å·çœŸå¥½æ˜¯é¢„å…ˆåˆ†é…çš„å—å·ï¼Œ
+	 * åˆ™è¿”å›é¢„åˆ†é…çš„é€»è¾‘å—å· 
 	 */
 	if (inode->u.ext2_i.i_prealloc_count &&
 	    (goal == inode->u.ext2_i.i_prealloc_block ||
 	     goal + 1 == inode->u.ext2_i.i_prealloc_block))
 	{		
-		/* ·µ»ØÖ®Ç°Ô¤ÏÈ·ÖÅäµÄ¿éºÅ£¬Í¬Ê±Ôö¼ÓÏÂÒ»´ÎÔ¤ÏÈ·ÖÅäµÄ¿éºÅ£¬
-		 * ÔÚext2ÎÄ¼şÏµÍ³ÖĞÎªÎÄ¼ş·ÖÅäµÄ¿éºÅ¾¡Á¿¿¿ÔÚÒ»Æğ£¬ËùÒÔÔ¤ÏÈ·ÖÅäµÄ¿éºÅ
-		 * »á½ôÁÚÖ®Ç°ÒÑ¾­·ÖÅäµÄ¿éºÅ 
+		/* è¿”å›ä¹‹å‰é¢„å…ˆåˆ†é…çš„å—å·ï¼ŒåŒæ—¶å¢åŠ ä¸‹ä¸€æ¬¡é¢„å…ˆåˆ†é…çš„å—å·ï¼Œ
+		 * åœ¨ext2æ–‡ä»¶ç³»ç»Ÿä¸­ä¸ºæ–‡ä»¶åˆ†é…çš„å—å·å°½é‡é åœ¨ä¸€èµ·ï¼Œæ‰€ä»¥é¢„å…ˆåˆ†é…çš„å—å·
+		 * ä¼šç´§é‚»ä¹‹å‰å·²ç»åˆ†é…çš„å—å· 
 		 */
 		result = inode->u.ext2_i.i_prealloc_block++;
-		/* ½ÏĞ¡Ô¤ÏÈ·ÖÅäµÄ¿éÊıÁ¿ */
+		/* è¾ƒå°é¢„å…ˆåˆ†é…çš„å—æ•°é‡ */
 		inode->u.ext2_i.i_prealloc_count--;
 		ext2_debug ("preallocation hit (%lu/%lu).\n",
 			    ++alloc_hits, ++alloc_attempts);
@@ -147,12 +147,12 @@ static int ext2_alloc_block (struct inode * inode, unsigned long goal)
 }
 
 
-/* ½«ÎÄ¼şµÄÊı¾İ¿éºÅblockÓ³Éäµ½Éè±¸µÄÂß¼­¿éºÅ
+/* å°†æ–‡ä»¶çš„æ•°æ®å—å·blockæ˜ å°„åˆ°è®¾å¤‡çš„é€»è¾‘å—å·
  */
 int ext2_bmap (struct inode * inode, int block)
 {
 	int i;
-	/* Ã¿Ò»¿éÊı¾İµ±ÖĞ£¬¿ÉÒÔ´æ·Å¶àÉÙ¸öµØÖ· */
+	/* æ¯ä¸€å—æ•°æ®å½“ä¸­ï¼Œå¯ä»¥å­˜æ”¾å¤šå°‘ä¸ªåœ°å€ */
 	int addr_per_block = EXT2_ADDR_PER_BLOCK(inode->i_sb);
 
 	if (block < 0) {
@@ -160,7 +160,7 @@ int ext2_bmap (struct inode * inode, int block)
 		return 0;
 	}
 
-	/* ÅĞ¶ÏÎÄ¼ş¿éºÅÊÇ²»ÊÇ³¬¹ıext2ÏµÍ³Ö§³ÖµÄ×î´óÎÄ¼şµÄ¿éºÅ */
+	/* åˆ¤æ–­æ–‡ä»¶å—å·æ˜¯ä¸æ˜¯è¶…è¿‡ext2ç³»ç»Ÿæ”¯æŒçš„æœ€å¤§æ–‡ä»¶çš„å—å· */
 	if (block >= EXT2_NDIR_BLOCKS + addr_per_block +
 		     addr_per_block * addr_per_block +
 		     addr_per_block * addr_per_block * addr_per_block) {
@@ -168,26 +168,26 @@ int ext2_bmap (struct inode * inode, int block)
 		return 0;
 	}
 
-	/* Èç¹ûÊÇÖ±½ÓÓ³Éä */
+	/* å¦‚æœæ˜¯ç›´æ¥æ˜ å°„ */
 	if (block < EXT2_NDIR_BLOCKS)
 		return inode_bmap (inode, block);
 	block -= EXT2_NDIR_BLOCKS;
 	if (block < addr_per_block) {
-		/* È¡³öÒ»¼¶Ó³ÉäËùÔÚµÄ¿éºÅ */
+		/* å–å‡ºä¸€çº§æ˜ å°„æ‰€åœ¨çš„å—å· */
 		i = inode_bmap (inode, EXT2_IND_BLOCK);
 		if (!i)
 			return 0;
 		return block_bmap (bread (inode->i_dev, i,
 					  inode->i_sb->s_blocksize), block);
 	}
-	/* ¿ªÊ¼¶ş¼¶Ó³Éä */
+	/* å¼€å§‹äºŒçº§æ˜ å°„ */
 	block -= addr_per_block;
 	if (block < addr_per_block * addr_per_block) {
-		/* »ñÈ¡¶ş¼¶Ó³ÉäµÄ¿éºÅ */
+		/* è·å–äºŒçº§æ˜ å°„çš„å—å· */
 		i = inode_bmap (inode, EXT2_DIND_BLOCK);
 		if (!i)
 			return 0;
-		/* ÕÒµ½ÔÚ¶ş¼¶¿éÖĞµÄÆ«ÒÆ¿éºÅ */
+		/* æ‰¾åˆ°åœ¨äºŒçº§å—ä¸­çš„åç§»å—å· */
 		i = block_bmap (bread (inode->i_dev, i,
 				       inode->i_sb->s_blocksize),
 				block / addr_per_block);
@@ -197,7 +197,7 @@ int ext2_bmap (struct inode * inode, int block)
 					  inode->i_sb->s_blocksize),
 				   block & (addr_per_block - 1));
 	}
-	/* ¿ªÊ¼Èı¼¶Ó³Éä£¬×îÖÕ·µ»ØÎÄ¼şµÄÂß¼­¿éºÅ¶ÔÓ¦µÄÉè±¸Âß¼­¿éºÅ */
+	/* å¼€å§‹ä¸‰çº§æ˜ å°„ï¼Œæœ€ç»ˆè¿”å›æ–‡ä»¶çš„é€»è¾‘å—å·å¯¹åº”çš„è®¾å¤‡é€»è¾‘å—å· */
 	block -= addr_per_block * addr_per_block;
 	i = inode_bmap (inode, EXT2_TIND_BLOCK);
 	if (!i)
@@ -214,11 +214,11 @@ int ext2_bmap (struct inode * inode, int block)
 			   block & (addr_per_block - 1));
 }
 
-/* »ñÈ¡ÎÄ¼şnrÂß¼­¿éµÄÊı¾İµ½¸ßËÙ»º´æ£¬²¢·µ»Ø¸Ã¸ßËÙ»º´æ£¬
- * Èç¹ûnrÓĞĞ§£¬ÔòÖ±½Ó¶ÁÈ¡£¬·ñÔò¸øÎÄ¼ş´´½¨Ò»¸öĞÂµÄÊı¾İ¿é
- * Èç¹ûcreate²ÎÊı²»Îª0£¬ÆäÖĞnew_blockÊÇÒª·ÖÅäµÄÂß¼­¿éºÅ
- * Èç¹ûnr¿éÒÑ¾­ÔÚÄÚ´æÁË£¬ÄÇÃ´Ö±½Ó·µ»Ø¶ÔÓ¦µÄ¸ßËÙ»º´æ£¬
- * Ôònew_block²»Æğ×÷ÓÃ
+/* è·å–æ–‡ä»¶nré€»è¾‘å—çš„æ•°æ®åˆ°é«˜é€Ÿç¼“å­˜ï¼Œå¹¶è¿”å›è¯¥é«˜é€Ÿç¼“å­˜ï¼Œ
+ * å¦‚æœnræœ‰æ•ˆï¼Œåˆ™ç›´æ¥è¯»å–ï¼Œå¦åˆ™ç»™æ–‡ä»¶åˆ›å»ºä¸€ä¸ªæ–°çš„æ•°æ®å—
+ * å¦‚æœcreateå‚æ•°ä¸ä¸º0ï¼Œå…¶ä¸­new_blockæ˜¯è¦åˆ†é…çš„é€»è¾‘å—å·
+ * å¦‚æœnrå—å·²ç»åœ¨å†…å­˜äº†ï¼Œé‚£ä¹ˆç›´æ¥è¿”å›å¯¹åº”çš„é«˜é€Ÿç¼“å­˜ï¼Œ
+ * åˆ™new_blockä¸èµ·ä½œç”¨
  */
 static struct buffer_head * inode_getblk (struct inode * inode, int nr,
 					  int create, int new_block, int * err)
@@ -227,14 +227,14 @@ static struct buffer_head * inode_getblk (struct inode * inode, int nr,
 	unsigned long * p;
 	struct buffer_head * result;
 	int blocks = inode->i_sb->s_blocksize / 512;
-	/* »ñÈ¡ÎÄ¼şµÄnrÂß¼­¿é¶ÔÓ¦µÄÉè±¸Âß¼­¿éºÅµØÖ· */
+	/* è·å–æ–‡ä»¶çš„nré€»è¾‘å—å¯¹åº”çš„è®¾å¤‡é€»è¾‘å—å·åœ°å€ */
 	p = inode->u.ext2_i.i_data + nr;
 repeat:
 	tmp = *p;
-	/* Èç¹ûÉè±¸Âß¼­¿éºÅÓĞĞ§,·ñÔò¾ÍÒª´´½¨Ò»¸öĞÂµÄ¿é£¬Èç¹ûcreateÎª1 */
+	/* å¦‚æœè®¾å¤‡é€»è¾‘å—å·æœ‰æ•ˆ,å¦åˆ™å°±è¦åˆ›å»ºä¸€ä¸ªæ–°çš„å—ï¼Œå¦‚æœcreateä¸º1 */
 	if (tmp) {
 		result = getblk (inode->i_dev, tmp, inode->i_sb->s_blocksize);
-		/* Õâ¸öÅĞ¶ÏÊÇ·ÀÖ¹ÔÚgetblkµÄÊ±ºòinodeµÄÊı¾İ±»ÆäËû½ø³ÌĞŞ¸Ä */
+		/* è¿™ä¸ªåˆ¤æ–­æ˜¯é˜²æ­¢åœ¨getblkçš„æ—¶å€™inodeçš„æ•°æ®è¢«å…¶ä»–è¿›ç¨‹ä¿®æ”¹ */
 		if (tmp == *p)
 			return result;
 		brelse (result);
@@ -247,20 +247,20 @@ repeat:
 		return NULL;
 	}
 
-	/* Èç¹ûÒª·ÖÅäµÄÒ»¿éÕıºÃºÍinodeÖĞ¼ÇÂ¼µÄÏÂÒ»¸ö·ÖÅäµÄ¿éºÅÏàÍ¬£¬
-	 * Ôò°ÑÏÂÒ»¸öÒª·ÖÅäµÄÉè±¸Âß¼­¿éºÅ¸øgoal
+	/* å¦‚æœè¦åˆ†é…çš„ä¸€å—æ­£å¥½å’Œinodeä¸­è®°å½•çš„ä¸‹ä¸€ä¸ªåˆ†é…çš„å—å·ç›¸åŒï¼Œ
+	 * åˆ™æŠŠä¸‹ä¸€ä¸ªè¦åˆ†é…çš„è®¾å¤‡é€»è¾‘å—å·ç»™goal
 	 */
 	if (inode->u.ext2_i.i_next_alloc_block == new_block)
 		goal = inode->u.ext2_i.i_next_alloc_goal;
 
 	ext2_debug ("hint = %d,", goal);
 
-	/* Èç¹ûÃ»ÓĞºÏÊÊµÄ·ÖÅäÄ¿±ê */
+	/* å¦‚æœæ²¡æœ‰åˆé€‚çš„åˆ†é…ç›®æ ‡ */
 	if (!goal) {
-		/* É¨ÃèÎÄ¼şnrÖ®Ç°µÄÂß¼­¿éºÅ£¬
-		 * ÉèÖÃgoalÎªÎÄ¼ş×îºóÒ»¸öÓĞĞ§Âß¼­¿éºÅ¶ÔÓ¦µÄÉè±¸Âß¼­¿éºÅ,
-		 * goalÖ»ÊÇÏ£Íû·Öµ½µÄÉè±¸Âß¼­¿éºÅ£¬µ«ÔÚÕæÕıÊ¹ÓÃµÄÊ±ºò£¬
-		 * ×îÖÕ²»Ò»¶¨Êµ¼Ê·ÖÅäµÄ¾ÍÊÇgoalÕâ¿é
+		/* æ‰«ææ–‡ä»¶nrä¹‹å‰çš„é€»è¾‘å—å·ï¼Œ
+		 * è®¾ç½®goalä¸ºæ–‡ä»¶æœ€åä¸€ä¸ªæœ‰æ•ˆé€»è¾‘å—å·å¯¹åº”çš„è®¾å¤‡é€»è¾‘å—å·,
+		 * goalåªæ˜¯å¸Œæœ›åˆ†åˆ°çš„è®¾å¤‡é€»è¾‘å—å·ï¼Œä½†åœ¨çœŸæ­£ä½¿ç”¨çš„æ—¶å€™ï¼Œ
+		 * æœ€ç»ˆä¸ä¸€å®šå®é™…åˆ†é…çš„å°±æ˜¯goalè¿™å—
 		 */
 		for (tmp = nr - 1; tmp >= 0; tmp--) {
 			if (inode->u.ext2_i.i_data[tmp]) {
@@ -268,8 +268,8 @@ repeat:
 				break;
 			}
 		}
-		/* Èç¹ûÒÀÈ»Ã»ÓĞÕÒµ½(ÕâÖÖÇé¿öÔÚÒ»¸ö¿ÕÎÄ¼şµÄÇé¿öÏÂ£¬Ò»¸ö×Ö½Ú¶¼Ã»ÓĞĞ´Èë)£¬
-		 * ÔòÏ£Íû·Öµ½inodeËùÔÚµÄ×éÖĞµÄµÚÒ»¿é
+		/* å¦‚æœä¾ç„¶æ²¡æœ‰æ‰¾åˆ°(è¿™ç§æƒ…å†µåœ¨ä¸€ä¸ªç©ºæ–‡ä»¶çš„æƒ…å†µä¸‹ï¼Œä¸€ä¸ªå­—èŠ‚éƒ½æ²¡æœ‰å†™å…¥)ï¼Œ
+		 * åˆ™å¸Œæœ›åˆ†åˆ°inodeæ‰€åœ¨çš„ç»„ä¸­çš„ç¬¬ä¸€å—
 		 */
 		if (!goal)
 			goal = (inode->u.ext2_i.i_block_group * 
@@ -282,14 +282,14 @@ repeat:
 	tmp = ext2_alloc_block (inode, goal);
 	if (!tmp)
 		return NULL;
-	/* ÎªÉè±¸µÄÂß¼­¿é·ÖÅäÒ»¸ö¸ßËÙ»º´æ */
+	/* ä¸ºè®¾å¤‡çš„é€»è¾‘å—åˆ†é…ä¸€ä¸ªé«˜é€Ÿç¼“å­˜ */
 	result = getblk (inode->i_dev, tmp, inode->i_sb->s_blocksize);
 	if (*p) {
 		ext2_free_blocks (inode->i_sb, tmp, 1);
 		brelse (result);
 		goto repeat;
 	}
-	/* ÉèÖÃÎÄ¼şÂß¼­¿éºÅ¶ÔÓ¦µÄÉè±¸Âß¼­¿éºÅ */
+	/* è®¾ç½®æ–‡ä»¶é€»è¾‘å—å·å¯¹åº”çš„è®¾å¤‡é€»è¾‘å—å· */
 	*p = tmp;
 	inode->u.ext2_i.i_next_alloc_block = new_block;
 	inode->u.ext2_i.i_next_alloc_goal = tmp;
@@ -302,7 +302,7 @@ repeat:
 	return result;
 }
 
-/* ´ÓÎÄ¼şµÄ·ÇÖ±½ÓÓ³Éä¿éÖĞ»ñÈ¡ÎÄ¼şÂß¼­¿éºÅÎªnew_blockµÄÉè±¸Âß¼­¿éºÅ */
+/* ä»æ–‡ä»¶çš„éç›´æ¥æ˜ å°„å—ä¸­è·å–æ–‡ä»¶é€»è¾‘å—å·ä¸ºnew_blockçš„è®¾å¤‡é€»è¾‘å—å· */
 static struct buffer_head * block_getblk (struct inode * inode,
 					  struct buffer_head * bh, int nr,
 					  int create, int blocksize, 
@@ -315,7 +315,7 @@ static struct buffer_head * block_getblk (struct inode * inode,
 
 	if (!bh)
 		return NULL;
-	/* Ê×ÏÈ¿éÒªÊÇ×îĞÂµÄ£¬·ñÔò·µ»ØÊ§°Ü */
+	/* é¦–å…ˆå—è¦æ˜¯æœ€æ–°çš„ï¼Œå¦åˆ™è¿”å›å¤±è´¥ */
 	if (!bh->b_uptodate) {
 		ll_rw_block (READ, 1, &bh);
 		wait_on_buffer (bh);
@@ -324,13 +324,13 @@ static struct buffer_head * block_getblk (struct inode * inode,
 			return NULL;
 		}
 	}
-	/* »ñÈ¡bh¿éÖĞÆ«ÒÆÎªnrµÄ¿éµØÖ· */
+	/* è·å–bhå—ä¸­åç§»ä¸ºnrçš„å—åœ°å€ */
 	p = (unsigned long *) bh->b_data + nr;
 repeat:
-	/* »ñÈ¡¶ÔÓ¦µÄÂß¼­¿éºÅ */
+	/* è·å–å¯¹åº”çš„é€»è¾‘å—å· */
 	tmp = *p;
 	if (tmp) {
-		/* Õâ¸öÅĞ¶ÏÊÇ·ÀÖ¹ÔÚgetblkµÄÊ±ºòinodeµÄÊı¾İ±»ÆäËû½ø³ÌĞŞ¸Ä */
+		/* è¿™ä¸ªåˆ¤æ–­æ˜¯é˜²æ­¢åœ¨getblkçš„æ—¶å€™inodeçš„æ•°æ®è¢«å…¶ä»–è¿›ç¨‹ä¿®æ”¹ */
 		result = getblk (bh->b_dev, tmp, blocksize);
 		if (tmp == *p) {
 			brelse (bh);
@@ -346,7 +346,7 @@ repeat:
 		*err = -EFBIG;
 		return NULL;
 	}
-	/* Õâ¶ÎgoalµÄµÀÀíºÍinode_getblk²î²»¶à */
+	/* è¿™æ®µgoalçš„é“ç†å’Œinode_getblkå·®ä¸å¤š */
 	if (inode->u.ext2_i.i_next_alloc_block == new_block)
 		goal = inode->u.ext2_i.i_next_alloc_goal;
 	if (!goal) {
@@ -370,7 +370,7 @@ repeat:
 		brelse (result);
 		goto repeat;
 	}
-	/* ÕâÊÇÎÄ¼şÂß¼­¿éºÅ¶ÔÓ¦µÄÉè±¸Âß¼­¿éºÅ */
+	/* è¿™æ˜¯æ–‡ä»¶é€»è¾‘å—å·å¯¹åº”çš„è®¾å¤‡é€»è¾‘å—å· */
 	*p = tmp;
 	bh->b_dirt = 1;
 	if (IS_SYNC(inode)) {
@@ -386,9 +386,9 @@ repeat:
 	return result;
 }
 
-/* Ö»ÊÇ·ÖÅäÁËÂß¼­¿éºÅµÄ¸ßËÙ»º´æ£¬
- * µ«²¢Ã»ÓĞ½«ÎÄ¼şÏàÓ¦Âß¼­¿éµÄÊı¾İ¶ÁÈëµ½¸ßËÙ»º´æ ,
- * block´ú±íÎÄ¼şµÄÂß¼­¿éºÅ
+/* åªæ˜¯åˆ†é…äº†é€»è¾‘å—å·çš„é«˜é€Ÿç¼“å­˜ï¼Œ
+ * ä½†å¹¶æ²¡æœ‰å°†æ–‡ä»¶ç›¸åº”é€»è¾‘å—çš„æ•°æ®è¯»å…¥åˆ°é«˜é€Ÿç¼“å­˜ ,
+ * blockä»£è¡¨æ–‡ä»¶çš„é€»è¾‘å—å·
  */
 struct buffer_head * ext2_getblk (struct inode * inode, long block,
 				  int create, int * err)
@@ -396,7 +396,7 @@ struct buffer_head * ext2_getblk (struct inode * inode, long block,
 	struct buffer_head * bh;
 	unsigned long b;
 
-	/* Ã¿¸öÊı¾İ¿é¿ÉÒÔ´æ·ÅµÄµØÖ·ÊıÁ¿ */
+	/* æ¯ä¸ªæ•°æ®å—å¯ä»¥å­˜æ”¾çš„åœ°å€æ•°é‡ */
 	unsigned long addr_per_block = EXT2_ADDR_PER_BLOCK(inode->i_sb);
 
 	*err = -EIO;
@@ -405,7 +405,7 @@ struct buffer_head * ext2_getblk (struct inode * inode, long block,
 		return NULL;
 	}
 
-	/* Èç¹û´óÓÚÏµÍ³Ö§³ÖµÄ×î´óÎÄ¼ş¿éÊı */
+	/* å¦‚æœå¤§äºç³»ç»Ÿæ”¯æŒçš„æœ€å¤§æ–‡ä»¶å—æ•° */
 	if (block > EXT2_NDIR_BLOCKS + addr_per_block  +
 		    addr_per_block * addr_per_block +
 		    addr_per_block * addr_per_block * addr_per_block) {
@@ -429,7 +429,7 @@ struct buffer_head * ext2_getblk (struct inode * inode, long block,
 
 	*err = -ENOSPC;
 	b = block;
-	/* Èç¹ûÊÇÖ±½ÓÓ³Éä£¬ÔòÔÚinodeËùÔÚµÄ¿é×éÖĞ·ÖÅäÒ»¸ö¿ÕÏĞÊı¾İ¿é */
+	/* å¦‚æœæ˜¯ç›´æ¥æ˜ å°„ï¼Œåˆ™åœ¨inodeæ‰€åœ¨çš„å—ç»„ä¸­åˆ†é…ä¸€ä¸ªç©ºé—²æ•°æ®å— */
 	if (block < EXT2_NDIR_BLOCKS)
 		return inode_getblk (inode, block, create, b, err);
 	block -= EXT2_NDIR_BLOCKS;
@@ -439,7 +439,7 @@ struct buffer_head * ext2_getblk (struct inode * inode, long block,
 				     inode->i_sb->s_blocksize, b, err);
 	}
 	block -= addr_per_block;
-	/* ¿ªÊ¼´¦Àí¶ş¼¶Ó³ÉäµÄÂß¼­¿éºÅ £¬ÔÙ¼õÒÀ´Î¾ÍÊÇÈı¼¶Ó³Éä´¦Àí */
+	/* å¼€å§‹å¤„ç†äºŒçº§æ˜ å°„çš„é€»è¾‘å—å· ï¼Œå†å‡ä¾æ¬¡å°±æ˜¯ä¸‰çº§æ˜ å°„å¤„ç† */
 	if (block < addr_per_block * addr_per_block) {
 		bh = inode_getblk (inode, EXT2_DIND_BLOCK, create, b, err);
 		bh = block_getblk (inode, bh, block / addr_per_block, create,
@@ -457,7 +457,7 @@ struct buffer_head * ext2_getblk (struct inode * inode, long block,
 			     inode->i_sb->s_blocksize, b, err);
 }
 
-/* ½«ÎÄ¼şµÄÂß¼­¿é¶ÁÈëµ½¸ßËÙ»º´æ£¬Í¬Ê±·µ»Ø¸ßËÙ»º´æµÄµØÖ· 
+/* å°†æ–‡ä»¶çš„é€»è¾‘å—è¯»å…¥åˆ°é«˜é€Ÿç¼“å­˜ï¼ŒåŒæ—¶è¿”å›é«˜é€Ÿç¼“å­˜çš„åœ°å€ 
  */
 struct buffer_head * ext2_bread (struct inode * inode, int block, 
 				 int create, int *err)
@@ -476,8 +476,8 @@ struct buffer_head * ext2_bread (struct inode * inode, int block,
 	return NULL;
 }
 
-/* ¶ÔÓ¦³¬¼¶¿éÖĞinodeµÄ¶ÁÈ¡º¯Êı£¬Ò²¾ÍÊÇ´Ó
- * Ó²ÅÌÖĞ¶ÁÈ¡ÎÄ¼şinodeĞÅÏ¢£¬Í¬Ê±ÉèÖÃinode£¬fileµÄ²Ù×÷º¯Êı
+/* å¯¹åº”è¶…çº§å—ä¸­inodeçš„è¯»å–å‡½æ•°ï¼Œä¹Ÿå°±æ˜¯ä»
+ * ç¡¬ç›˜ä¸­è¯»å–æ–‡ä»¶inodeä¿¡æ¯ï¼ŒåŒæ—¶è®¾ç½®inodeï¼Œfileçš„æ“ä½œå‡½æ•°
  */
 void ext2_read_inode (struct inode * inode)
 {
@@ -496,22 +496,22 @@ void ext2_read_inode (struct inode * inode)
 			    "bad inode number: %lu", inode->i_ino);
 		return;
 	}
-	/* »ñÈ¡¸ÃinoÔÚÄÄ¸ö¿é×éÀïÃæ */
+	/* è·å–è¯¥inoåœ¨å“ªä¸ªå—ç»„é‡Œé¢ */
 	block_group = (inode->i_ino - 1) / EXT2_INODES_PER_GROUP(inode->i_sb);
-	/* Èç¹û×éºÅ´óÓÚÏµÍ³×î´ó×éºÅ£¬Ôò³ö´í */
+	/* å¦‚æœç»„å·å¤§äºç³»ç»Ÿæœ€å¤§ç»„å·ï¼Œåˆ™å‡ºé”™ */
 	if (block_group >= inode->i_sb->u.ext2_sb.s_groups_count)
 		ext2_panic (inode->i_sb, "ext2_read_inode",
 			    "group >= groups count");
-	/* ÕÒµ½µÚ¼¸¿éÖĞ´æ·ÅµÄµÚ¼¸¸ö×éÃèÊö·û */
+	/* æ‰¾åˆ°ç¬¬å‡ å—ä¸­å­˜æ”¾çš„ç¬¬å‡ ä¸ªç»„æè¿°ç¬¦ */
 	group_desc = block_group / EXT2_DESC_PER_BLOCK(inode->i_sb);
 	desc = block_group % EXT2_DESC_PER_BLOCK(inode->i_sb);
-	/* »ñÈ¡ÏàÓ¦Êı¾İ¿éºÅÔÚ¸ßËÙ»º´æÖĞµÄµØÖ· */
+	/* è·å–ç›¸åº”æ•°æ®å—å·åœ¨é«˜é€Ÿç¼“å­˜ä¸­çš„åœ°å€ */
 	bh = inode->i_sb->u.ext2_sb.s_group_desc[group_desc];
 	if (!bh)
 		ext2_panic (inode->i_sb, "ext2_read_inode",
 			    "Descriptor not loaded");
 	gdp = (struct ext2_group_desc *) bh->b_data;
-	/* »ñÈ¡inodeÊı¾İµÄÊı¾İ¿éºÅ£¬È»ºó¸ù¾İÊı¾İ¿éºÅÀ´¶ÁÈ¡Ó²ÅÌÖĞext2_inodeµÄÊı¾İ */
+	/* è·å–inodeæ•°æ®çš„æ•°æ®å—å·ï¼Œç„¶åæ ¹æ®æ•°æ®å—å·æ¥è¯»å–ç¡¬ç›˜ä¸­ext2_inodeçš„æ•°æ® */
 	block = gdp[desc].bg_inode_table +
 		(((inode->i_ino - 1) % EXT2_INODES_PER_GROUP(inode->i_sb))
 		 / EXT2_INODES_PER_BLOCK(inode->i_sb));
@@ -519,13 +519,13 @@ void ext2_read_inode (struct inode * inode)
 		ext2_panic (inode->i_sb, "ext2_read_inode",
 			    "unable to read i-node block\n"
 			    "inode=%lu, block=%lu", inode->i_ino, block);
-	/* ÒòÎª¶ÁÈ¡µÄÊÇÒ»Õû¿éÊı¾İ£¬¶øÒ»Õû¿éÊı¾İÖĞ´æ·ÅÁË¶à¸öext2_inodeµÄÊı¾İ£¬
-	 * ËùÒÔÎÒÃÇÒª»ñÈ¡ĞèÒªext2_inodeÔÚÊı¾İ¿éÖĞµÄÆ«ÒÆ
+	/* å› ä¸ºè¯»å–çš„æ˜¯ä¸€æ•´å—æ•°æ®ï¼Œè€Œä¸€æ•´å—æ•°æ®ä¸­å­˜æ”¾äº†å¤šä¸ªext2_inodeçš„æ•°æ®ï¼Œ
+	 * æ‰€ä»¥æˆ‘ä»¬è¦è·å–éœ€è¦ext2_inodeåœ¨æ•°æ®å—ä¸­çš„åç§»
 	 */
 	raw_inode = ((struct ext2_inode *) bh->b_data) +
 		(inode->i_ino - 1) % EXT2_INODES_PER_BLOCK(inode->i_sb);
-	/* ´Ó´ÅÅÌÖĞ¶ÁÈ¡µÄext2ÎÄ¼şÏµÍ³ÖĞÎÄ¼şµÄinodeµÄÊı¾İ
-	 * ²¢¸³Öµ
+	/* ä»ç£ç›˜ä¸­è¯»å–çš„ext2æ–‡ä»¶ç³»ç»Ÿä¸­æ–‡ä»¶çš„inodeçš„æ•°æ®
+	 * å¹¶èµ‹å€¼
 	 */
 	inode->i_mode = raw_inode->i_mode;
 	inode->i_uid = raw_inode->i_uid;
@@ -557,20 +557,20 @@ void ext2_read_inode (struct inode * inode)
 		inode->u.ext2_i.i_data[block] = raw_inode->i_block[block];
 	brelse (bh);
 	inode->i_op = NULL;
-	/* Í¨¹ıÅĞ¶ÏÎÄ¼şÀàĞÍÀ´ÉèÖÃÎÄ¼şµÄ¶ÁĞ´º¯Êı
+	/* é€šè¿‡åˆ¤æ–­æ–‡ä»¶ç±»å‹æ¥è®¾ç½®æ–‡ä»¶çš„è¯»å†™å‡½æ•°
 	 */
 	if (inode->i_ino == EXT2_ACL_IDX_INO ||
 	    inode->i_ino == EXT2_ACL_DATA_INO)
 		/* Nothing to do */ ;
-	else if (S_ISREG(inode->i_mode))             /* Èç¹ûÊÇÆÕÍ¨ÎÄ¼ş */
+	else if (S_ISREG(inode->i_mode))             /* å¦‚æœæ˜¯æ™®é€šæ–‡ä»¶ */
 		inode->i_op = &ext2_file_inode_operations;
-	else if (S_ISDIR(inode->i_mode))              /* Èç¹ûÊÇÄ¿Â¼ÎÄ¼ş */
+	else if (S_ISDIR(inode->i_mode))              /* å¦‚æœæ˜¯ç›®å½•æ–‡ä»¶ */
 		inode->i_op = &ext2_dir_inode_operations;
-	else if (S_ISLNK(inode->i_mode))            /* Èç¹ûÊÇ·ûºÅÁ´½ÓÎÄ¼ş */
+	else if (S_ISLNK(inode->i_mode))            /* å¦‚æœæ˜¯ç¬¦å·é“¾æ¥æ–‡ä»¶ */
 		inode->i_op = &ext2_symlink_inode_operations;
-	else if (S_ISCHR(inode->i_mode))             /* ×Ö·ûÎÄ¼ş */
+	else if (S_ISCHR(inode->i_mode))             /* å­—ç¬¦æ–‡ä»¶ */
 		inode->i_op = &chrdev_inode_operations;
-	else if (S_ISBLK(inode->i_mode))             /* Éè±¸ÎÄ¼ş */
+	else if (S_ISBLK(inode->i_mode))             /* è®¾å¤‡æ–‡ä»¶ */
 		inode->i_op = &blkdev_inode_operations;
 	else if (S_ISFIFO(inode->i_mode))
 		init_fifo(inode);
@@ -578,7 +578,7 @@ void ext2_read_inode (struct inode * inode)
 		inode->i_flags |= MS_SYNC;
 }
 
-/* ½«inode¶ÔÓ¦µÄÎÄ¼şĞ´»Ø¸ßËÙ»º´æ */
+/* å°†inodeå¯¹åº”çš„æ–‡ä»¶å†™å›é«˜é€Ÿç¼“å­˜ */
 static struct buffer_head * ext2_update_inode (struct inode * inode)
 {
 	struct buffer_head * bh;
@@ -589,28 +589,28 @@ static struct buffer_head * ext2_update_inode (struct inode * inode)
 	unsigned long block;
 	struct ext2_group_desc * gdp;
 
-	/* ÅĞ¶ÏinoµÄºÏ·¨ĞÔ */
+	/* åˆ¤æ–­inoçš„åˆæ³•æ€§ */
 	if ((inode->i_ino != EXT2_ROOT_INO && inode->i_ino < EXT2_FIRST_INO) ||
 	    inode->i_ino > inode->i_sb->u.ext2_sb.s_es->s_inodes_count) {
 		ext2_error (inode->i_sb, "ext2_write_inode",
 			    "bad inode number: %lu", inode->i_ino);
 		return 0;
 	}
-	/* »ñÈ¡inodeËùÔÚµÄ¿é×é */
+	/* è·å–inodeæ‰€åœ¨çš„å—ç»„ */
 	block_group = (inode->i_ino - 1) / EXT2_INODES_PER_GROUP(inode->i_sb);
 	if (block_group >= inode->i_sb->u.ext2_sb.s_groups_count)
 		ext2_panic (inode->i_sb, "ext2_write_inode",
 			    "group >= groups count");
-	/* »ñÈ¡×éÃèÊö·ûµÄ¿éºÅ */
+	/* è·å–ç»„æè¿°ç¬¦çš„å—å· */
 	group_desc = block_group / EXT2_DESC_PER_BLOCK(inode->i_sb);
-	/* »ñÈ¡×éÃèÊö·ûÔÚ¿éÖĞµÄÆ«ÒÆ */
+	/* è·å–ç»„æè¿°ç¬¦åœ¨å—ä¸­çš„åç§» */
 	desc = block_group % EXT2_DESC_PER_BLOCK(inode->i_sb);
 	bh = inode->i_sb->u.ext2_sb.s_group_desc[group_desc];
 	if (!bh)
 		ext2_panic (inode->i_sb, "ext2_write_inode",
 			    "Descriptor not loaded");
 	gdp = (struct ext2_group_desc *) bh->b_data;
-	/* bg_inode_tableÎª¿é×éÖĞ´æ·ÅinodeµÄÊı¾İ¿éµÄµÚÒ»¸ö¿éºÅ */
+	/* bg_inode_tableä¸ºå—ç»„ä¸­å­˜æ”¾inodeçš„æ•°æ®å—çš„ç¬¬ä¸€ä¸ªå—å· */
 	block = gdp[desc].bg_inode_table +
 		(((inode->i_ino - 1) % EXT2_INODES_PER_GROUP(inode->i_sb))
 		 / EXT2_INODES_PER_BLOCK(inode->i_sb));
@@ -618,7 +618,7 @@ static struct buffer_head * ext2_update_inode (struct inode * inode)
 		ext2_panic (inode->i_sb, "ext2_write_inode",
 			    "unable to read i-node block\n"
 			    "inode=%lu, block=%lu", inode->i_ino, block);
-	/* »ñÈ¡¸ßËÙ»º´æÖĞi_ino¶ÔÓ¦µÄinodeÄÚ´æ */
+	/* è·å–é«˜é€Ÿç¼“å­˜ä¸­i_inoå¯¹åº”çš„inodeå†…å­˜ */
 	raw_inode = ((struct ext2_inode *)bh->b_data) +
 		(inode->i_ino - 1) % EXT2_INODES_PER_BLOCK(inode->i_sb);
 	raw_inode->i_mode = inode->i_mode;
@@ -638,21 +638,21 @@ static struct buffer_head * ext2_update_inode (struct inode * inode)
 	raw_inode->i_file_acl = inode->u.ext2_i.i_file_acl;
 	raw_inode->i_dir_acl = inode->u.ext2_i.i_dir_acl;
 	raw_inode->i_version = inode->u.ext2_i.i_version;
-	/* ÕâÊÇÎÄ¼şµÄÉè±¸Âß¼­¿éºÅ */
+	/* è¿™æ˜¯æ–‡ä»¶çš„è®¾å¤‡é€»è¾‘å—å· */
 	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode))
 		raw_inode->i_block[0] = inode->i_rdev;
 	else for (block = 0; block < EXT2_N_BLOCKS; block++)
 		raw_inode->i_block[block] = inode->u.ext2_i.i_data[block];
-	/* Ğ´ÍêÖ®ºóinode¾Í²»ÊÇÔàµÄÁË£¬
-	 * ×¢Òâ´ËÊ±inode²¢Ã»ÓĞĞ´µ½´ÅÅÌÉÏ£¬½ö½öÊÇÔÚ¸ßËÙ»º´æ£¬
-	 * ´ËÊ±µÄ¸ßËÙ»º´æÎªÔà£¬ÔÚÊÍ·Å¸ßËÙ»º´æµÄÊ±ºò¾Í»áĞ´µ½´ÅÅÌÉÏ
+	/* å†™å®Œä¹‹åinodeå°±ä¸æ˜¯è„çš„äº†ï¼Œ
+	 * æ³¨æ„æ­¤æ—¶inodeå¹¶æ²¡æœ‰å†™åˆ°ç£ç›˜ä¸Šï¼Œä»…ä»…æ˜¯åœ¨é«˜é€Ÿç¼“å­˜ï¼Œ
+	 * æ­¤æ—¶çš„é«˜é€Ÿç¼“å­˜ä¸ºè„ï¼Œåœ¨é‡Šæ”¾é«˜é€Ÿç¼“å­˜çš„æ—¶å€™å°±ä¼šå†™åˆ°ç£ç›˜ä¸Š
 	 */
 	bh->b_dirt = 1;
 	inode->i_dirt = 0;  
 	return bh;
 }
 
-/* ½ö½öÊÇĞ´µ½ÁË¸ßËÙ»º³å£¬ext2_sync_inodeº¯Êı²ÅÔÚÕâÖ®ºó½«ÄÚÈİĞ´µ½ÁË´ÅÅÌ */
+/* ä»…ä»…æ˜¯å†™åˆ°äº†é«˜é€Ÿç¼“å†²ï¼Œext2_sync_inodeå‡½æ•°æ‰åœ¨è¿™ä¹‹åå°†å†…å®¹å†™åˆ°äº†ç£ç›˜ */
 void ext2_write_inode (struct inode * inode)
 {
 	struct buffer_head * bh;
@@ -661,7 +661,7 @@ void ext2_write_inode (struct inode * inode)
 }
 
 
-/* ½«inodeÊı¾İÏÈĞ´Èëµ½¸ßËÙ»º´æ£¬È»ºó½«¸ßËÙ»º³åÖĞÊı¾İĞ´Èëµ½´ÅÅÌµ±ÖĞ */
+/* å°†inodeæ•°æ®å…ˆå†™å…¥åˆ°é«˜é€Ÿç¼“å­˜ï¼Œç„¶åå°†é«˜é€Ÿç¼“å†²ä¸­æ•°æ®å†™å…¥åˆ°ç£ç›˜å½“ä¸­ */
 int ext2_sync_inode (struct inode *inode)
 {
 	int err = 0;

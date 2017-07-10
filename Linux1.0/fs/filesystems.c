@@ -56,15 +56,15 @@ struct file_system_type file_systems[] = {
 	{msdos_read_super,	"msdos",	1},
 #endif
 #ifdef CONFIG_PROC_FS
-	/* procÎÄ¼şÏµÍ³³¬¼¶¿é¶ÁÈ¡ */
+	/* procæ–‡ä»¶ç³»ç»Ÿè¶…çº§å—è¯»å– */
 	{proc_read_super,	"proc",		0},
 #endif
 #ifdef CONFIG_NFS_FS
-        /* ÍøÂçÎÄ¼şÏµÍ³ */
+        /* ç½‘ç»œæ–‡ä»¶ç³»ç»Ÿ */
 	{nfs_read_super,	"nfs",		0},
 #endif
 #ifdef CONFIG_ISO9660_FS
-        /* ISOÎÄ¼şÏµÍ³£¬ÀıÈçLinux¹ÒÔØÒ»¸öISOÎÄ¼ş */
+        /* ISOæ–‡ä»¶ç³»ç»Ÿï¼Œä¾‹å¦‚LinuxæŒ‚è½½ä¸€ä¸ªISOæ–‡ä»¶ */
 	{isofs_read_super,	"iso9660",	1},
 #endif
 #ifdef CONFIG_SYSV_FS

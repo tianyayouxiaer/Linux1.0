@@ -33,7 +33,7 @@ extern int sys_shmat (int shmid, char *shmaddr, int shmflg, ulong *addr);
 extern int sys_shmdt (char *shmaddr);
 
 
-//ipcÍ¨ĞÅ·½Ê½µÄ³õÊ¼»¯£¬1-ĞÅºÅÁ¿£¬2-ÏûÏ¢¶ÓÁĞ£¬3-ÄÚ´æ¹²Ïí
+//ipcé€šä¿¡æ–¹å¼çš„åˆå§‹åŒ–ï¼Œ1-ä¿¡å·é‡ï¼Œ2-æ¶ˆæ¯é˜Ÿåˆ—ï¼Œ3-å†…å­˜å…±äº«
 void ipc_init (void)
 {
 	sem_init();
@@ -46,7 +46,7 @@ void ipc_init (void)
  * Check user, group, other permissions for access
  * to ipc resources. return 0 if allowed
  */
-/* ×¢Òâ²é¿´ÉÏÃæ×¢ÊÍ£¬³É¹¦·µ»Ø0
+/* æ³¨æ„æŸ¥çœ‹ä¸Šé¢æ³¨é‡Šï¼ŒæˆåŠŸè¿”å›0
  */
 int ipcperms (struct ipc_perm *ipcp, short flag)
 {	/* flag will most probably be 0 or S_...UGO from <linux/stat.h> */

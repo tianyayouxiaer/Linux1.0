@@ -20,34 +20,34 @@ struct semid_ds {
   time_t          sem_otime;      /* last semop time */
   time_t          sem_ctime;      /* last change time */
   struct sem      *sem_base;      /* ptr to first semaphore in array */
-  /* µÈ´ıĞÅºÅ×ÊÔ´µÄ½ø³Ì¶ÓÁĞ */
+  /* ç­‰å¾…ä¿¡å·èµ„æºçš„è¿›ç¨‹é˜Ÿåˆ— */
   struct wait_queue *eventn;
-  /* µÈµ½ĞÅºÅÖµÎª0µÄ½ø³ÌµÈ´ı¶ÓÁĞ */
+  /* ç­‰åˆ°ä¿¡å·å€¼ä¸º0çš„è¿›ç¨‹ç­‰å¾…é˜Ÿåˆ— */
   struct wait_queue *eventz;     
   struct sem_undo  *undo;	  /* undo requests on this array */
-  ushort          sem_nsems;      /* no. of semaphores in array */ /* ĞÅºÅÁ¿¼¯ÖĞĞÅºÅÁ¿µÄÊıÁ¿ */
+  ushort          sem_nsems;      /* no. of semaphores in array */ /* ä¿¡å·é‡é›†ä¸­ä¿¡å·é‡çš„æ•°é‡ */
 };
 
 
 /* One semaphore structure for each semaphore in the system. */
 struct sem {
-/* ×îºóÒ»´Îµ÷ÓÃsem_opµÄ½ø³ÌID */
+/* æœ€åä¸€æ¬¡è°ƒç”¨sem_opçš„è¿›ç¨‹ID */
   short   sempid;         /* pid of last operation */
-/* µ±Ç°ĞÅºÅÁ¿µÄÖµ */
+/* å½“å‰ä¿¡å·é‡çš„å€¼ */
   ushort  semval;         /* current value */
-/* Èç¹ûµ±Ç°ĞÅºÅÁ¿Öµsemval²»×ãsem_op×¼±¸¼õÈ¥µÄĞÅºÅÁ¿ÊıÖµ
- * ¸Ã½ø³Ì¾Í×èÈû£¬semncnt×Ô¼Ó1£¬µ±µ±Ç°ĞÅºÅÖµ×ã¹»ÁË£¬½ø³Ì½âËø
- * semncnt×Ô¶¯¼õ1£¬µÈ´ı¸ÃĞÅºÅÁ¿Öµ´óÓÚµ±Ç°ÖµµÄ½ø³ÌÊı£¨Ò»ÓĞ½ø³ÌÊÍ·Å×ÊÔ´ ¾Í±»»½ĞÑ£©
+/* å¦‚æœå½“å‰ä¿¡å·é‡å€¼semvalä¸è¶³sem_opå‡†å¤‡å‡å»çš„ä¿¡å·é‡æ•°å€¼
+ * è¯¥è¿›ç¨‹å°±é˜»å¡ï¼Œsemncntè‡ªåŠ 1ï¼Œå½“å½“å‰ä¿¡å·å€¼è¶³å¤Ÿäº†ï¼Œè¿›ç¨‹è§£é”
+ * semncntè‡ªåŠ¨å‡1ï¼Œç­‰å¾…è¯¥ä¿¡å·é‡å€¼å¤§äºå½“å‰å€¼çš„è¿›ç¨‹æ•°ï¼ˆä¸€æœ‰è¿›ç¨‹é‡Šæ”¾èµ„æº å°±è¢«å”¤é†’ï¼‰
  */
   ushort  semncnt;        /* num procs awaiting increase in semval */
-/* µÈ´ı¸ÃĞÅºÅÁ¿ÖµµÈÓÚ0µÄ½ø³ÌÊı */
+/* ç­‰å¾…è¯¥ä¿¡å·é‡å€¼ç­‰äº0çš„è¿›ç¨‹æ•° */
   ushort  semzcnt;        /* num procs awaiting semval = 0 */
 };
 
 /* semop system calls takes an array of these.*/
-/* 	£¨1£©Èôsem_opÎªÕı£¬Õâ¶ÔÓ¦ÓÚ½ø³ÌÊÍ·ÅÕ¼ÓÃµÄ×ÊÔ´Êı¡£sem_opÖµ¼Óµ½ĞÅºÅÁ¿µÄÖµÉÏ¡££¨V²Ù×÷£©
-	£¨2£©Èôsem_opÎª¸º,Õâ±íÊ¾Òª»ñÈ¡¸ÃĞÅºÅÁ¿¿ØÖÆµÄ×ÊÔ´Êı¡£ĞÅºÅÁ¿Öµ¼õÈ¥sem_opµÄ¾ø¶ÔÖµ¡££¨P²Ù×÷£©
-	£¨3£©Èôsem_opÎª0,Õâ±íÊ¾µ÷ÓÃ½ø³ÌÏ£ÍûµÈ´ıµ½¸ÃĞÅºÅÁ¿Öµ±ä³É0
+/* 	ï¼ˆ1ï¼‰è‹¥sem_opä¸ºæ­£ï¼Œè¿™å¯¹åº”äºè¿›ç¨‹é‡Šæ”¾å ç”¨çš„èµ„æºæ•°ã€‚sem_opå€¼åŠ åˆ°ä¿¡å·é‡çš„å€¼ä¸Šã€‚ï¼ˆVæ“ä½œï¼‰
+	ï¼ˆ2ï¼‰è‹¥sem_opä¸ºè´Ÿ,è¿™è¡¨ç¤ºè¦è·å–è¯¥ä¿¡å·é‡æ§åˆ¶çš„èµ„æºæ•°ã€‚ä¿¡å·é‡å€¼å‡å»sem_opçš„ç»å¯¹å€¼ã€‚ï¼ˆPæ“ä½œï¼‰
+	ï¼ˆ3ï¼‰è‹¥sem_opä¸º0,è¿™è¡¨ç¤ºè°ƒç”¨è¿›ç¨‹å¸Œæœ›ç­‰å¾…åˆ°è¯¥ä¿¡å·é‡å€¼å˜æˆ0
  */
 struct sembuf {
   ushort  sem_num;        /* semaphore index in array */
@@ -97,16 +97,16 @@ struct  seminfo {
 /* per process undo requests */
 /* this gets linked into the task_struct */
 
-/* ³ÌĞò½áÊøÊ±(²»ÂÛÕı³£»ò²»Õı³£)£¬
- * ±£Ö¤ĞÅºÅÖµ»á±»ÖØÉèÎªsemop()µ÷ÓÃÇ°µÄÖµ¡£
- * ÕâÑù×öµÄÄ¿µÄÔÚÓÚ±ÜÃâ³ÌĞòÔÚÒì³£Çé¿öÏÂ½áÊøÊ±Î´½«Ëø¶¨µÄ×ÊÔ´½âËø£¬
- * Ôì³É¸Ã×ÊÔ´ÓÀÔ¶Ëø¶¨¡£ÊÇĞÅºÅÁ¿ºÜÖØÒªµÄÒ»¸ö²ÎÊı£¬µ«ÊÇÊ¹ÓÃËüÒ»¶¨Òª×¢Òâ
+/* ç¨‹åºç»“æŸæ—¶(ä¸è®ºæ­£å¸¸æˆ–ä¸æ­£å¸¸)ï¼Œ
+ * ä¿è¯ä¿¡å·å€¼ä¼šè¢«é‡è®¾ä¸ºsemop()è°ƒç”¨å‰çš„å€¼ã€‚
+ * è¿™æ ·åšçš„ç›®çš„åœ¨äºé¿å…ç¨‹åºåœ¨å¼‚å¸¸æƒ…å†µä¸‹ç»“æŸæ—¶æœªå°†é”å®šçš„èµ„æºè§£é”ï¼Œ
+ * é€ æˆè¯¥èµ„æºæ°¸è¿œé”å®šã€‚æ˜¯ä¿¡å·é‡å¾ˆé‡è¦çš„ä¸€ä¸ªå‚æ•°ï¼Œä½†æ˜¯ä½¿ç”¨å®ƒä¸€å®šè¦æ³¨æ„
  */
 struct sem_undo {
-    struct sem_undo *proc_next;  /*Ö¸Ïò½ø³ÌundoÁ´±íÖĞµÄÏÂÒ»¸ö½Úµã*/
-    struct sem_undo *id_next;	/*Ö¸ÏòĞÅºÅ¼¯µÄundoÁ´±íÖĞµÄÏÂÒ»¸ö½Úµã*/
-    int    semid;	    /* ĞÅºÅ¼¯ID */
-	/* Ö÷ÒªÓÃÓÚundo,±íÊ¾Ö®Ç°×îºóÒ»´ÎĞÅºÅÁ¿µÄÖµ  */
+    struct sem_undo *proc_next;  /*æŒ‡å‘è¿›ç¨‹undoé“¾è¡¨ä¸­çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹*/
+    struct sem_undo *id_next;	/*æŒ‡å‘ä¿¡å·é›†çš„undoé“¾è¡¨ä¸­çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹*/
+    int    semid;	    /* ä¿¡å·é›†ID */
+	/* ä¸»è¦ç”¨äºundo,è¡¨ç¤ºä¹‹å‰æœ€åä¸€æ¬¡ä¿¡å·é‡çš„å€¼  */
     short  semadj; 		/* semval adjusted by exit */
     ushort sem_num; 		/* semaphore index in array semid */
 };      

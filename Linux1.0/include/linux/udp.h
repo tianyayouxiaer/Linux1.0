@@ -19,10 +19,10 @@
 
 
 struct udphdr {
-  unsigned short	source;  /* Ô´µØÖ· */
-  unsigned short	dest;    /* Ä¿µÄµØÖ· */
-  unsigned short	len;     /* Êı¾İ³¤¶È */
-  unsigned short	check;   /* Ğ£ÑéºÍ */
+  unsigned short	source;  /* æºåœ°å€ */
+  unsigned short	dest;    /* ç›®çš„åœ°å€ */
+  unsigned short	len;     /* æ•°æ®é•¿åº¦ */
+  unsigned short	check;   /* æ ¡éªŒå’Œ */
 };
 
 

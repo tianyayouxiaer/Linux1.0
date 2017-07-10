@@ -18,12 +18,12 @@ extern int fcntl_setlk(unsigned int, unsigned int, struct flock *);
 extern int sock_fcntl (struct file *, unsigned int cmd, unsigned long arg);
 
 
-/* ¸´ÖÆÎÄ¼ş¾ä±ú
- * fdÊÇÒª±»¸´ÖÆµÄ¾ä±ú
- * argÊÇ´ÓÄÄ¸öÎÄ¼ş¾ä±ú²éÕÒ¿ÉÒÔ¸´ÖÆµ½µÄÎÄ¼ş¾ä±ú
- * ¸´ÖÆ³É¹¦Ö®ºó»áÓĞÁ½¸ö(Ò²¿ÉÄÜÊÇ¶à¸ödup¶à´Î)
- * ¶ÔÓ¦µÄÎÄ¼şÖ¸Õë£¬¶øÖ¸ÕëÖ¸ÏòµÄÄÚ´æÇøÓòÏàÍ¬£¬
- * ²¢ÇÒÒıÓÃ¼ÆÊı»á¼Ó1
+/* å¤åˆ¶æ–‡ä»¶å¥æŸ„
+ * fdæ˜¯è¦è¢«å¤åˆ¶çš„å¥æŸ„
+ * argæ˜¯ä»å“ªä¸ªæ–‡ä»¶å¥æŸ„æŸ¥æ‰¾å¯ä»¥å¤åˆ¶åˆ°çš„æ–‡ä»¶å¥æŸ„
+ * å¤åˆ¶æˆåŠŸä¹‹åä¼šæœ‰ä¸¤ä¸ª(ä¹Ÿå¯èƒ½æ˜¯å¤šä¸ªdupå¤šæ¬¡)
+ * å¯¹åº”çš„æ–‡ä»¶æŒ‡é’ˆï¼Œè€ŒæŒ‡é’ˆæŒ‡å‘çš„å†…å­˜åŒºåŸŸç›¸åŒï¼Œ
+ * å¹¶ä¸”å¼•ç”¨è®¡æ•°ä¼šåŠ 1
  */
 static int dupfd(unsigned int fd, unsigned int arg)
 {
@@ -31,13 +31,13 @@ static int dupfd(unsigned int fd, unsigned int arg)
 		return -EBADF;
 	if (arg >= NR_OPEN)
 		return -EINVAL;
-	/*ÕÒµ½Ò»¸ö¿ÉÓÃµÄfd*/
+	/*æ‰¾åˆ°ä¸€ä¸ªå¯ç”¨çš„fd*/
 	while (arg < NR_OPEN)
 		if (current->filp[arg])
 			arg++;
 		else
 			break;
-	/*Èç¹û³¬¹ı½ø³Ì¿ÉÒÔ´ò¿ªµÄ×î´óÎÄ¼şÊı£¬ÔòÊ§°Ü*/
+	/*å¦‚æœè¶…è¿‡è¿›ç¨‹å¯ä»¥æ‰“å¼€çš„æœ€å¤§æ–‡ä»¶æ•°ï¼Œåˆ™å¤±è´¥*/
 	if (arg >= NR_OPEN)
 		return -EMFILE;
 	FD_CLR(arg, &current->close_on_exec);
@@ -45,7 +45,7 @@ static int dupfd(unsigned int fd, unsigned int arg)
 	return arg;
 }
 
-/* Ö¸¶¨¸´ÖÆºóµÄÎÄ¼şÃèÊö·û£¬Èç¹û¸ÃÎÄ¼şÃèÊö·ûÒÑ¾­´ò¿ª£¬Ôò½«Æä¹Ø±Õ */
+/* æŒ‡å®šå¤åˆ¶åçš„æ–‡ä»¶æè¿°ç¬¦ï¼Œå¦‚æœè¯¥æ–‡ä»¶æè¿°ç¬¦å·²ç»æ‰“å¼€ï¼Œåˆ™å°†å…¶å…³é—­ */
 asmlinkage int sys_dup2(unsigned int oldfd, unsigned int newfd)
 {
 	if (oldfd >= NR_OPEN || !current->filp[oldfd])
@@ -81,9 +81,9 @@ asmlinkage int sys_fcntl(unsigned int fd, unsigned int cmd, unsigned long arg)
 	if (fd >= NR_OPEN || !(filp = current->filp[fd]))
 		return -EBADF;
 	switch (cmd) {
-		case F_DUPFD:   /* ¸´ÖÆÒ»¸öÎÄ¼şÃèÊö·û */
+		case F_DUPFD:   /* å¤åˆ¶ä¸€ä¸ªæ–‡ä»¶æè¿°ç¬¦ */
 			return dupfd(fd,arg);
-		case F_GETFD:   /* ÅĞ¶ÏÎÄ¼şÃèÊö·ûÊÇ²»ÊÇÔÚ½ø³ÌµÄclose_on_execµ±ÖĞ */
+		case F_GETFD:   /* åˆ¤æ–­æ–‡ä»¶æè¿°ç¬¦æ˜¯ä¸æ˜¯åœ¨è¿›ç¨‹çš„close_on_execå½“ä¸­ */
 			return FD_ISSET(fd, &current->close_on_exec);
 		case F_SETFD:
 			if (arg&1)
@@ -91,9 +91,9 @@ asmlinkage int sys_fcntl(unsigned int fd, unsigned int cmd, unsigned long arg)
 			else
 				FD_CLR(fd, &current->close_on_exec);
 			return 0;
-		case F_GETFL:   /* ·µ»ØÎÄ¼şµÄ±ê¼Ç */
+		case F_GETFL:   /* è¿”å›æ–‡ä»¶çš„æ ‡è®° */
 			return filp->f_flags;
-		case F_SETFL:   /* ÉèÖÃÎÄ¼ş±ê¼Ç */
+		case F_SETFL:   /* è®¾ç½®æ–‡ä»¶æ ‡è®° */
 			filp->f_flags &= ~(O_APPEND | O_NONBLOCK);
 			filp->f_flags |= arg & (O_APPEND | O_NONBLOCK);
 			return 0;

@@ -244,7 +244,7 @@ static struct device ppp0_dev = {
 
 #ifdef LOOPBACK
     extern int loopback_init(struct device *dev);
-    /* 回环设备定义 */
+    /* 鍥炵幆璁惧瀹氫箟 */
     static struct device loopback_dev = {
 	"lo",			/* Software Loopback interface		*/
 	0x0,			/* recv memory end			*/
@@ -261,5 +261,5 @@ static struct device ppp0_dev = {
 #   define	NEXT_DEV	(&loopback_dev)
 #endif
 
-/* 设备链表，NEXT_DEV根据系统中宏定义，可能是loopback_dev */
+/* 璁惧閾捐〃锛孨EXT_DEV鏍规嵁绯荤粺涓畯瀹氫箟锛屽彲鑳芥槸loopback_dev */
 struct device *dev_base = NEXT_DEV;

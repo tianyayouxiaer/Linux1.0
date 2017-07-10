@@ -19,8 +19,8 @@ struct semaphore {
 #define MUTEX ((struct semaphore) { 1, NULL })
 
 struct select_table_entry {
-	struct wait_queue wait;			/* Êµ¼ÊÌí¼Óµ½µÈ´ı¶ÓÁĞÖĞµÄ±äÁ¿ */
-	struct wait_queue ** wait_address;  /* Ö¸ÏòÊµ¼ÊµÈ´ıÁ´±íµÄÊ×²¿£¬·½±ã´Ówait_addressÖĞÉ¾³ı»òÌí¼Ówait */
+	struct wait_queue wait;			/* å®é™…æ·»åŠ åˆ°ç­‰å¾…é˜Ÿåˆ—ä¸­çš„å˜é‡ */
+	struct wait_queue ** wait_address;  /* æŒ‡å‘å®é™…ç­‰å¾…é“¾è¡¨çš„é¦–éƒ¨ï¼Œæ–¹ä¾¿ä»wait_addressä¸­åˆ é™¤æˆ–æ·»åŠ wait */
 };
 
 typedef struct select_table_struct {
@@ -28,7 +28,7 @@ typedef struct select_table_struct {
 	struct select_table_entry * entry;
 } select_table;
 
-/* Ò»¸öselect_table×î¶àÖ»ÄÜÓĞÕ¼ÓÃÒ»Ò³ÄÚ´æ´óĞ¡µÄselect_table_entry */
+/* ä¸€ä¸ªselect_tableæœ€å¤šåªèƒ½æœ‰å ç”¨ä¸€é¡µå†…å­˜å¤§å°çš„select_table_entry */
 #define __MAX_SELECT_TABLE_ENTRIES (4096 / sizeof (struct select_table_entry))
 
 #endif

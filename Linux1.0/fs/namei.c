@@ -27,7 +27,7 @@
  * POSIX.1 2.4: an empty pathname is invalid (ENOENT).
  */
 
-/* ´ÓÄÚºËÖĞÉêÇëÒ»Ò³µÄÄÚ´æÓÃÀ´´æ·ÅfilenameÖĞµÄÊı¾İ
+/* ä»å†…æ ¸ä¸­ç”³è¯·ä¸€é¡µçš„å†…å­˜ç”¨æ¥å­˜æ”¾filenameä¸­çš„æ•°æ®
  */
 int getname(const char * filename, char **result)
 {
@@ -35,7 +35,7 @@ int getname(const char * filename, char **result)
 	unsigned long i, page;
 	char * tmp, c;
 
-	/* ½«ÓÃ»§¿Õ¼äÓ³Éäµ½ÄÚºË¿Õ¼ä*/
+	/* å°†ç”¨æˆ·ç©ºé—´æ˜ å°„åˆ°å†…æ ¸ç©ºé—´*/
 	i = (unsigned long) filename;
 	if (!i || i >= TASK_SIZE)
 		return -EFAULT;
@@ -63,7 +63,7 @@ int getname(const char * filename, char **result)
 	return error;
 }
 
-/* ½«nameµØÖ·ËùÔÚµÄÒ»Ò³ÄÚ´æ¸øÊÍ·Åµô
+/* å°†nameåœ°å€æ‰€åœ¨çš„ä¸€é¡µå†…å­˜ç»™é‡Šæ”¾æ‰
  */
 void putname(char * name)
 {
@@ -99,7 +99,7 @@ int permission(struct inode * inode,int mask)
  */
 
 
-/* ÔÚdir¶ÔÓ¦µÄÄ¿Â¼µ±ÖĞ²éÕÒÎÄ¼şÃûÎªname,ÇÒ³¤¶ÈÎªlenµÄÎÄ¼ş»òÄ¿Â¼µÄinode
+/* åœ¨dirå¯¹åº”çš„ç›®å½•å½“ä¸­æŸ¥æ‰¾æ–‡ä»¶åä¸ºname,ä¸”é•¿åº¦ä¸ºlençš„æ–‡ä»¶æˆ–ç›®å½•çš„inode
  */
 int lookup(struct inode * dir,const char * name, int len,
 	struct inode ** result)
@@ -125,7 +125,7 @@ int lookup(struct inode * dir,const char * name, int len,
 			dir->i_count++;
 		}
 	}
-	/* ÅĞ¶Ï²»ÊÇÒ»¸öÄ¿Â¼£¬Ä¿Â¼Ò²ÊÇÒ»ÖÖÌØÊâµÄÎÄ¼ş
+	/* åˆ¤æ–­ä¸æ˜¯ä¸€ä¸ªç›®å½•ï¼Œç›®å½•ä¹Ÿæ˜¯ä¸€ç§ç‰¹æ®Šçš„æ–‡ä»¶
 	 */
 	if (!dir->i_op || !dir->i_op->lookup) {
 		iput(dir);
@@ -151,9 +151,9 @@ int follow_link(struct inode * dir, struct inode * inode,
 		*res_inode = NULL;
 		return -ENOENT;
 	}
-	/* Èç¹ûfollow_linkÎª¿Õ£¬ÔòÊÍ·Ådir£¬
-	 * Í¬Ê±½«res_inodeÖ¸Ïòinode,ÓĞÒ»ÖÖÇé¿ö¿ÉÄÜ¾ÍÊÇÄ¿Â¼µÄ·ûºÅÁ¬½Ó
-	 * µ±¶ÁÈ¡µ½Ä¿Â¼·ûºÅÁ¬½ÓÊ±£¬Ôò»Ø¼ÌĞø×ªµ½ÕæÕıµÄÄ¿Â¼ÏÂÃæ
+	/* å¦‚æœfollow_linkä¸ºç©ºï¼Œåˆ™é‡Šæ”¾dirï¼Œ
+	 * åŒæ—¶å°†res_inodeæŒ‡å‘inode,æœ‰ä¸€ç§æƒ…å†µå¯èƒ½å°±æ˜¯ç›®å½•çš„ç¬¦å·è¿æ¥
+	 * å½“è¯»å–åˆ°ç›®å½•ç¬¦å·è¿æ¥æ—¶ï¼Œåˆ™å›ç»§ç»­è½¬åˆ°çœŸæ­£çš„ç›®å½•ä¸‹é¢
 	 */
 	if (!inode->i_op || !inode->i_op->follow_link) {
 		iput(dir);
@@ -170,11 +170,11 @@ int follow_link(struct inode * dir, struct inode * inode,
  * specified name, and the name within that directory.
  */
 
-/* pathnameÂ·¾¶       /usr/local/test.txt
- * namelenÎÄ¼şÃû³¤¶È  strlen("test.txt")
+/* pathnameè·¯å¾„       /usr/local/test.txt
+ * namelenæ–‡ä»¶åé•¿åº¦  strlen("test.txt")
  * name      test.txt
- * base      ÎÄ¼şÏµÍ³µÄ¸ùÄ¿Â¼£¬»òµ±Ç°½ø³ÌµÄÆô¶¯Ä¿Â¼µÄi½Úµã
- * res_inode ÕÒµ½µÄÄ¿Â¼ÎÄ¼şµÄinode£¬×¢ÒâÕâÀïÊÇÄ¿Â¼ÎÄ¼şµÄinode
+ * base      æ–‡ä»¶ç³»ç»Ÿçš„æ ¹ç›®å½•ï¼Œæˆ–å½“å‰è¿›ç¨‹çš„å¯åŠ¨ç›®å½•çš„ièŠ‚ç‚¹
+ * res_inode æ‰¾åˆ°çš„ç›®å½•æ–‡ä»¶çš„inodeï¼Œæ³¨æ„è¿™é‡Œæ˜¯ç›®å½•æ–‡ä»¶çš„inode
  */
 static int dir_namei(const char * pathname, int * namelen, const char ** name,
 	struct inode * base, struct inode ** res_inode)
@@ -197,26 +197,26 @@ static int dir_namei(const char * pathname, int * namelen, const char ** name,
 	}
 	while (1) {
 		thisname = pathname;
-		/* ÒÔ'/'Îª·Ö¸î×Ö·û£¬·Ö¸îÂ·¾¶
-		 * ÔÚÕâÀïÖ»»á´¦ÀíÄ¿Â¼£¬Èç¸ø³öÒÔÏÂÂ·¾¶/usr/local/test,
-		 * ÒÔ¡®/¡¯Îª¸ùÄ¿Â¼Ñ°ÕÒÏÂÒ»¸öÄ¿Â¼usr,ÔÚÒÔusrÎª¸¸Ä¿Â¼Ñ°ÕÒµ½
-		 * local×ÓÄ¿Â¼£¬ÔÙµ±ÒÔlocalÎª¸¸Ä¿Â¼²éÕÒÊ±£¬´ËÊ±µÄcµÈÓÚ0£¬
-		 * ²¢²»»á¼ÌĞø²éÕÒÏÂÈ¥£¬´ËÊ±¾Í»á·µ»ØlocalÄ¿Â¼µÄinode
+		/* ä»¥'/'ä¸ºåˆ†å‰²å­—ç¬¦ï¼Œåˆ†å‰²è·¯å¾„
+		 * åœ¨è¿™é‡Œåªä¼šå¤„ç†ç›®å½•ï¼Œå¦‚ç»™å‡ºä»¥ä¸‹è·¯å¾„/usr/local/test,
+		 * ä»¥â€˜/â€™ä¸ºæ ¹ç›®å½•å¯»æ‰¾ä¸‹ä¸€ä¸ªç›®å½•usr,åœ¨ä»¥usrä¸ºçˆ¶ç›®å½•å¯»æ‰¾åˆ°
+		 * localå­ç›®å½•ï¼Œå†å½“ä»¥localä¸ºçˆ¶ç›®å½•æŸ¥æ‰¾æ—¶ï¼Œæ­¤æ—¶çš„cç­‰äº0ï¼Œ
+		 * å¹¶ä¸ä¼šç»§ç»­æŸ¥æ‰¾ä¸‹å»ï¼Œæ­¤æ—¶å°±ä¼šè¿”å›localç›®å½•çš„inode
 		 */
 		for(len=0;(c = *(pathname++))&&(c != '/');len++)
 			/* nothing */ ;
 		if (!c)
 			break;
-		/*Ôö¼ÓÒıÓÃ¼ÆÊı£¬Èç¹û²»Ôö¼Ó£¬Ôò¿ÉÄÜÔÚµ±Ç°½ø³Ì±»ÇĞ»»³öÈ¥Ö®ºó£¬°Ñ¸Ãinode¸øÊÍ·ÅµôÁË*/
+		/*å¢åŠ å¼•ç”¨è®¡æ•°ï¼Œå¦‚æœä¸å¢åŠ ï¼Œåˆ™å¯èƒ½åœ¨å½“å‰è¿›ç¨‹è¢«åˆ‡æ¢å‡ºå»ä¹‹åï¼ŒæŠŠè¯¥inodeç»™é‡Šæ”¾æ‰äº†*/
 		base->i_count++;
 		error = lookup(base,thisname,len,&inode);
 		if (error) {
 			iput(base);
 			return error;
 		}
-		/* ×¢ÒâÕâ¾ä·Ç³£ÖØÒª£¬¸ü¸ÄbaseºÍinodeÖ®¼äµÄ¹Ø¼ü
-		 * ½«ÕÒµ½µÄinodeÉèÖÃÎªbase£¬È»ºóÏÂÒ»ÂÖÑ­»·¼ÌĞø
-		 * ÔÚbaseµÄÄ¿Â¼ÏÂÃæÑ°ÕÒ
+		/* æ³¨æ„è¿™å¥éå¸¸é‡è¦ï¼Œæ›´æ”¹baseå’Œinodeä¹‹é—´çš„å…³é”®
+		 * å°†æ‰¾åˆ°çš„inodeè®¾ç½®ä¸ºbaseï¼Œç„¶åä¸‹ä¸€è½®å¾ªç¯ç»§ç»­
+		 * åœ¨baseçš„ç›®å½•ä¸‹é¢å¯»æ‰¾
 		 */
 		error = follow_link(base,inode,0,0,&base);
 		if (error)
@@ -226,7 +226,7 @@ static int dir_namei(const char * pathname, int * namelen, const char ** name,
 		iput(base);
 		return -ENOTDIR;
 	}
-	/*¼ÇÂ¼×îºóµÄÎÄ¼şÃû³Æ¡¢³¤¶ÈºÍÎÄ¼şËùÔÚµÄÄ¿Â¼µÄinode*/
+	/*è®°å½•æœ€åçš„æ–‡ä»¶åç§°ã€é•¿åº¦å’Œæ–‡ä»¶æ‰€åœ¨çš„ç›®å½•çš„inode*/
 	*name = thisname;
 	*namelen = len;
 	*res_inode = base;
@@ -234,10 +234,10 @@ static int dir_namei(const char * pathname, int * namelen, const char ** name,
 }
 
 
-/* pathname´ú±íÎÄ¼şÂ·¾¶
- * base´ú±íÊÇ´ÓÄÄ¸öinodeÏÂÃæ¿ªÊ¼¼ì²éÂ·¾¶
- * follow_links´ú±íÈç¹ûÊÇÁ´½Ó£¬ÊÇ·ñ¼ÌĞø¶ÁÈ¡Á´½ÓÕæÕıÖ¸ÏòµÄÎÄ¼ş
- * res_inode±íÊ¾×îÖÕÂ·¾¶²éÕÒ³É¹¦ºóµÄinode
+/* pathnameä»£è¡¨æ–‡ä»¶è·¯å¾„
+ * baseä»£è¡¨æ˜¯ä»å“ªä¸ªinodeä¸‹é¢å¼€å§‹æ£€æŸ¥è·¯å¾„
+ * follow_linksä»£è¡¨å¦‚æœæ˜¯é“¾æ¥ï¼Œæ˜¯å¦ç»§ç»­è¯»å–é“¾æ¥çœŸæ­£æŒ‡å‘çš„æ–‡ä»¶
+ * res_inodeè¡¨ç¤ºæœ€ç»ˆè·¯å¾„æŸ¥æ‰¾æˆåŠŸåçš„inode
  */
 static int _namei(const char * pathname, struct inode * base,
 	int follow_links, struct inode ** res_inode)
@@ -256,7 +256,7 @@ static int _namei(const char * pathname, struct inode * base,
 		iput(base);
 		return error;
 	}
-        /* Èç¹û¸ú×ÙÁ¬½Ó */
+        /* å¦‚æœè·Ÿè¸ªè¿æ¥ */
 	if (follow_links) {
 		error = follow_link(base,inode,0,0,&inode);
 		if (error)
@@ -267,7 +267,7 @@ static int _namei(const char * pathname, struct inode * base,
 	return 0;
 }
 
-/* ²»¸ú×ÙÁ¬½Ó */
+/* ä¸è·Ÿè¸ªè¿æ¥ */
 int lnamei(const char * pathname, struct inode ** res_inode)
 {
 	int error;
@@ -288,8 +288,8 @@ int lnamei(const char * pathname, struct inode ** res_inode)
  * Open, link etc use their own routines, but this is enough for things
  * like 'chmod' etc.
  */
-/* ´ò¿ªÒ»¸öÂ·¾¶¶ÔÓ¦µÄinode£¬Èç¹û¸ÃÂ·¾¶ÖĞ´æÔÚÈíÁ¬½Ó£¬
-  * Ôò¼ÌĞøÏÂÈ¥£¬¿ÉÒÔºÍÉÏÃæº¯Êı¶Ô±È 
+/* æ‰“å¼€ä¸€ä¸ªè·¯å¾„å¯¹åº”çš„inodeï¼Œå¦‚æœè¯¥è·¯å¾„ä¸­å­˜åœ¨è½¯è¿æ¥ï¼Œ
+  * åˆ™ç»§ç»­ä¸‹å»ï¼Œå¯ä»¥å’Œä¸Šé¢å‡½æ•°å¯¹æ¯” 
   */
 int namei(const char * pathname, struct inode ** res_inode)
 {
@@ -318,9 +318,9 @@ int namei(const char * pathname, struct inode ** res_inode)
  * for symlinks (where the permissions are checked later).
  */
 
-/* »ñÈ¡Â·¾¶Ëù¶ÔÓ¦ÎÄ¼şµÄinode£¬½«²éÕÒµ½µÄ½á¹ûinode´æ·ÅÔÚres_inodeµ±ÖĞ£¬
- * base±íÊ¾´ÓÄÄ¸öÄ¿Â¼ÏÂÃæ²éÕÒ£¬Ò»°ã»áÉèÖÃÎªNULL,¾ßÌå´ÓÄÄ¸öÄ¿Â¼ÏÂÃæ²éÕÒ»á
- * ¸ù¾İpathnameÀ´¾ö¶¨
+/* è·å–è·¯å¾„æ‰€å¯¹åº”æ–‡ä»¶çš„inodeï¼Œå°†æŸ¥æ‰¾åˆ°çš„ç»“æœinodeå­˜æ”¾åœ¨res_inodeå½“ä¸­ï¼Œ
+ * baseè¡¨ç¤ºä»å“ªä¸ªç›®å½•ä¸‹é¢æŸ¥æ‰¾ï¼Œä¸€èˆ¬ä¼šè®¾ç½®ä¸ºNULL,å…·ä½“ä»å“ªä¸ªç›®å½•ä¸‹é¢æŸ¥æ‰¾ä¼š
+ * æ ¹æ®pathnameæ¥å†³å®š
  */
 int open_namei(const char * pathname, int flag, int mode,
 	struct inode ** res_inode, struct inode * base)
@@ -332,7 +332,7 @@ int open_namei(const char * pathname, int flag, int mode,
 
 	mode &= S_IALLUGO & ~current->umask;
 	mode |= S_IFREG;
-	/* »ñÈ¡ÎÄ¼şËùÔÚµÄÄ¿Â¼µÄinodeºÍÎÄ¼şÃû³Æ¡¢³¤¶È */
+	/* è·å–æ–‡ä»¶æ‰€åœ¨çš„ç›®å½•çš„inodeå’Œæ–‡ä»¶åç§°ã€é•¿åº¦ */
 	error = dir_namei(pathname,&namelen,&basename,base,&dir);
 	if (error)
 		return error;
@@ -440,7 +440,7 @@ int do_mknod(const char * filename, int mode, dev_t dev)
 	struct inode * dir;
 
 	mode &= ~current->umask;
-	/* »ñÈ¡filenameÂ·¾¶ÖĞÄ¿Â¼µÄinode */
+	/* è·å–filenameè·¯å¾„ä¸­ç›®å½•çš„inode */
 	error = dir_namei(filename,&namelen,&basename, NULL, &dir);
 	if (error)
 		return error;
@@ -460,10 +460,10 @@ int do_mknod(const char * filename, int mode, dev_t dev)
 		iput(dir);
 		return -EPERM;
 	}
-	/* ÏÈÕ¼ÓÃ¸ÃÄ¿Â¼ */
+	/* å…ˆå ç”¨è¯¥ç›®å½• */
 	down(&dir->i_sem);
 	error = dir->i_op->mknod(dir,basename,namelen,mode,dev);
-	/* ÓÃÍêÖ®ºó¾ÍÊÍ·Å¸ÃÄ¿Â¼ */
+	/* ç”¨å®Œä¹‹åå°±é‡Šæ”¾è¯¥ç›®å½• */
 	up(&dir->i_sem);
 	return error;
 }
@@ -666,7 +666,7 @@ asmlinkage int sys_symlink(const char * oldname, const char * newname)
 	return error;
 }
 
-/* ½«oldinode½Úµã¶ÔÓ¦µÄÎÄ¼şÁ´½Óµ½newnameÖ¸ÏòµÄÂ·¾¶
+/* å°†oldinodeèŠ‚ç‚¹å¯¹åº”çš„æ–‡ä»¶é“¾æ¥åˆ°newnameæŒ‡å‘çš„è·¯å¾„
  */
 static int do_link(struct inode * oldinode, const char * newname)
 {
@@ -710,7 +710,7 @@ static int do_link(struct inode * oldinode, const char * newname)
 	return error;
 }
 
-/* ÎÄ¼şÁ´½ÓµÄº¯Êı£¬ÈíÁ´½Ó£¬Ó²Á´½Ó
+/* æ–‡ä»¶é“¾æ¥çš„å‡½æ•°ï¼Œè½¯é“¾æ¥ï¼Œç¡¬é“¾æ¥
  */
 asmlinkage int sys_link(const char * oldname, const char * newname)
 {

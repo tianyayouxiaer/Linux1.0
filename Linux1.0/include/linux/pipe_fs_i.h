@@ -1,17 +1,17 @@
 #ifndef _LINUX_PIPE_FS_I_H
 #define _LINUX_PIPE_FS_I_H
 
-/* ¹ÜµÀÎÄ¼şµÄinode½á¹¹ */
+/* ç®¡é“æ–‡ä»¶çš„inodeç»“æ„ */
 struct pipe_inode_info {
 	struct wait_queue * wait;
-	char * base;                      /* ¹ÜµÀËù¶ÔÓ¦µÄÄÚ´æ */
+	char * base;                      /* ç®¡é“æ‰€å¯¹åº”çš„å†…å­˜ */
 	unsigned int start;
-	unsigned int len;               /* ¹ÜµÀÖĞÊı¾İ³¤¶È */
-	unsigned int lock;              /* Ëø±ê¼Ç */
+	unsigned int len;               /* ç®¡é“ä¸­æ•°æ®é•¿åº¦ */
+	unsigned int lock;              /* é”æ ‡è®° */
 	unsigned int rd_openers;
 	unsigned int wr_openers;
-	unsigned int readers;         /* ¶Á¹ÜµÀµÄÊıÁ¿ */
-	unsigned int writers;         /* Ğ´¹ÜµÀµÄÊıÁ¿ */
+	unsigned int readers;         /* è¯»ç®¡é“çš„æ•°é‡ */
+	unsigned int writers;         /* å†™ç®¡é“çš„æ•°é‡ */
 };
 
 #define PIPE_WAIT(inode)	((inode).u.pipe_i.wait)

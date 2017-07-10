@@ -49,7 +49,7 @@
  * specified.  Field names used correspond to RFC 826.
  */
 
-/* arpĞ­ÒéµÄÊ×²¿¸ñÊ½ 
+/* arpåè®®çš„é¦–éƒ¨æ ¼å¼ 
  */
 struct arphdr {
   unsigned short	ar_hrd;		/* format of hardware address	*/
@@ -69,14 +69,14 @@ struct arphdr {
 
 
 /* ARP ioctl request. */
-/* ¸Ã½á¹¹ÓÃÓÚÉèÖÃ»ñÈ¡arp±íÏîĞÅÏ¢ */
+/* è¯¥ç»“æ„ç”¨äºè®¾ç½®è·å–arpè¡¨é¡¹ä¿¡æ¯ */
 struct arpreq {
   struct sockaddr	arp_pa;		/* protocol address		*/
   struct sockaddr	arp_ha;		/* hardware address		*/
   int			arp_flags;	/* flags			*/
 };
 
-/* arp±íÏî×´Ì¬Öµ */
+/* arpè¡¨é¡¹çŠ¶æ€å€¼ */
 /* ARP Flag values. */
 #define	ATF_INUSE	0x01		/* entry in use			*/
 #define ATF_COM		0x02		/* completed entry (ha valid)	*/

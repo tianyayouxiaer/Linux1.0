@@ -14,14 +14,14 @@
 
 static struct inode_hash_entry {
 	struct inode * inode;
-	int updating;       /* ·ÀÖ¹¶à¸ö½ø³ÌÍ¬Ê±²Ù×÷Ò»¸öhash½ÚµãÖĞµÄÁ´±íÊ±£¬³öÏÖ´íÂÒ */
+	int updating;       /* é˜²æ­¢å¤šä¸ªè¿›ç¨‹åŒæ—¶æ“ä½œä¸€ä¸ªhashèŠ‚ç‚¹ä¸­çš„é“¾è¡¨æ—¶ï¼Œå‡ºç°é”™ä¹± */
 } hash_table[NR_IHASH];
 
-static struct inode * first_inode;   /* inode¿ÕÏĞÁ´±íµÄÊ×²¿ */
+static struct inode * first_inode;   /* inodeç©ºé—²é“¾è¡¨çš„é¦–éƒ¨ */
 static struct wait_queue * inode_wait = NULL;
 static int nr_inodes = 0, nr_free_inodes = 0;
 
-/* Í¨¹ıÉè±¸ºÅ£¬inodeºÅÀ´Ó³Éähash±íÏî
+/* é€šè¿‡è®¾å¤‡å·ï¼Œinodeå·æ¥æ˜ å°„hashè¡¨é¡¹
  */
 static inline int const hashfn(dev_t dev, unsigned int i)
 {
@@ -34,8 +34,8 @@ static inline struct inode_hash_entry * const hash(dev_t dev, int i)
 }
 
 
-/* ½«inode½Úµã²åÈëµ½first_inode½ÚµãµÄÉÏÒ»¸ö£¬
- * È»ºó½«first_inodeÖ¸Ïòinode½Úµã£¬first_inodeÊÇÒ»¸öË«Ïò»·
+/* å°†inodeèŠ‚ç‚¹æ’å…¥åˆ°first_inodeèŠ‚ç‚¹çš„ä¸Šä¸€ä¸ªï¼Œ
+ * ç„¶åå°†first_inodeæŒ‡å‘inodeèŠ‚ç‚¹ï¼Œfirst_inodeæ˜¯ä¸€ä¸ªåŒå‘ç¯
  */
 static void insert_inode_free(struct inode *inode)
 {
@@ -46,8 +46,8 @@ static void insert_inode_free(struct inode *inode)
 	first_inode = inode;
 }
 
-/* ½«inode½Úµã´ÓË«ÏòÁ´±íÖĞÒÆ³ı£¬µ«ÊÇ²¢Ã»ÓĞÊÍ·ÅinodeµÄÄÚ´æ
- * Ö»ÊÇÕ¶¶ÏÁËinodeµÄÖ¸ÕëÖ¸Ïò
+/* å°†inodeèŠ‚ç‚¹ä»åŒå‘é“¾è¡¨ä¸­ç§»é™¤ï¼Œä½†æ˜¯å¹¶æ²¡æœ‰é‡Šæ”¾inodeçš„å†…å­˜
+ * åªæ˜¯æ–©æ–­äº†inodeçš„æŒ‡é’ˆæŒ‡å‘
  */
 static void remove_inode_free(struct inode *inode)
 {
@@ -60,7 +60,7 @@ static void remove_inode_free(struct inode *inode)
 	inode->i_next = inode->i_prev = NULL;
 }
 
-/* ½«inode²åÈëhashË«ÏòÁ´±íµÄÉÏÒ»¸ö£¬²¢ÈÃh->inodeÖ¸Ïòinode
+/* å°†inodeæ’å…¥hashåŒå‘é“¾è¡¨çš„ä¸Šä¸€ä¸ªï¼Œå¹¶è®©h->inodeæŒ‡å‘inode
  */
 void insert_inode_hash(struct inode *inode)
 {
@@ -74,12 +74,12 @@ void insert_inode_hash(struct inode *inode)
 	h->inode = inode;
 }
 
-/* inode½ÚµãÓĞÒ»¸öhash½á¹¹ hash_table[NR_IHASH],
- * ÆäÖĞµÄÃ¿Ò»Ïî¶¼¶ÔÓ¦Ò»¸öhashµÄË«ÏòÁ´±í£¬¸ÃË«ÏòÁ´±íÖĞ
- * µÄ½Úµã¶¼ÊÇÍ¨¹ıÉè±¸ºÅºÍinodeºÅÓ³Éä¹ıÀ´µÄ¡£Èç¹ûÓĞ¶à¸öinode
- * Ó³Éäµ½hash_tableÖĞµÄÒ»Ïî£¬Ôò½«Õâ¶à¸ö½ÚµãÓÃË«ÏòÁ´±í¸øÁ´½ÓÆğÀ´
- * ¸Ãº¯Êı¾ÍÊÇ½«inode´ÓË«ÏòÁ´±íÖĞÉ¾³ı£¬inodeÖĞÓĞ¶à¸öË«ÏòÁ´±í½á¹¹Èç
- * i_hash_prev,i_hash_nextÊÇÒ»¶ÔË«ÏòÁ´±í£¬i_nextºÍi_prevÊÇÒ»¶Ô
+/* inodeèŠ‚ç‚¹æœ‰ä¸€ä¸ªhashç»“æ„ hash_table[NR_IHASH],
+ * å…¶ä¸­çš„æ¯ä¸€é¡¹éƒ½å¯¹åº”ä¸€ä¸ªhashçš„åŒå‘é“¾è¡¨ï¼Œè¯¥åŒå‘é“¾è¡¨ä¸­
+ * çš„èŠ‚ç‚¹éƒ½æ˜¯é€šè¿‡è®¾å¤‡å·å’Œinodeå·æ˜ å°„è¿‡æ¥çš„ã€‚å¦‚æœæœ‰å¤šä¸ªinode
+ * æ˜ å°„åˆ°hash_tableä¸­çš„ä¸€é¡¹ï¼Œåˆ™å°†è¿™å¤šä¸ªèŠ‚ç‚¹ç”¨åŒå‘é“¾è¡¨ç»™é“¾æ¥èµ·æ¥
+ * è¯¥å‡½æ•°å°±æ˜¯å°†inodeä»åŒå‘é“¾è¡¨ä¸­åˆ é™¤ï¼Œinodeä¸­æœ‰å¤šä¸ªåŒå‘é“¾è¡¨ç»“æ„å¦‚
+ * i_hash_prev,i_hash_nextæ˜¯ä¸€å¯¹åŒå‘é“¾è¡¨ï¼Œi_nextå’Œi_prevæ˜¯ä¸€å¯¹
  */
 
 static void remove_inode_hash(struct inode *inode)
@@ -87,11 +87,11 @@ static void remove_inode_hash(struct inode *inode)
 	struct inode_hash_entry *h;
 	h = hash(inode->i_dev, inode->i_ino);
 
-	/* Èç¹ûÊÇhashÖĞµÄµÚÒ»¸ö£¬Ôòh->inodeÖ¸ÏòÏÂÒ»¸ö
+	/* å¦‚æœæ˜¯hashä¸­çš„ç¬¬ä¸€ä¸ªï¼Œåˆ™h->inodeæŒ‡å‘ä¸‹ä¸€ä¸ª
 	 */
 	if (h->inode == inode)
 		h->inode = inode->i_hash_next;
-	/* ½«inode´ÓhashË«ÏòÁ´±íÖĞ¸øÉ¾³ı£¬²¢Õ¶¶ÏÖ¸ÕëÁ¬½Ó
+	/* å°†inodeä»hashåŒå‘é“¾è¡¨ä¸­ç»™åˆ é™¤ï¼Œå¹¶æ–©æ–­æŒ‡é’ˆè¿æ¥
 	 */
 	if (inode->i_hash_next)
 		inode->i_hash_next->i_hash_prev = inode->i_hash_prev;
@@ -100,9 +100,9 @@ static void remove_inode_hash(struct inode *inode)
 	inode->i_hash_prev = inode->i_hash_next = NULL;
 }
 
-/* ½«inode´Ófirst_inodeÖĞÉ¾³ı£¬È»ºó½«inodeÌí¼Óµ½
- * ÒÔfirst_inodeÎªÊ×µÄË«ÏòÁ´±íµÄÄ©¶Ë£¬Ïàµ±ÓÚ½«inode
- * ÔÚË«ÏòÁ´±íÖĞ¸øÒÆ¶¯Ò»ÏÂÎ»ÖÃ
+/* å°†inodeä»first_inodeä¸­åˆ é™¤ï¼Œç„¶åå°†inodeæ·»åŠ åˆ°
+ * ä»¥first_inodeä¸ºé¦–çš„åŒå‘é“¾è¡¨çš„æœ«ç«¯ï¼Œç›¸å½“äºå°†inode
+ * åœ¨åŒå‘é“¾è¡¨ä¸­ç»™ç§»åŠ¨ä¸€ä¸‹ä½ç½®
  */
 static void put_last_free(struct inode *inode)
 {
@@ -113,10 +113,10 @@ static void put_last_free(struct inode *inode)
 	inode->i_next->i_prev = inode;
 }
 
-/* ÖØĞÂ·ÖÅäÒ»Ò³µÄÄÚ´æÀ´´æ·Åinode£¬
- * ²¢³õÊ¼»¯¸÷inodeÖ®¼äµÄÁ¬½Ó¹ØÏµ,
- * Õâ¸öºÍstruct fileµÀÀíÒ»Ñù£¬·ÖÅäÁË¾Í²»»áÊÍ·Å£¬
- * µ«ÊÇ»áÓĞ×î´óÊıÁ¿ÏŞÖÆ
+/* é‡æ–°åˆ†é…ä¸€é¡µçš„å†…å­˜æ¥å­˜æ”¾inodeï¼Œ
+ * å¹¶åˆå§‹åŒ–å„inodeä¹‹é—´çš„è¿æ¥å…³ç³»,
+ * è¿™ä¸ªå’Œstruct fileé“ç†ä¸€æ ·ï¼Œåˆ†é…äº†å°±ä¸ä¼šé‡Šæ”¾ï¼Œ
+ * ä½†æ˜¯ä¼šæœ‰æœ€å¤§æ•°é‡é™åˆ¶
  */
 void grow_inodes(void)
 {
@@ -127,8 +127,8 @@ void grow_inodes(void)
 		return;
 
 	i=PAGE_SIZE / sizeof(struct inode);
-	/* nr_inodes¼ÇÂ¼ËùÓĞµÄinode½ÚµãÊı£¬Ö»»áÔö¼Ó£¬²»»á¼õĞ¡
-	 * nr_free_inodes¼ÇÂ¼µ±Ç°¿ÕÏĞinodeµÄÊıÁ¿
+	/* nr_inodesè®°å½•æ‰€æœ‰çš„inodeèŠ‚ç‚¹æ•°ï¼Œåªä¼šå¢åŠ ï¼Œä¸ä¼šå‡å°
+	 * nr_free_inodesè®°å½•å½“å‰ç©ºé—²inodeçš„æ•°é‡
 	 */
 	nr_inodes += i;
 	nr_free_inodes += i;
@@ -180,8 +180,8 @@ static inline void unlock_inode(struct inode * inode)
  * it to the gcc lists, and hope we can do this more cleanly some day..
  */
 
-/* ÈçÔÚÉè±¸±»°ÎµôÇé¿öÏÂ£¬Éè±¸ÎÄ¼şµÄinodeÈÔÈ»ÔÚÄÚ´æ
- * ½«inode´ÓÁ½¸öÁ´±íÖĞÉ¾³ı£¬²¢Çå³ıÊı¾İ£¬µ«²»¸Ä±äinodeµÄµÈ´ı¶ÓÁĞ
+/* å¦‚åœ¨è®¾å¤‡è¢«æ‹”æ‰æƒ…å†µä¸‹ï¼Œè®¾å¤‡æ–‡ä»¶çš„inodeä»ç„¶åœ¨å†…å­˜
+ * å°†inodeä»ä¸¤ä¸ªé“¾è¡¨ä¸­åˆ é™¤ï¼Œå¹¶æ¸…é™¤æ•°æ®ï¼Œä½†ä¸æ”¹å˜inodeçš„ç­‰å¾…é˜Ÿåˆ—
  */
 void clear_inode(struct inode * inode)
 {
@@ -198,7 +198,7 @@ void clear_inode(struct inode * inode)
 	insert_inode_free(inode);
 }
 
-/*  ÅĞ¶ÏÎÄ¼şÏµÍ³ÊÇ·ñ¿ÉÒÔ¹ÒÔØ */
+/*  åˆ¤æ–­æ–‡ä»¶ç³»ç»Ÿæ˜¯å¦å¯ä»¥æŒ‚è½½ */
 int fs_may_mount(dev_t dev)
 {
 	struct inode * inode, * next;
@@ -210,8 +210,8 @@ int fs_may_mount(dev_t dev)
 		next = inode->i_next;	/* clear_inode() changes the queues.. */
 		if (inode->i_dev != dev)
 			continue;
-                /* ÔËĞĞµ½ÕâÀï£¬¾ÍÊÇ¶Ôµ±Ç°¸ßËÙ»º´æµ±ÖĞËùÓĞinodeÉè±¸ºÅÎªdevµÄinode½øĞĞÅĞ¶Ï
-                  * Èç¹ûifÎªtrue£¬Ôò±íÃ÷¸ÃÉè±¸¶ÔÓ¦µÄÎÄ¼şÏµÍ³ÒÑ±»¹ÒÔØ£¬»òÕß³öÏÖÒì³£ 
+                /* è¿è¡Œåˆ°è¿™é‡Œï¼Œå°±æ˜¯å¯¹å½“å‰é«˜é€Ÿç¼“å­˜å½“ä¸­æ‰€æœ‰inodeè®¾å¤‡å·ä¸ºdevçš„inodeè¿›è¡Œåˆ¤æ–­
+                  * å¦‚æœifä¸ºtrueï¼Œåˆ™è¡¨æ˜è¯¥è®¾å¤‡å¯¹åº”çš„æ–‡ä»¶ç³»ç»Ÿå·²è¢«æŒ‚è½½ï¼Œæˆ–è€…å‡ºç°å¼‚å¸¸ 
                   */
 		if (inode->i_count || inode->i_dirt || inode->i_lock)
 			return 0;
@@ -220,15 +220,15 @@ int fs_may_mount(dev_t dev)
 	return 1;
 }
 
-/* ÅĞ¶ÏÊÇ·ñ¿ÉÒÔĞ¶ÔØ */
+/* åˆ¤æ–­æ˜¯å¦å¯ä»¥å¸è½½ */
 int fs_may_umount(dev_t dev, struct inode * mount_root)
 {
 	struct inode * inode;
 	int i;
 
 	inode = first_inode;
-        /* ÅĞ¶ÏÉè±¸¶ÔÓ¦µÄËùÓĞinodeµÄÒıÓÃ¼ÆÊıÊÇ·ñÎª0£¬
-          * Ò²¾ÍÊÇÉè±¸µÄÎÄ¼şÊÇ·ñ»¹±»ÓÃµ½ 
+        /* åˆ¤æ–­è®¾å¤‡å¯¹åº”çš„æ‰€æœ‰inodeçš„å¼•ç”¨è®¡æ•°æ˜¯å¦ä¸º0ï¼Œ
+          * ä¹Ÿå°±æ˜¯è®¾å¤‡çš„æ–‡ä»¶æ˜¯å¦è¿˜è¢«ç”¨åˆ° 
           */
 	for (i=0 ; i < nr_inodes ; i++, inode = inode->i_next) {
 		if (inode->i_dev != dev || !inode->i_count)
@@ -240,7 +240,7 @@ int fs_may_umount(dev_t dev, struct inode * mount_root)
 	return 1;
 }
 
-/* ÅĞ¶Ï³¬¼¶¿éÊÇ·ñ¿ÉÒÔÖØĞÂ¹ÒÔØ */
+/* åˆ¤æ–­è¶…çº§å—æ˜¯å¦å¯ä»¥é‡æ–°æŒ‚è½½ */
 int fs_may_remount_ro(dev_t dev)
 {
 	struct file * file;
@@ -251,14 +251,14 @@ int fs_may_remount_ro(dev_t dev)
 		if (!file->f_count || !file->f_inode ||
 		    file->f_inode->i_dev != dev)
 			continue;
-                /* ÅĞ¶ÏÉè±¸¶ÔÓ¦µÄÎÄ¼şÊÇ·ñÕı³£ */
+                /* åˆ¤æ–­è®¾å¤‡å¯¹åº”çš„æ–‡ä»¶æ˜¯å¦æ­£å¸¸ */
 		if (S_ISREG(file->f_inode->i_mode) && (file->f_mode & 2))
 			return 0;
 	}
 	return 1;
 }
 
-/* ½ö½öÊÇ½«inodeĞ´µ½¸ßËÙ»º³å */
+/* ä»…ä»…æ˜¯å°†inodeå†™åˆ°é«˜é€Ÿç¼“å†² */
 static void write_inode(struct inode * inode)
 {
 	if (!inode->i_dirt)
@@ -275,7 +275,7 @@ static void write_inode(struct inode * inode)
 	unlock_inode(inode);
 }
 
-/* ½«´ËÊ±inodeÖĞ¼ÇÂ¼µÄdev£¬block£¬sizeµÄ¿éÖĞÊı¾İ¶ÁÈ¡µ½¸ßËÙ»º³å */
+/* å°†æ­¤æ—¶inodeä¸­è®°å½•çš„devï¼Œblockï¼Œsizeçš„å—ä¸­æ•°æ®è¯»å–åˆ°é«˜é€Ÿç¼“å†² */
 static void read_inode(struct inode * inode)
 {
 	lock_inode(inode);
@@ -292,8 +292,8 @@ static void read_inode(struct inode * inode)
  * NFS uses this to get the authentication correct.  -- jrs
  */
 
-/* µ±ÎÄ¼ş±»ĞŞ¸ÄÊ±£¬ĞèÒªÍ¨ÖªÒ»ÏÂ×Ô¼º±»¸ü¸ÄÁË,ÔÚext,ext2µ±ÖĞnotify_change
- * º¯Êı¶¼ÎªNULL£¬Ö»ÓĞÔÚNFSµ±ÖĞ²Å»á·¢ÆğÍ¨Öª
+/* å½“æ–‡ä»¶è¢«ä¿®æ”¹æ—¶ï¼Œéœ€è¦é€šçŸ¥ä¸€ä¸‹è‡ªå·±è¢«æ›´æ”¹äº†,åœ¨ext,ext2å½“ä¸­notify_change
+ * å‡½æ•°éƒ½ä¸ºNULLï¼Œåªæœ‰åœ¨NFSå½“ä¸­æ‰ä¼šå‘èµ·é€šçŸ¥
  */
 int notify_change(int flags, struct inode * inode)
 {
@@ -314,7 +314,7 @@ int notify_change(int flags, struct inode * inode)
  * you could still transfer files to/from the filesystem)
  */
 
-/* ÊµÏÖÎÄ¼şµÄÊı¾İ¿éºÅµ½ÎïÀíÉè±¸µÄÂß¼­¿éºÅµÄÓ³Éä
+/* å®ç°æ–‡ä»¶çš„æ•°æ®å—å·åˆ°ç‰©ç†è®¾å¤‡çš„é€»è¾‘å—å·çš„æ˜ å°„
  */
 int bmap(struct inode * inode, int block)
 {
@@ -334,7 +334,7 @@ void invalidate_inodes(dev_t dev)
 		next = inode->i_next;		/* clear_inode() changes the queues.. */
 		if (inode->i_dev != dev)
 			continue;
-		/* Èç¹ûinodeÈÔÔÚÊ¹ÓÃµ±ÖĞ£¬Ôò²»×ö´¦Àí £¬×¢ÒâÏÂÃæµÄprintk´òÓ¡ */
+		/* å¦‚æœinodeä»åœ¨ä½¿ç”¨å½“ä¸­ï¼Œåˆ™ä¸åšå¤„ç† ï¼Œæ³¨æ„ä¸‹é¢çš„printkæ‰“å° */
 		if (inode->i_count || inode->i_dirt || inode->i_lock) {
 			printk("VFS: inode busy on removed device %d/%d\n", MAJOR(dev), MINOR(dev));
 			continue;
@@ -343,7 +343,7 @@ void invalidate_inodes(dev_t dev)
 	}
 }
 
-/* Í¬²½¸ßËÙ»º³åÖĞÉè±¸devµÄËùÓĞinode*/
+/* åŒæ­¥é«˜é€Ÿç¼“å†²ä¸­è®¾å¤‡devçš„æ‰€æœ‰inode*/
 void sync_inodes(dev_t dev)
 {
 	int i;
@@ -359,7 +359,7 @@ void sync_inodes(dev_t dev)
 	}
 }
 
-/* Èç¹û³É¹¦ÔòÔö¼ÓÒ»¸ö¿ÕÏĞµÄinode */
+/* å¦‚æœæˆåŠŸåˆ™å¢åŠ ä¸€ä¸ªç©ºé—²çš„inode */
 void iput(struct inode * inode)
 {
 	if (!inode)
@@ -372,8 +372,8 @@ void iput(struct inode * inode)
 					inode->i_ino, inode->i_mode);
 		return;
 	}
-	/* Èç¹ûÊÇ¹ÜµÀÎÄ¼ş£¬ÔòÖ»ÄÜ´ÓÒ»±ß¶Á£¬ÁíÒ»±ßĞ´£¬
-	 * µ±Ğ´Íê³ÉÖ®ºó¾ÍÓ¦¸Ã¿ªÊ¼»½ĞÑµÈ´ı¶ÁµÄ½ø³Ì
+	/* å¦‚æœæ˜¯ç®¡é“æ–‡ä»¶ï¼Œåˆ™åªèƒ½ä»ä¸€è¾¹è¯»ï¼Œå¦ä¸€è¾¹å†™ï¼Œ
+	 * å½“å†™å®Œæˆä¹‹åå°±åº”è¯¥å¼€å§‹å”¤é†’ç­‰å¾…è¯»çš„è¿›ç¨‹
 	 */
 	if (inode->i_pipe)
 		wake_up_interruptible(&PIPE_WAIT(*inode));
@@ -382,7 +382,7 @@ repeat:
 		inode->i_count--;
 		return;
 	}
-	/* »½ĞÑµÈ´ıÊ¹ÓÃinode½ø³Ì
+	/* å”¤é†’ç­‰å¾…ä½¿ç”¨inodeè¿›ç¨‹
 	 */
 	wake_up(&inode_wait);
 	if (inode->i_pipe) {
@@ -405,22 +405,22 @@ repeat:
 	return;
 }
 
-/* ´Ó¿ÕÏĞÁ´±íÖĞ»ñÈ¡Ò»¸ö¿ÕÏĞinode */
+/* ä»ç©ºé—²é“¾è¡¨ä¸­è·å–ä¸€ä¸ªç©ºé—²inode */
 struct inode * get_empty_inode(void)
 {
 	struct inode * inode, * best;
 	int i;
-	/*Èç¹û¿ÕÏĞinodeÉÙÓÚÒÑÓĞinodeµÄ1/4£¬Ôò»áÔö¼Óinode*/
+	/*å¦‚æœç©ºé—²inodeå°‘äºå·²æœ‰inodeçš„1/4ï¼Œåˆ™ä¼šå¢åŠ inode*/
 	if (nr_inodes < NR_INODE && nr_free_inodes < (nr_inodes >> 2))
 		grow_inodes();
 repeat:
 	inode = first_inode;
 	best = NULL;
 	for (i = 0; i<nr_inodes; inode = inode->i_next, i++) {
-		if (!inode->i_count) { /*Ê×ÏÈinodeÃ»ÓĞ±»ÓÃµ½*/
+		if (!inode->i_count) { /*é¦–å…ˆinodeæ²¡æœ‰è¢«ç”¨åˆ°*/
 			if (!best)
 				best = inode;
-			/*ÕÒµ½²»ÊÇdirt,lockµÄ½Úµã*/
+			/*æ‰¾åˆ°ä¸æ˜¯dirt,lockçš„èŠ‚ç‚¹*/
 			if (!inode->i_dirt && !inode->i_lock) {
 				best = inode;
 				break;
@@ -433,13 +433,13 @@ repeat:
 			goto repeat;
 		}
 	inode = best;
-	/* ÔËĞĞµ½Õâ¸öµØ·½£¬ÔòÕÒµ½µÄºÏÊÊµÄinodeÒÑ¾­´æ·ÅÔÚinodeµ±ÖĞ£¬
-	 * Èç¹ûinodeÎªNULL£¬Ôò±íÊ¾»¹Ã»ÓĞÕÒµ½
+	/* è¿è¡Œåˆ°è¿™ä¸ªåœ°æ–¹ï¼Œåˆ™æ‰¾åˆ°çš„åˆé€‚çš„inodeå·²ç»å­˜æ”¾åœ¨inodeå½“ä¸­ï¼Œ
+	 * å¦‚æœinodeä¸ºNULLï¼Œåˆ™è¡¨ç¤ºè¿˜æ²¡æœ‰æ‰¾åˆ°
 	 */ 
 	if (!inode) {
 		printk("VFS: No free inodes - contact Linus\n");
-		/* ÉêÇëinodeÊ±£¬Èç¹û²»ÄÜÂú×ãÒªÇó£¬ÔòÈÃ½ø³ÌµÈ´ı£¬
-		 * ÔÚiputµÄÊ±ºò»½ĞÑĞèÒªinodeµÄ½ø³Ì
+		/* ç”³è¯·inodeæ—¶ï¼Œå¦‚æœä¸èƒ½æ»¡è¶³è¦æ±‚ï¼Œåˆ™è®©è¿›ç¨‹ç­‰å¾…ï¼Œ
+		 * åœ¨iputçš„æ—¶å€™å”¤é†’éœ€è¦inodeçš„è¿›ç¨‹
 		 */
 		sleep_on(&inode_wait);
 		goto repeat;
@@ -455,7 +455,7 @@ repeat:
 	if (inode->i_count)
 		goto repeat;
 	clear_inode(inode);
-	/* ³õÊ¼»¯¿ÕÏĞ½ÚµãµÄÊı¾İ
+	/* åˆå§‹åŒ–ç©ºé—²èŠ‚ç‚¹çš„æ•°æ®
 	 */ 
 	inode->i_count = 1;
 	inode->i_nlink = 1;
@@ -468,7 +468,7 @@ repeat:
 	return inode;
 }
 
-/* »ñÈ¡ÃüÃû¹ÜµÀµÄinode
+/* è·å–å‘½åç®¡é“çš„inode
  */
 struct inode * get_pipe_inode(void)
 {
@@ -477,18 +477,18 @@ struct inode * get_pipe_inode(void)
 
 	if (!(inode = get_empty_inode()))
 		return NULL;
-	/* ¸øÃüÃû¹ÜµÀ·ÖÅäÒ»Ò³µÄÊı¾İ£¬´ÓÕâÀï¿ÉÒÔ¿´³öÃüÃû¹ÜµÀ²»ÊÊºÏ´óÁ¿Êı¾İ´«Êä*/
+	/* ç»™å‘½åç®¡é“åˆ†é…ä¸€é¡µçš„æ•°æ®ï¼Œä»è¿™é‡Œå¯ä»¥çœ‹å‡ºå‘½åç®¡é“ä¸é€‚åˆå¤§é‡æ•°æ®ä¼ è¾“*/
 	if (!(PIPE_BASE(*inode) = (char*) __get_free_page(GFP_USER))) {
 		iput(inode);
 		return NULL;
 	}
 	inode->i_op = &pipe_inode_operations;
-	/*ÃüÃû¹ÜµÀÊÇÒ»Í·¶Á£¬Ò»Í·Ğ´*/
+	/*å‘½åç®¡é“æ˜¯ä¸€å¤´è¯»ï¼Œä¸€å¤´å†™*/
 	inode->i_count = 2;	/* sum of readers/writers */
 	PIPE_WAIT(*inode) = NULL;
 	PIPE_START(*inode) = PIPE_LEN(*inode) = 0;
 	PIPE_RD_OPENERS(*inode) = PIPE_WR_OPENERS(*inode) = 0;
-        /* ÉèÖÃ¶ÁĞ´ÊıÁ¿Îª1 */
+        /* è®¾ç½®è¯»å†™æ•°é‡ä¸º1 */
 	PIPE_READERS(*inode) = PIPE_WRITERS(*inode) = 1;
 	PIPE_LOCK(*inode) = 0;
 	inode->i_pipe = 1;
@@ -504,9 +504,9 @@ struct inode * iget(struct super_block * sb,int nr)
 	return __iget(sb,nr,1);
 }
 
-/* »ñÈ¡³¬¼¶¿é¶ÔÓ¦i½ÚµãºÅµÄÊı¾İ£¬Èç¹ûÔÚ¸ßËÙ»º³åÖĞ¿ÉÒÔÕÒµ½£¬Ôò·µ»ØÕÒµ½µÄinode£¬
- * Èç¹ûÃ»ÓĞÕÒµ½£¬ÔòÏÈÊÇ»ñÈ¡Ò»¸ö¿ÕµÄinode£¬
- * È»ºó¸ù¾İinodeµ÷ÓÃread_inodeº¯Êı´ÓÓ²ÅÌÖĞ¶ÁÈ¡ext2_inodeµÄÊı¾İ
+/* è·å–è¶…çº§å—å¯¹åº”ièŠ‚ç‚¹å·çš„æ•°æ®ï¼Œå¦‚æœåœ¨é«˜é€Ÿç¼“å†²ä¸­å¯ä»¥æ‰¾åˆ°ï¼Œåˆ™è¿”å›æ‰¾åˆ°çš„inodeï¼Œ
+ * å¦‚æœæ²¡æœ‰æ‰¾åˆ°ï¼Œåˆ™å…ˆæ˜¯è·å–ä¸€ä¸ªç©ºçš„inodeï¼Œ
+ * ç„¶åæ ¹æ®inodeè°ƒç”¨read_inodeå‡½æ•°ä»ç¡¬ç›˜ä¸­è¯»å–ext2_inodeçš„æ•°æ®
  */
 struct inode * __iget(struct super_block * sb, int nr, int crossmntp)
 {
@@ -515,9 +515,9 @@ struct inode * __iget(struct super_block * sb, int nr, int crossmntp)
 	struct inode * inode;
 	struct inode * empty = NULL;
 
-	/* ×¢ÒâÒÔÉÏÊı¾İ¶¼ÊÇÔÚ½ø³ÌµÄÄÚºË¶ÑÕ»ÖĞ£¬
-	 * µ±¶à¸ö½ø³ÌÍ¬Ê±Ö´ĞĞµ½Õâ¶Î´úÂëÊ±,ËüÃÇ¶¼ÊÇ²»Í¬Öµ£¬
-	 * µ«ÊÇupdate_wait²»ÊÇ£¬ËüÊÇÄÚºË¾²Ì¬±äÁ¿
+	/* æ³¨æ„ä»¥ä¸Šæ•°æ®éƒ½æ˜¯åœ¨è¿›ç¨‹çš„å†…æ ¸å †æ ˆä¸­ï¼Œ
+	 * å½“å¤šä¸ªè¿›ç¨‹åŒæ—¶æ‰§è¡Œåˆ°è¿™æ®µä»£ç æ—¶,å®ƒä»¬éƒ½æ˜¯ä¸åŒå€¼ï¼Œ
+	 * ä½†æ˜¯update_waitä¸æ˜¯ï¼Œå®ƒæ˜¯å†…æ ¸é™æ€å˜é‡
 	 */
 	
 	if (!sb)
@@ -529,7 +529,7 @@ repeat:
 			goto found_it;
 	if (!empty) {
 		h->updating++;
-        /* ÒòÎªget_empty_inodeĞèÒª²Ù×÷inodeÁ´±í£¬ËùÒÔ´ËÊ±ĞèÒªÅÅËüĞÔ²Ù×÷ */
+        /* å› ä¸ºget_empty_inodeéœ€è¦æ“ä½œinodeé“¾è¡¨ï¼Œæ‰€ä»¥æ­¤æ—¶éœ€è¦æ’å®ƒæ€§æ“ä½œ */
 		empty = get_empty_inode();
 		if (!--h->updating)
 			wake_up(&update_wait);
@@ -537,7 +537,7 @@ repeat:
 			goto repeat;
 		return (NULL);
 	}
-	/*ÖØĞÂÔö¼ÓÒ»¸öºÍnr£¬s_dev¶ÔÓ¦µÄinode*/
+	/*é‡æ–°å¢åŠ ä¸€ä¸ªå’Œnrï¼Œs_devå¯¹åº”çš„inode*/
 	inode = empty;
 	inode->i_sb = sb;
 	inode->i_dev = sb->s_dev;
@@ -545,10 +545,10 @@ repeat:
 	inode->i_flags = sb->s_flags;
 	put_last_free(inode);
 	insert_inode_hash(inode);
-	/* inode´ËÊ±¾ßÓĞµÄĞÅÏ¢Ö»ÓĞs_dev,nr,s_flags
-	 * read_inode¾ÍÊÇ¸ù¾İÒÔÉÏĞÅÏ¢´Ó´ÅÅÌÖĞ¶ÁÈ¡inode
-	 * ¶ÔÓ¦ÎÄ¼şµÄĞÅÏ¢µ½inodeµÄÊı¾İµ±ÖĞ£¬´ËÊ±»á
-	 * ¸ù¾İÎÄ¼şÀàĞÍÀ´¾ö¶¨inodeÖĞµÄi_op½á¹¹
+	/* inodeæ­¤æ—¶å…·æœ‰çš„ä¿¡æ¯åªæœ‰s_dev,nr,s_flags
+	 * read_inodeå°±æ˜¯æ ¹æ®ä»¥ä¸Šä¿¡æ¯ä»ç£ç›˜ä¸­è¯»å–inode
+	 * å¯¹åº”æ–‡ä»¶çš„ä¿¡æ¯åˆ°inodeçš„æ•°æ®å½“ä¸­ï¼Œæ­¤æ—¶ä¼š
+	 * æ ¹æ®æ–‡ä»¶ç±»å‹æ¥å†³å®šinodeä¸­çš„i_opç»“æ„
 	 */
 	read_inode(inode);
 	goto return_it;
@@ -592,12 +592,12 @@ static void __wait_on_inode(struct inode * inode)
 	add_wait_queue(&inode->i_wait, &wait);
 repeat:
 	current->state = TASK_UNINTERRUPTIBLE;
-	/*Èç¹û¸Ãi½Úµã±»Ëø¶¨£¬ÔòĞèÒªµ÷¶È£¬ÈÃÆäËû½ø³ÌÖ´ĞĞ*/
+	/*å¦‚æœè¯¥ièŠ‚ç‚¹è¢«é”å®šï¼Œåˆ™éœ€è¦è°ƒåº¦ï¼Œè®©å…¶ä»–è¿›ç¨‹æ‰§è¡Œ*/
 	if (inode->i_lock) {
 		schedule();
 		goto repeat;
 	}
-	/*½«×Ô¼º´Ói½ÚµãµÄµÈ´ı¶ÓÁĞÖĞÒÆ³ı*/
+	/*å°†è‡ªå·±ä»ièŠ‚ç‚¹çš„ç­‰å¾…é˜Ÿåˆ—ä¸­ç§»é™¤*/
 	remove_wait_queue(&inode->i_wait, &wait);
 	current->state = TASK_RUNNING;
 }

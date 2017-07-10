@@ -20,13 +20,13 @@
 /* Additionally, we now use locking technique. This prevents race condition  */
 /* in case of paging and multiple read/write on the same pipe. (FGC)         */
 
-/* ´Ó¹ÜµÀµÄ0Í¨µÀÖÐ¶ÁÈ¡Êý¾Ý */
+/* ä»Žç®¡é“çš„0é€šé“ä¸­è¯»å–æ•°æ® */
 static int pipe_read(struct inode * inode, struct file * filp, char * buf, int count)
 {
 	int chars = 0, size = 0, read = 0;
         char *pipebuf;
 
-	/* Èç¹ûÊÇ·Ç×èÈû */
+	/* å¦‚æžœæ˜¯éžé˜»å¡ž */
 	if (filp->f_flags & O_NONBLOCK) {
 		if (PIPE_LOCK(*inode))
 			return -EAGAIN;
@@ -37,7 +37,7 @@ static int pipe_read(struct inode * inode, struct file * filp, char * buf, int c
 				return 0;
 	} else while (PIPE_EMPTY(*inode) || PIPE_LOCK(*inode)) {
 		if (PIPE_EMPTY(*inode)) {
-			/* ÊÇ·ñÓÐÈËÔÚÐ´ */
+			/* æ˜¯å¦æœ‰äººåœ¨å†™ */
 			if (!PIPE_WRITERS(*inode))
 				return 0;
 		}
@@ -45,7 +45,7 @@ static int pipe_read(struct inode * inode, struct file * filp, char * buf, int c
 			return -ERESTARTSYS;
 		interruptible_sleep_on(&PIPE_WAIT(*inode));
 	}
-	/* Ëø×¡¹ÜµÀ */
+	/* é”ä½ç®¡é“ */
 	PIPE_LOCK(*inode)++;
 	while (count>0 && (size = PIPE_SIZE(*inode))) {
 		chars = PIPE_MAX_RCHUNK(*inode);
@@ -62,7 +62,7 @@ static int pipe_read(struct inode * inode, struct file * filp, char * buf, int c
 		memcpy_tofs(buf, pipebuf, chars );
 		buf += chars;
 	}
-	/* ½â³ýËø¶¨ */
+	/* è§£é™¤é”å®š */
 	PIPE_LOCK(*inode)--;
 	wake_up_interruptible(&PIPE_WAIT(*inode));
 	if (read)
@@ -72,7 +72,7 @@ static int pipe_read(struct inode * inode, struct file * filp, char * buf, int c
 	return 0;
 }
 	
-/* ½«Êý¾ÝÐ´Èë¹ÜµÀµÄ1Í¨µÀµ±ÖÐ */
+/* å°†æ•°æ®å†™å…¥ç®¡é“çš„1é€šé“å½“ä¸­ */
 static int pipe_write(struct inode * inode, struct file * filp, char * buf, int count)
 {
 	int chars = 0, free = 0, written = 0;
@@ -323,7 +323,7 @@ struct file_operations rdwr_fifo_fops = {
 	NULL
 };
 
-/* 0Í¨µÀµÄ¶ÁÎÄ¼þ²Ù×÷¼¯ºÏ */
+/* 0é€šé“çš„è¯»æ–‡ä»¶æ“ä½œé›†åˆ */
 struct file_operations read_pipe_fops = {
 	pipe_lseek,
 	pipe_read,
@@ -337,7 +337,7 @@ struct file_operations read_pipe_fops = {
 	NULL
 };
 
-/* 1Í¨µÀµÄÐ´ÎÄ¼þ²Ù×÷¼¯ */
+/* 1é€šé“çš„å†™æ–‡ä»¶æ“ä½œé›† */
 struct file_operations write_pipe_fops = {
 	pipe_lseek,
 	bad_pipe_rw,
@@ -351,8 +351,8 @@ struct file_operations write_pipe_fops = {
 	NULL
 };
 
-/* ¹ÜµÀÎÄ¼þ²Ù×÷µÄº¯Êý¼¯ºÏ£¬Õâ¸öÊÇ¹ÜµÀ¶ÔÓ¦µÄinodeËùÊôµÄf_op
-  * ¶ø0£¬1Í¨µÀ¶¼¶ÔÓ¦µÄÊÇµ¥¶ÀµÄ¶ÁÐ´ÎÄ¼þ²Ù×÷º¯Êý¼¯
+/* ç®¡é“æ–‡ä»¶æ“ä½œçš„å‡½æ•°é›†åˆï¼Œè¿™ä¸ªæ˜¯ç®¡é“å¯¹åº”çš„inodeæ‰€å±žçš„f_op
+  * è€Œ0ï¼Œ1é€šé“éƒ½å¯¹åº”çš„æ˜¯å•ç‹¬çš„è¯»å†™æ–‡ä»¶æ“ä½œå‡½æ•°é›†
   */
 struct file_operations rdwr_pipe_fops = {
 	pipe_lseek,
@@ -367,7 +367,7 @@ struct file_operations rdwr_pipe_fops = {
 	NULL
 };
 
-/* ¹ÜµÀÎÄ¼þµÄinode²Ù×÷º¯Êý¼¯ */
+/* ç®¡é“æ–‡ä»¶çš„inodeæ“ä½œå‡½æ•°é›† */
 struct inode_operations pipe_inode_operations = {
 	&rdwr_pipe_fops,
 	NULL,			/* create */
@@ -386,9 +386,9 @@ struct inode_operations pipe_inode_operations = {
 	NULL			/* permission */
 };
 
-/*  ´´½¨¹ÜµÀÏµÍ³µ÷ÓÃ£¬
-  * fildesÎªÊä³ö²ÎÊý£¬±íÊ¾Á½¸öÎÄ¼þÃèÊö·û 
-  *  0Í¨µÀ¶Á£¬1Í¨µÀÐ´  
+/*  åˆ›å»ºç®¡é“ç³»ç»Ÿè°ƒç”¨ï¼Œ
+  * fildesä¸ºè¾“å‡ºå‚æ•°ï¼Œè¡¨ç¤ºä¸¤ä¸ªæ–‡ä»¶æè¿°ç¬¦ 
+  *  0é€šé“è¯»ï¼Œ1é€šé“å†™  
   */
 asmlinkage int sys_pipe(unsigned long * fildes)
 {
@@ -420,7 +420,7 @@ asmlinkage int sys_pipe(unsigned long * fildes)
 		f[1]->f_count--;
 		return -EMFILE;
 	}
-	/* »ñÈ¡¹ÜµÀ¶ÔÓ¦µÄinode */
+	/* èŽ·å–ç®¡é“å¯¹åº”çš„inode */
 	if (!(inode=get_pipe_inode())) {
 		current->filp[fd[0]] = NULL;
 		current->filp[fd[1]] = NULL;
@@ -428,8 +428,8 @@ asmlinkage int sys_pipe(unsigned long * fildes)
 		f[1]->f_count--;
 		return -ENFILE;
 	}
-	/* Á½¸öÎÄ¼þÃèÊö·û¶ÔÓ¦Í¬Ò»¸öinode£¬
-	  * 0Í¨µÀÊÇ¶Á£¬1Í¨µÀÊÇÐ´
+	/* ä¸¤ä¸ªæ–‡ä»¶æè¿°ç¬¦å¯¹åº”åŒä¸€ä¸ªinodeï¼Œ
+	  * 0é€šé“æ˜¯è¯»ï¼Œ1é€šé“æ˜¯å†™
 	  */
 	f[0]->f_inode = f[1]->f_inode = inode;
 	f[0]->f_pos = f[1]->f_pos = 0;

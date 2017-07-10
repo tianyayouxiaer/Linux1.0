@@ -240,7 +240,7 @@ extern int get_tty_queue(struct tty_queue * queue);
  * 						- TYT, 9/14/92
  */
 
-/* ¿ØÖÆÖÕ¶Ë½á¹¹ */
+/* æ§åˆ¶ç»ˆç«¯ç»“æ„ */
 struct tty_struct {
 	struct termios *termios;
 	int pgrp;

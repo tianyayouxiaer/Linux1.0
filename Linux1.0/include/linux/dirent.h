@@ -4,7 +4,7 @@
 #include <linux/limits.h>
 
 
-/* 在内存当中的目录结构，会和不同文件系统的目录结构进行转换 */
+/* 鍦ㄥ唴瀛樺綋涓殑鐩綍缁撴瀯锛屼細鍜屼笉鍚屾枃浠剁郴缁熺殑鐩綍缁撴瀯杩涜杞崲 */
 struct dirent {
 	long		d_ino;
 	off_t		d_off;

@@ -252,7 +252,7 @@ void ctrl_alt_del(void)
  * 100% compatible with POSIX w/ Saved ID's. 
  */
 
-/* ÉèÖÃÊµ¼Ê£¬ÓĞĞ§ÓÃ»§×éid */
+/* è®¾ç½®å®é™…ï¼Œæœ‰æ•ˆç”¨æˆ·ç»„id */
 asmlinkage int sys_setregid(gid_t rgid, gid_t egid)
 {
 	int old_rgid = current->gid;
@@ -283,7 +283,7 @@ asmlinkage int sys_setregid(gid_t rgid, gid_t egid)
  * setgid() is implemeneted like SysV w/ SAVED_IDS 
  */
 
-/* ÉèÖÃ×éid */
+/* è®¾ç½®ç»„id */
 asmlinkage int sys_setgid(gid_t gid)
 {
 	if (suser())
@@ -400,8 +400,8 @@ asmlinkage int sys_times(struct tms * tbuf)
 	return jiffies;
 }
 
-/* µ÷Õû½ø³Ì¶ÑµÄ´óĞ¡
-  * ½ø³ÌµØÖ·¿Õ¼äÎª ´úÂë¶Î+Êı¾İ¶Î+¶Ñ
+/* è°ƒæ•´è¿›ç¨‹å †çš„å¤§å°
+  * è¿›ç¨‹åœ°å€ç©ºé—´ä¸º ä»£ç æ®µ+æ•°æ®æ®µ+å †
   */
 asmlinkage int sys_brk(unsigned long brk)
 {
@@ -409,12 +409,12 @@ asmlinkage int sys_brk(unsigned long brk)
 	unsigned long rlim;
 	unsigned long newbrk, oldbrk;
 
-        /* Èç¹û¶ÑµÄµØÖ·Ğ¡ÓÚ´úÂë¶ÎµÄ½áÊøÎ»ÖÃ */
+        /* å¦‚æœå †çš„åœ°å€å°äºä»£ç æ®µçš„ç»“æŸä½ç½® */
 	if (brk < current->end_code)
 		return current->brk;
 	newbrk = PAGE_ALIGN(brk);
 	oldbrk = PAGE_ALIGN(current->brk);
-	/*Èç¹ûÏàÍ¬Ôò²»×öÈÎºÎ´¦Àí£¬×¢ÒâÕâÀïÔÚ±È½ÏÖ®Ç°½øĞĞÁËÒ³¶ÔÆë²Ù×÷ */
+	/*å¦‚æœç›¸åŒåˆ™ä¸åšä»»ä½•å¤„ç†ï¼Œæ³¨æ„è¿™é‡Œåœ¨æ¯”è¾ƒä¹‹å‰è¿›è¡Œäº†é¡µå¯¹é½æ“ä½œ */
 	if (oldbrk == newbrk)
 		return current->brk = brk;
 
@@ -422,10 +422,10 @@ asmlinkage int sys_brk(unsigned long brk)
 	 * Always allow shrinking brk
 	 */
 
-	/* Èç¹ûÊÇÊÕËõbrk´óĞ¡Ôò½«ÊÕËõµÄ²¿·Ö·´Ó³Éä
+	/* å¦‚æœæ˜¯æ”¶ç¼©brkå¤§å°åˆ™å°†æ”¶ç¼©çš„éƒ¨åˆ†åæ˜ å°„
 	  */
 	if (brk <= current->brk) {
-                /* ÉèÖÃµ±Ç°¶ÑµÃÖ¸ÕëÎ»ÖÃ */
+                /* è®¾ç½®å½“å‰å †å¾—æŒ‡é’ˆä½ç½® */
 		current->brk = brk;
 		do_munmap(newbrk, oldbrk-newbrk);
 		return brk;
@@ -437,9 +437,9 @@ asmlinkage int sys_brk(unsigned long brk)
 	if (rlim >= RLIM_INFINITY)
 		rlim = ~0;
 
-        /* ÔÚ½ø³ÌÖĞ½ø³ÌµÄ¶ÑºÍÕ»·¶Î§ÊÇÓëÏŞÖÆµÄ£¬
-          * ¶ÑµÄµØÖ·ÊÇ´ÓĞ¡µ½´óµÄ£¬Õ»µÄµØÖ·´Ó´óµ½Ğ¡ 
-          * Èç¹û²»ÔÚºÏÀí·¶Î§Ôò²»×ö´¦Àí  
+        /* åœ¨è¿›ç¨‹ä¸­è¿›ç¨‹çš„å †å’Œæ ˆèŒƒå›´æ˜¯ä¸é™åˆ¶çš„ï¼Œ
+          * å †çš„åœ°å€æ˜¯ä»å°åˆ°å¤§çš„ï¼Œæ ˆçš„åœ°å€ä»å¤§åˆ°å° 
+          * å¦‚æœä¸åœ¨åˆç†èŒƒå›´åˆ™ä¸åšå¤„ç†  
           */
 	if (brk - current->end_code > rlim || brk >= current->start_stack - 16384)
 		return current->brk;
@@ -484,12 +484,12 @@ asmlinkage int sys_brk(unsigned long brk)
  * LBT 04.03.94
  */
 
-/* ÉèÖÃ½ø³ÌµÄ½ø³Ì×éid */
+/* è®¾ç½®è¿›ç¨‹çš„è¿›ç¨‹ç»„id */
 asmlinkage int sys_setpgid(pid_t pid, pid_t pgid)
 {
 	struct task_struct * p;
 
-	/* Èç¹ûÊÇ0£¬ÔòÉèÖÃµ±Ç°½ø³Ì*/
+	/* å¦‚æœæ˜¯0ï¼Œåˆ™è®¾ç½®å½“å‰è¿›ç¨‹*/
 	if (!pid)
 		pid = current->pid;
 	if (!pgid)
@@ -503,23 +503,23 @@ asmlinkage int sys_setpgid(pid_t pid, pid_t pgid)
 	return -ESRCH;
 
 found_task:
-	/* Èç¹û½ø³ÌµÄ¸¸½ø³Ì»òÕß´´½¨pµÄ½ø³ÌÊÇµ±Ç°½ø³Ì */
+	/* å¦‚æœè¿›ç¨‹çš„çˆ¶è¿›ç¨‹æˆ–è€…åˆ›å»ºpçš„è¿›ç¨‹æ˜¯å½“å‰è¿›ç¨‹ */
 	if (p->p_pptr == current || p->p_opptr == current) {
-		/* ÕÒµ½µÄ½ø³Ì±ØĞëºÍµ±Ç°µÄ½ø³ÌÔÚÍ¬Ò»¸ö»á»°µ±ÖĞ */
+		/* æ‰¾åˆ°çš„è¿›ç¨‹å¿…é¡»å’Œå½“å‰çš„è¿›ç¨‹åœ¨åŒä¸€ä¸ªä¼šè¯å½“ä¸­ */
 		if (p->session != current->session)
 			return -EPERM;
-        /* Èç¹ûÊÇÖ´ĞĞÁËexecve×åº¯ÊıµÄ½ø³ÌÔò²»Ğí¿É */
+        /* å¦‚æœæ˜¯æ‰§è¡Œäº†execveæ—å‡½æ•°çš„è¿›ç¨‹åˆ™ä¸è®¸å¯ */
 		if (p->did_exec)
 			return -EACCES;
 	} else if (p != current)
 		return -ESRCH;
-	/* Èç¹ûÊÇ½ø³Ì×éµÄÁìµ¼½ø³Ì£¬Ôò²»Ğí¿É£¬Ò²¾ÍÊÇ½ø³Ì×éµÄÁìµ¼½ø³ÌÊÇ²»¿ÉÒÔ¸ü¸Ä×éºÅµÄ */
+	/* å¦‚æœæ˜¯è¿›ç¨‹ç»„çš„é¢†å¯¼è¿›ç¨‹ï¼Œåˆ™ä¸è®¸å¯ï¼Œä¹Ÿå°±æ˜¯è¿›ç¨‹ç»„çš„é¢†å¯¼è¿›ç¨‹æ˜¯ä¸å¯ä»¥æ›´æ”¹ç»„å·çš„ */
 	if (p->leader)
 		return -EPERM;
 	if (pgid != pid) {
 		struct task_struct * tmp;
 		for_each_task (tmp) {
-            /* ´æÔÚ½ø³Ì×éºÅÎªpgidÇÒºÍµ±Ç°½ø³ÌÔÚÍ¬Ò»¸ö»á»°ÆÚµÄ½ø³Ì */
+            /* å­˜åœ¨è¿›ç¨‹ç»„å·ä¸ºpgidä¸”å’Œå½“å‰è¿›ç¨‹åœ¨åŒä¸€ä¸ªä¼šè¯æœŸçš„è¿›ç¨‹ */
 			if (tmp->pgrp == pgid &&
 			 tmp->session == current->session)
 				goto ok_pgid;
@@ -532,23 +532,23 @@ ok_pgid:
 	return 0;
 }
 
-/* »ñÈ¡½ø³ÌµÄ×éid */
+/* è·å–è¿›ç¨‹çš„ç»„id */
 asmlinkage int sys_getpgid(pid_t pid)
 {
 	struct task_struct * p;
 
-	/* Èç¹ûÊÇ0£¬Ôò·µ»Øµ±Ç°½ø³ÌµÄ×éid */
+	/* å¦‚æœæ˜¯0ï¼Œåˆ™è¿”å›å½“å‰è¿›ç¨‹çš„ç»„id */
 	if (!pid)
 		return current->pgrp;
 	for_each_task(p) {
 		if (p->pid == pid)
 			return p->pgrp;
 	}
-	/* ·ñÔò·µ»ØÃ»ÓĞÕâÑùµÄ½ø³Ì*/
+	/* å¦åˆ™è¿”å›æ²¡æœ‰è¿™æ ·çš„è¿›ç¨‹*/
 	return -ESRCH;
 }
 
-/* »ñÈ¡µ±Ç°½ø³ÌµÄ×éid */
+/* è·å–å½“å‰è¿›ç¨‹çš„ç»„id */
 asmlinkage int sys_getpgrp(void)
 {
 	return current->pgrp;
@@ -556,16 +556,16 @@ asmlinkage int sys_getpgrp(void)
 
 asmlinkage int sys_setsid(void)
 {
-    /* Èç¹ûµ±Ç°½ø³ÌÊÇ½ø³Ì×éµÄÁìµ¼½ø³Ì£¬Ôò²»Ğí¿É£¬
-      * ´´½¨»á»°µÄ½ø³Ì±ØĞë³ÉÎªĞÂ½ø³Ì×éµÄÁìµ¼½ø³Ì
+    /* å¦‚æœå½“å‰è¿›ç¨‹æ˜¯è¿›ç¨‹ç»„çš„é¢†å¯¼è¿›ç¨‹ï¼Œåˆ™ä¸è®¸å¯ï¼Œ
+      * åˆ›å»ºä¼šè¯çš„è¿›ç¨‹å¿…é¡»æˆä¸ºæ–°è¿›ç¨‹ç»„çš„é¢†å¯¼è¿›ç¨‹
       */
 	if (current->leader)
 		return -EPERM;
-    /* ÉèÖÃµ±Ç°½ø³ÌÎª×éµÄÁìµ¼½ø³Ì */
+    /* è®¾ç½®å½“å‰è¿›ç¨‹ä¸ºç»„çš„é¢†å¯¼è¿›ç¨‹ */
 	current->leader = 1;
-    /* Í¬Ê±ÉèÖÃĞÂµÄ»á»°idºÍĞÂµÄ½ø³Ì×éidÎªµ±Ç°½ø³ÌµÄid */
+    /* åŒæ—¶è®¾ç½®æ–°çš„ä¼šè¯idå’Œæ–°çš„è¿›ç¨‹ç»„idä¸ºå½“å‰è¿›ç¨‹çš„id */
 	current->session = current->pgrp = current->pid;
-    /* ÉèÖÃÃ»ÓĞ¿ØÖÆÖÕ¶Ë */
+    /* è®¾ç½®æ²¡æœ‰æ§åˆ¶ç»ˆç«¯ */
 	current->tty = -1;
 	return current->pgrp;
 }
@@ -574,13 +574,13 @@ asmlinkage int sys_setsid(void)
  * Supplementary group ID's
  */
 
-/* »ñÈ¡groupsÊı×éÖĞµÄÖµ£¬²¢ÉèÖÃµ½grouplistµ±ÖĞ */
+/* è·å–groupsæ•°ç»„ä¸­çš„å€¼ï¼Œå¹¶è®¾ç½®åˆ°grouplistå½“ä¸­ */
 asmlinkage int sys_getgroups(int gidsetsize, gid_t *grouplist)
 {
 	int i;
 
 	if (gidsetsize) {
-        /* Èç¹û´íÎó£¬Ôò·µ»ØÊ§°Ü */
+        /* å¦‚æœé”™è¯¯ï¼Œåˆ™è¿”å›å¤±è´¥ */
 		i = verify_area(VERIFY_WRITE, grouplist, sizeof(gid_t) * gidsetsize);
 		if (i)
 			return i;
@@ -596,7 +596,7 @@ asmlinkage int sys_getgroups(int gidsetsize, gid_t *grouplist)
 	return(i);
 }
 
-/* ½«grouplistÖĞµÄÖµÉèÖÃµ½groupsµ±ÖĞ */
+/* å°†grouplistä¸­çš„å€¼è®¾ç½®åˆ°groupså½“ä¸­ */
 asmlinkage int sys_setgroups(int gidsetsize, gid_t *grouplist)
 {
 	int	i;
@@ -613,7 +613,7 @@ asmlinkage int sys_setgroups(int gidsetsize, gid_t *grouplist)
 	return 0;
 }
 
-/* ÅĞ¶Ïµ±Ç°½ø³ÌÊÇ·ñÔÚgrp×éµ±ÖĞ */
+/* åˆ¤æ–­å½“å‰è¿›ç¨‹æ˜¯å¦åœ¨grpç»„å½“ä¸­ */
 int in_group_p(gid_t grp)
 {
 	int	i;
@@ -642,7 +642,7 @@ asmlinkage int sys_newuname(struct new_utsname * name)
 	return error;
 }
 
-/* »ñÈ¡µ±Ç°ÏµÍ³µÄÃû³Æ£¬°æ±¾ºÍÖ÷»úµÈĞÅÏ¢ */
+/* è·å–å½“å‰ç³»ç»Ÿçš„åç§°ï¼Œç‰ˆæœ¬å’Œä¸»æœºç­‰ä¿¡æ¯ */
 asmlinkage int sys_uname(struct old_utsname * name)
 {
 	int error;
@@ -689,7 +689,7 @@ asmlinkage int sys_olduname(struct oldold_utsname * name)
  * Only sethostname; gethostname can be implemented by calling uname()
  */
 
-/* ÉèÖÃÖ÷»úÃû³Æ */
+/* è®¾ç½®ä¸»æœºåç§° */
 asmlinkage int sys_sethostname(char *name, int len)
 {
 	int	i;
@@ -727,7 +727,7 @@ asmlinkage int sys_setdomainname(char *name, int len)
 }
 
 
-/* »ñÈ¡µ±Ç°½ø³ÌÖĞ×ÊÔ´Ë÷ÒıÎªresourceÏµÍ³×ÊÔ´ÉÏÏŞ */
+/* è·å–å½“å‰è¿›ç¨‹ä¸­èµ„æºç´¢å¼•ä¸ºresourceç³»ç»Ÿèµ„æºä¸Šé™ */
 asmlinkage int sys_getrlimit(unsigned int resource, struct rlimit *rlim)
 {
 	int error;
@@ -744,7 +744,7 @@ asmlinkage int sys_getrlimit(unsigned int resource, struct rlimit *rlim)
 	return 0;	
 }
 
-/* ÉèÖÃµ±Ç°½ø³ÌµÄÏµÍ³×ÊÔ´ */
+/* è®¾ç½®å½“å‰è¿›ç¨‹çš„ç³»ç»Ÿèµ„æº */
 asmlinkage int sys_setrlimit(unsigned int resource, struct rlimit *rlim)
 {
 	struct rlimit new_rlim, *old_rlim;
@@ -771,7 +771,7 @@ asmlinkage int sys_setrlimit(unsigned int resource, struct rlimit *rlim)
  * measuring them yet).
  */
 
-/* »ñÈ¡ÏµÍ³×ÊÔ´Ê¹ÓÃÇé¿ö */
+/* è·å–ç³»ç»Ÿèµ„æºä½¿ç”¨æƒ…å†µ */
 int getrusage(struct task_struct *p, int who, struct rusage *ru)
 {
 	int error;
@@ -816,18 +816,18 @@ int getrusage(struct task_struct *p, int who, struct rusage *ru)
 	return 0;
 }
 
-/* »ñÈ¡ÏµÍ³ÖĞ½ø³ÌµÄ×ÊÔ´Ê¹ÓÃÇé¿ö */
+/* è·å–ç³»ç»Ÿä¸­è¿›ç¨‹çš„èµ„æºä½¿ç”¨æƒ…å†µ */
 asmlinkage int sys_getrusage(int who, struct rusage *ru)
 {
-    /* RUSAGE_SELF±íÊ¾»ñÈ¡µ±Ç°½ø³ÌµÄ×ÊÔ´Ê¹ÓÃÇé¿ö
-      * RUSAGE_CHILDREN±íÊ¾»ñÈ¡×Ó½ø³ÌµÄ×ÊÔ´Ê¹ÓÃÇé¿ö 
+    /* RUSAGE_SELFè¡¨ç¤ºè·å–å½“å‰è¿›ç¨‹çš„èµ„æºä½¿ç”¨æƒ…å†µ
+      * RUSAGE_CHILDRENè¡¨ç¤ºè·å–å­è¿›ç¨‹çš„èµ„æºä½¿ç”¨æƒ…å†µ 
       */
 	if (who != RUSAGE_SELF && who != RUSAGE_CHILDREN)
 		return -EINVAL;
 	return getrusage(current, who, ru);
 }
 
-/* ÉèÖÃ½ø³ÌĞÂ´´½¨ÎÄ¼şµÄÄ¬ÈÏÈ¨ÏŞ */
+/* è®¾ç½®è¿›ç¨‹æ–°åˆ›å»ºæ–‡ä»¶çš„é»˜è®¤æƒé™ */
 asmlinkage int sys_umask(int mask)
 {
 	int old = current->umask;

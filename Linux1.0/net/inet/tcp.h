@@ -20,7 +20,7 @@
 
 #include <linux/tcp.h>
 
-/* ÌØÊâµÄ°üÀïÃæ¶¼°üº¬ÁËtcpºÍipµÄÍ·²¿³¤¶È */
+/* ç‰¹æ®Šçš„åŒ…é‡Œé¢éƒ½åŒ…å«äº†tcpå’Œipçš„å¤´éƒ¨é•¿åº¦ */
 #define MAX_SYN_SIZE	44 + sizeof (struct sk_buff) + MAX_HEADER
 #define MAX_FIN_SIZE	40 + sizeof (struct sk_buff) + MAX_HEADER
 #define MAX_ACK_SIZE	40 + sizeof (struct sk_buff) + MAX_HEADER
@@ -73,20 +73,20 @@
  
 #define TCPOPT_NOP		1
 #define TCPOPT_EOL		0
-#define TCPOPT_MSS		2           /* ÉèÖÃtcp±¨ÎÄ×î´ó³¤¶È */
+#define TCPOPT_MSS		2           /* è®¾ç½®tcpæŠ¥æ–‡æœ€å¤§é•¿åº¦ */
 
 /*
  * The next routines deal with comparing 32 bit unsigned ints
  * and worry about wraparound (automatic with unsigned arithmetic).
  */
 
-/* seq1ÊÇ·ñÔÚseq2Ç°Ãæ£¬ÔÚtcpµ±ÖĞÊı¾İÊÇÓĞĞòºÅµÄ */
+/* seq1æ˜¯å¦åœ¨seq2å‰é¢ï¼Œåœ¨tcpå½“ä¸­æ•°æ®æ˜¯æœ‰åºå·çš„ */
 static inline int before(unsigned long seq1, unsigned long seq2)
 {
         return (long)(seq1-seq2) < 0;
 }
 
-/* ±íÊ¾seq2ÊÇ·ñÔÚseq1ºóÃæ£¬´óÓÚ0±íÊ¾ÔÚºóÃæ£¬Ğ¡ÓÚ0Ôò²»ÊÇ
+/* è¡¨ç¤ºseq2æ˜¯å¦åœ¨seq1åé¢ï¼Œå¤§äº0è¡¨ç¤ºåœ¨åé¢ï¼Œå°äº0åˆ™ä¸æ˜¯
  */
 static inline int after(unsigned long seq1, unsigned long seq2)
 {
@@ -108,7 +108,7 @@ static inline int between(unsigned long seq1, unsigned long seq2, unsigned long 
  * problem. Thanks to Stephen A. Wood <saw@cebaf.gov>  -FvK
  */
 
-/* ÅĞ¶ÏtcpµÄ×´Ì¬ÊÇ·ñ¿ÉÒÔ¹Ø±Õ */
+/* åˆ¤æ–­tcpçš„çŠ¶æ€æ˜¯å¦å¯ä»¥å…³é—­ */
 static inline const int
 tcp_connected(const int state)
 {

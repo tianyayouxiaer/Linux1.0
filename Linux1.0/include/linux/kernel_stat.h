@@ -9,13 +9,13 @@
 
 #define DK_NDRIVE 4
 
-/* ¼ÇÂ¼ÄÚºË×´Ì¬ */
+/* è®°å½•å†…æ ¸çŠ¶æ€ */
 struct kernel_stat {
 	unsigned int cpu_user, cpu_nice, cpu_system;
 	unsigned int dk_drive[DK_NDRIVE];
 	unsigned int pgpgin, pgpgout;
 	unsigned int pswpin, pswpout;
-        /* ÄÚºËÖĞ´¦ÀíÖĞ¶ÏµÄÊıÁ¿ */
+        /* å†…æ ¸ä¸­å¤„ç†ä¸­æ–­çš„æ•°é‡ */
 	unsigned int interrupts;
 	unsigned int ipackets, opackets;
 	unsigned int ierrors, oerrors;

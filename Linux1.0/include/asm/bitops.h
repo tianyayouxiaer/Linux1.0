@@ -19,7 +19,7 @@
 struct __dummy { unsigned long a[100]; };
 #define ADDR (*(struct __dummy *) addr)
 
-/* ½«¶ÔÓ¦µÄÎ»ÉèÖÃÎª1£¬Í¬Ê±½«Ö®Ç°µÄÎ»¸ø·µ»Ø*/
+/* å°†å¯¹åº”çš„ä½è®¾ç½®ä¸º1ï¼ŒåŒæ—¶å°†ä¹‹å‰çš„ä½ç»™è¿”å›*/
 extern __inline__ int set_bit(int nr, void * addr)
 {
 	int oldbit;
@@ -30,7 +30,7 @@ extern __inline__ int set_bit(int nr, void * addr)
 	return oldbit;
 }
 
-/* ½«¶ÔÓ¦µÄÎ»ÉèÖÃÎª0£¬Í¬Ê±·µ»ØÖ®Ç°µÄÎ»µÄÖµ*/
+/* å°†å¯¹åº”çš„ä½è®¾ç½®ä¸º0ï¼ŒåŒæ—¶è¿”å›ä¹‹å‰çš„ä½çš„å€¼*/
 extern __inline__ int clear_bit(int nr, void * addr)
 {
 	int oldbit;
@@ -46,7 +46,7 @@ extern __inline__ int clear_bit(int nr, void * addr)
  * this way.
  */
 
-/* ·µ»ØÖ®Ç°µÄÎ»
+/* è¿”å›ä¹‹å‰çš„ä½
   */
 extern __inline__ int test_bit(int nr, void * addr)
 {

@@ -13,22 +13,22 @@
 /*
  * This structure is used to hold the arguments that are used when loading binaries.
  */
-/* linux¿ÉÖ´ĞĞ¶ş½øÖÆÎÄ¼şµÄ²ÎÊı½á¹¹ 
+/* linuxå¯æ‰§è¡ŒäºŒè¿›åˆ¶æ–‡ä»¶çš„å‚æ•°ç»“æ„ 
  */
 struct linux_binprm{
-  char buf[128];    /* ÎÄ¼şµÄÍ·¸ñÊ½ */
+  char buf[128];    /* æ–‡ä»¶çš„å¤´æ ¼å¼ */
   unsigned long page[MAX_ARG_PAGES];
   unsigned long p;
   int sh_bang;
-  struct inode * inode;        /* ¿ÉÖ´ĞĞÎÄ¼şµÄinodeÖ¸Õë */
+  struct inode * inode;        /* å¯æ‰§è¡Œæ–‡ä»¶çš„inodeæŒ‡é’ˆ */
   int e_uid, e_gid;
-  int argc, envc; /* ²ÎÊıºÍ»·¾³±äÁ¿¸öÊı */
+  int argc, envc; /* å‚æ•°å’Œç¯å¢ƒå˜é‡ä¸ªæ•° */
   char * filename;	   /* Name of binary */
 };
 
 /* This structure defines the functions that are used to load the binary formats that
  * linux accepts. */
-/* linuxµÄ¶ş½øÖÆÎÄ¼ş¸ñÊ½ */
+/* linuxçš„äºŒè¿›åˆ¶æ–‡ä»¶æ ¼å¼ */
 struct linux_binfmt{
   int (*load_binary)(struct linux_binprm *, struct  pt_regs * regs);
   int (*load_shlib)(int fd);

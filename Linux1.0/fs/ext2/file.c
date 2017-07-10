@@ -54,7 +54,7 @@ static struct file_operations ext2_file_operations = {
 	ext2_sync_file		/* fsync */
 };
 
-/* ÆÕÍ¨ÎÄ¼şµÄinode²Ù×÷º¯Êı
+/* æ™®é€šæ–‡ä»¶çš„inodeæ“ä½œå‡½æ•°
  */
 struct inode_operations ext2_file_inode_operations = {
 	&ext2_file_operations,/* default file operations */
@@ -74,7 +74,7 @@ struct inode_operations ext2_file_inode_operations = {
 	ext2_permission		/* permission */
 };
 
-/* ext2ÎÄ¼şÏµÍ³µÄÎÄ¼ş¶Áº¯Êı */
+/* ext2æ–‡ä»¶ç³»ç»Ÿçš„æ–‡ä»¶è¯»å‡½æ•° */
 static int ext2_file_read (struct inode * inode, struct file * filp,
 		    char * buf, int count)
 {
@@ -82,7 +82,7 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 	int block, blocks, offset;
 	int bhrequest, uptodate;
 	struct buffer_head ** bhb, ** bhe;
-	/* ÒÀ´Î´ÅÅÌÇëÇó×î¶àÔÊĞí32¿éÊı¾İ */
+	/* ä¾æ¬¡ç£ç›˜è¯·æ±‚æœ€å¤šå…è®¸32å—æ•°æ® */
 	struct buffer_head * bhreq[NBUF];
 	struct buffer_head * buflist[NBUF];
 	struct super_block * sb;
@@ -99,7 +99,7 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 			      inode->i_mode);
 		return -EINVAL;
 	}
-	/* ¶ÁÈ¡Æ«ÒÆÁ¿ºÍÎÄ¼ş´óĞ¡ */
+	/* è¯»å–åç§»é‡å’Œæ–‡ä»¶å¤§å° */
 	offset = filp->f_pos;
 	size = inode->i_size;
 	if (offset > size)
@@ -111,12 +111,12 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 	if (left <= 0)
 		return 0;
 	read = 0;
-	/* »ñÈ¡µ±Ç°Æ«ÒÆÁ¿ËùÔÚµÄ¿éºÅºÍËùÔÚ¿éÖĞµÄÆ«ÒÆÁ¿ */
+	/* è·å–å½“å‰åç§»é‡æ‰€åœ¨çš„å—å·å’Œæ‰€åœ¨å—ä¸­çš„åç§»é‡ */
 	block = offset >> EXT2_BLOCK_SIZE_BITS(sb);
 	offset &= (sb->s_blocksize - 1);
-	/* size±íÊ¾ÎÄ¼ş×Ü¹²Õ¼ÓÃÁË¶àÉÙ¿é */
+	/* sizeè¡¨ç¤ºæ–‡ä»¶æ€»å…±å ç”¨äº†å¤šå°‘å— */
 	size = (size + sb->s_blocksize - 1) >> EXT2_BLOCK_SIZE_BITS(sb);
-	/* »¹ĞèÒª¶ÁÈ¡¿éµÄÊıÁ¿ */
+	/* è¿˜éœ€è¦è¯»å–å—çš„æ•°é‡ */
 	blocks = (left + offset + sb->s_blocksize - 1) >> EXT2_BLOCK_SIZE_BITS(sb);
 	bhb = bhe = buflist;
 	if (filp->f_reada) {
@@ -137,23 +137,23 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 	 * This routine is optimized to make maximum use of the various
 	 * buffers and caches.
 	 */
-	/* Ò»ÂÖÑ­»·×î¶àÖ»ÄÜ¶ÁÈ¡32¸öÊı¾İ¿é
+	/* ä¸€è½®å¾ªç¯æœ€å¤šåªèƒ½è¯»å–32ä¸ªæ•°æ®å—
 	 */
 	do {
 		bhrequest = 0;
 		uptodate = 1;
-		/* blocks±íÊ¾×Ü¹²Òª¶ÁÈ¡µÄ¿éÊı£¬block±íÊ¾¿ªÊ¼¶ÁÈ¡µÄ¿éºÅ */
+		/* blocksè¡¨ç¤ºæ€»å…±è¦è¯»å–çš„å—æ•°ï¼Œblockè¡¨ç¤ºå¼€å§‹è¯»å–çš„å—å· */
 		while (blocks) {
 			--blocks;
-			/* »ñÈ¡µÄ¸ß¶È»º´æµØÖ·¶¼´æ·ÅÔÚbuflistÊı×éµ±ÖĞ */
+			/* è·å–çš„é«˜åº¦ç¼“å­˜åœ°å€éƒ½å­˜æ”¾åœ¨buflistæ•°ç»„å½“ä¸­ */
 			*bhb = ext2_getblk (inode, block++, 0, &err);
 			if (*bhb && !(*bhb)->b_uptodate) {
 				uptodate = 0;
-				/* ½«¶ÁÈ¡µÄ¸ßËÙ»º´æÖ¸Õë´æ·ÅÔÚbhreqµ±ÖĞ£¬Õâ¸öÊ±ºòbhreqÖĞÔªËØÆäÊµºÍbuflistÖĞÏàÍ¬ */
+				/* å°†è¯»å–çš„é«˜é€Ÿç¼“å­˜æŒ‡é’ˆå­˜æ”¾åœ¨bhreqå½“ä¸­ï¼Œè¿™ä¸ªæ—¶å€™bhreqä¸­å…ƒç´ å…¶å®å’Œbuflistä¸­ç›¸åŒ */
 				bhreq[bhrequest++] = *bhb;
 			}
 
-			/* Èç¹ûµ±Ç°¶ÁÈ¡µ½×îºóÒ»¸ö¸ßËÙ»º´æ£¬ÔòbhbÓÖ»Øµ½Êı×éÊ×µØÖ· */
+			/* å¦‚æœå½“å‰è¯»å–åˆ°æœ€åä¸€ä¸ªé«˜é€Ÿç¼“å­˜ï¼Œåˆ™bhbåˆå›åˆ°æ•°ç»„é¦–åœ°å€ */
 			if (++bhb == &buflist[NBUF])
 				bhb = buflist;
 
@@ -164,7 +164,7 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 			if (uptodate)
 				break;
 
-			/* ±íÊ¾ÒÑ¾­»ñÈ¡8¸ö¸ßËÙ»º´æ£¬ÔòÕâÒ»ÂÖ¾ÍÒªÍ£Ö¹ÁË */
+			/* è¡¨ç¤ºå·²ç»è·å–8ä¸ªé«˜é€Ÿç¼“å­˜ï¼Œåˆ™è¿™ä¸€è½®å°±è¦åœæ­¢äº† */
 			if (bhb == bhe)
 				break;
 		}
@@ -172,7 +172,7 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 		/*
 		 * Now request them all
 		 */
-		/* ½«ËùÓĞÂß¼­¿éµÄÊı¾İ¶ÁÈ¡µ½ÏàÓ¦µÄ¸ßËÙ»º´æµ±ÖĞ 
+		/* å°†æ‰€æœ‰é€»è¾‘å—çš„æ•°æ®è¯»å–åˆ°ç›¸åº”çš„é«˜é€Ÿç¼“å­˜å½“ä¸­ 
 		 */
 		if (bhrequest)
 			ll_rw_block (READ, bhrequest, bhreq);
@@ -183,7 +183,7 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 			 */
 			if (*bhe) {
 				wait_on_buffer (*bhe);
-				/* Èç¹û¶ÁÈ¡µÄÊı¾İ²»ÊÇ×îĞÂµÄ£¬Ôò·µ»Ø³ö´í */
+				/* å¦‚æœè¯»å–çš„æ•°æ®ä¸æ˜¯æœ€æ–°çš„ï¼Œåˆ™è¿”å›å‡ºé”™ */
 				if (!(*bhe)->b_uptodate) { /* read error? */
 				        brelse(*bhe);
 					if (++bhe == &buflist[NBUF])
@@ -192,16 +192,16 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 					break;
 				}
 			}
-			/* »ñÈ¡Õâ´Î¶ÁÈ¡µÄ×Ö½ÚÊıchars */
+			/* è·å–è¿™æ¬¡è¯»å–çš„å­—èŠ‚æ•°chars */
 			if (left < sb->s_blocksize - offset)
 				chars = left;
 			else
 				chars = sb->s_blocksize - offset;
-			/* ĞŞ¸ÄÎÄ¼şÖ¸Õë±ãÒË¡¢Ê£ÏÂ¶ÁÈ¡×Ö½ÚÊıºÍÒÑ¶ÁÈ¡×Ö½ÚÊı */
+			/* ä¿®æ”¹æ–‡ä»¶æŒ‡é’ˆä¾¿å®œã€å‰©ä¸‹è¯»å–å­—èŠ‚æ•°å’Œå·²è¯»å–å­—èŠ‚æ•° */
 			filp->f_pos += chars;
 			left -= chars;
 			read += chars;
-			/* ½«Êı¾İ´Ó¸ßËÙ»º´æµ±ÖĞ¿½±´µ½bufµ±ÖĞ */
+			/* å°†æ•°æ®ä»é«˜é€Ÿç¼“å­˜å½“ä¸­æ‹·è´åˆ°bufå½“ä¸­ */
 			if (*bhe) {
 				memcpy_tofs (buf, offset + (*bhe)->b_data,
 					     chars);
@@ -212,11 +212,11 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 					put_fs_byte (0, buf++);
 			}
 			offset = 0;
-			/* Èç¹ûbheµÈÓÚbuflistÊı×é×îºóÒ»¸öÔªËØ£¬ÔòÓÖ»Øµ½Êı×éÊ×²¿ */
+			/* å¦‚æœbheç­‰äºbuflistæ•°ç»„æœ€åä¸€ä¸ªå…ƒç´ ï¼Œåˆ™åˆå›åˆ°æ•°ç»„é¦–éƒ¨ */
 			if (++bhe == &buflist[NBUF])
 				bhe = buflist;
 		} while (left > 0 && bhe != bhb && (!*bhe || !(*bhe)->b_lock));
-	} while (left > 0);   /* Èç¹û»¹ÓĞÃ»¶ÁÍê£¬Ôò¼ÌĞø¶Á */
+	} while (left > 0);   /* å¦‚æœè¿˜æœ‰æ²¡è¯»å®Œï¼Œåˆ™ç»§ç»­è¯» */
 
 	/*
 	 * Release the read-ahead blocks
@@ -233,7 +233,7 @@ static int ext2_file_read (struct inode * inode, struct file * filp,
 		inode->i_atime = CURRENT_TIME;
 		inode->i_dirt = 1;
 	}
-	/* ·µ»ØÊµ¼Ê¶ÁÈ¡×Ö½ÚÊı */
+	/* è¿”å›å®é™…è¯»å–å­—èŠ‚æ•° */
 	return read;
 }
 
@@ -267,15 +267,15 @@ static int ext2_file_write (struct inode * inode, struct file * filp,
  * ok, append may not work when many processes are writing at the same time
  * but so what. That way leads to madness anyway.
  */
- 	/* ÅĞ¶ÏÎÄ¼şĞ´µÄÎ»ÖÃ */
+ 	/* åˆ¤æ–­æ–‡ä»¶å†™çš„ä½ç½® */
 	if (filp->f_flags & O_APPEND)
 		pos = inode->i_size;
 	else
 		pos = filp->f_pos;
 	written = 0;
 	while (written < count) {
-		/* »ñÈ¡ÒªĞ´Î»ÖÃµÄ¸ßËÙ»º´æÖ¸Õë£¬µ±µ±Ç°¶ÁÈ¡µÄ¿éºÅ´óÓÚµ±Ç°ÎÄ¼şµÄ×î´ó¿éºÅ£¬
-		 * Ôòext2_getblkº¯ÊıÎªÎÄ¼ş·ÖÅäÒ»¸ö¿éºÅ
+		/* è·å–è¦å†™ä½ç½®çš„é«˜é€Ÿç¼“å­˜æŒ‡é’ˆï¼Œå½“å½“å‰è¯»å–çš„å—å·å¤§äºå½“å‰æ–‡ä»¶çš„æœ€å¤§å—å·ï¼Œ
+		 * åˆ™ext2_getblkå‡½æ•°ä¸ºæ–‡ä»¶åˆ†é…ä¸€ä¸ªå—å·
 		 */
 		bh = ext2_getblk (inode, pos / sb->s_blocksize, 1, &err);
 		if (!bh) {
@@ -283,16 +283,16 @@ static int ext2_file_write (struct inode * inode, struct file * filp,
 				written = err;
 			break;
 		}
-		/* »ñÈ¡¿éÄÚÆ«ÒÆÎ»ÖÃ´¦Ê£ÏÂµÄ×Ö½ÚÊı */
+		/* è·å–å—å†…åç§»ä½ç½®å¤„å‰©ä¸‹çš„å­—èŠ‚æ•° */
 		c = sb->s_blocksize - (pos % sb->s_blocksize);
-		/* »ñÈ¡µ±Ç°¿éÒªĞ´µÄÊıÁ¿ */
+		/* è·å–å½“å‰å—è¦å†™çš„æ•°é‡ */
 		if (c > count-written)
 			c = count - written;
 		if (c != sb->s_blocksize && !bh->b_uptodate) {
-			/* ½«¿éÊı¾İ¶ÁÈëµ½¸ßËÙ»º´æ */
+			/* å°†å—æ•°æ®è¯»å…¥åˆ°é«˜é€Ÿç¼“å­˜ */
 			ll_rw_block (READ, 1, &bh);
 			wait_on_buffer (bh);
-			/* ²»ÊÇ×îĞÂµÄÔò·µ»Ø³ö´í */
+			/* ä¸æ˜¯æœ€æ–°çš„åˆ™è¿”å›å‡ºé”™ */
 			if (!bh->b_uptodate) {
 				brelse (bh);
 				if (!written)
@@ -300,20 +300,20 @@ static int ext2_file_write (struct inode * inode, struct file * filp,
 				break;
 			}
 		}
-		/* »ñÈ¡¿éÄÚ¸ßËÙ»º´æĞ´ÈëµÄµØÖ·£¬²¢Ôö¼ÓÆ«ÒÆÁ¿µÄÎ»ÖÃ */
+		/* è·å–å—å†…é«˜é€Ÿç¼“å­˜å†™å…¥çš„åœ°å€ï¼Œå¹¶å¢åŠ åç§»é‡çš„ä½ç½® */
 		p = (pos % sb->s_blocksize) + bh->b_data;
 		pos += c;
-		/*Èç¹û×îºóÆ«ÒÆÎ»ÖÃ´óÓÚÎÄ¼ş´óĞ¡ÔòĞŞ¸ÄÎÄ¼ş´óĞ¡£¬Í¬Ê±ÉèÖÃinodeÎªÔà */
+		/*å¦‚æœæœ€ååç§»ä½ç½®å¤§äºæ–‡ä»¶å¤§å°åˆ™ä¿®æ”¹æ–‡ä»¶å¤§å°ï¼ŒåŒæ—¶è®¾ç½®inodeä¸ºè„ */
 		if (pos > inode->i_size) {
 			inode->i_size = pos;
 			inode->i_dirt = 1;
 		}
-		/* Ôö¼ÓÒÑĞ´ÈëµÄ×Ö½ÚÊı£¬Í¬Ê±½«Êı¾İ¿½±´µ½¸ßËÙ»º´æ */
+		/* å¢åŠ å·²å†™å…¥çš„å­—èŠ‚æ•°ï¼ŒåŒæ—¶å°†æ•°æ®æ‹·è´åˆ°é«˜é€Ÿç¼“å­˜ */
 		written += c;
 		memcpy_fromfs (p, buf, c);
 		buf += c;
-		/* ÒòÎªÊÇĞ´Èë²Ù×÷ËùÒÔÒ»¶¨ÒªÉèÖÃ¸ßËÙ»º´æÄÚÈİÎª×îĞÂµÄ£¬²¢ÉèÖÃÔà±ê¼ÇÒÔ±ãÔÚÍ¬²½µÄÊ±ºò£¬
-		 * °Ñ¸Õ²ÅĞ´ÈëµÄÊı¾İĞ´Èëµ½ÎÄ¼ş 
+		/* å› ä¸ºæ˜¯å†™å…¥æ“ä½œæ‰€ä»¥ä¸€å®šè¦è®¾ç½®é«˜é€Ÿç¼“å­˜å†…å®¹ä¸ºæœ€æ–°çš„ï¼Œå¹¶è®¾ç½®è„æ ‡è®°ä»¥ä¾¿åœ¨åŒæ­¥çš„æ—¶å€™ï¼Œ
+		 * æŠŠåˆšæ‰å†™å…¥çš„æ•°æ®å†™å…¥åˆ°æ–‡ä»¶ 
 		 */
 		bh->b_uptodate = 1;
 		bh->b_dirt = 1;
@@ -331,9 +331,9 @@ static int ext2_file_write (struct inode * inode, struct file * filp,
  * gets called only when /all/ the files are closed.
  */
 
-/* sys_close¹Ø±ÕÎÄ¼şÊ±£¬ÔÚÈ·¶¨×îºóĞèÒª¹Ø±ÕÎÄ¼şµÄÊ±ºò£¬
- * Ò²¾ÍÊÇf_count=1
- * »áµ÷ÓÃ´Ëº¯Êı
+/* sys_closeå…³é—­æ–‡ä»¶æ—¶ï¼Œåœ¨ç¡®å®šæœ€åéœ€è¦å…³é—­æ–‡ä»¶çš„æ—¶å€™ï¼Œ
+ * ä¹Ÿå°±æ˜¯f_count=1
+ * ä¼šè°ƒç”¨æ­¤å‡½æ•°
  */
 static void ext2_release_file (struct inode * inode, struct file * filp)
 {

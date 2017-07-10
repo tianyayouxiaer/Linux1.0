@@ -306,7 +306,7 @@ static void ext2_setup_super (struct super_block * sb,
 	}
 }
 
-/* ¼ì²é³¬¼¶¿é¿é×éÃèÊö·û */
+/* æ£€æŸ¥è¶…çº§å—å—ç»„æè¿°ç¬¦ */
 static int ext2_check_descriptors (struct super_block * sb)
 {
 	int i;
@@ -316,13 +316,13 @@ static int ext2_check_descriptors (struct super_block * sb)
 
 	ext2_debug ("Checking group descriptors");
 
-	/* Ñ­»·´¦Àí¿é×éÖĞµÄËùÓĞ×é,block×ÜÊÇÖ¸Ïòµ±Ç°¿é×éµÄµÚÒ»¸ö¿éºÅ */
+	/* å¾ªç¯å¤„ç†å—ç»„ä¸­çš„æ‰€æœ‰ç»„,blockæ€»æ˜¯æŒ‡å‘å½“å‰å—ç»„çš„ç¬¬ä¸€ä¸ªå—å· */
 	for (i = 0; i < sb->u.ext2_sb.s_groups_count; i++)
 	{
-		/* ÕıºÃ¹»´æ·ÅÔÚÒ»¸öÊı¾İ¿éÖĞ£¬Ôò½«¸Ã¿éÖĞËùÓĞ¿éÃèÊö·ûÈ¡³ö */
+		/* æ­£å¥½å¤Ÿå­˜æ”¾åœ¨ä¸€ä¸ªæ•°æ®å—ä¸­ï¼Œåˆ™å°†è¯¥å—ä¸­æ‰€æœ‰å—æè¿°ç¬¦å–å‡º */
 		if ((i % EXT2_DESC_PER_BLOCK(sb)) == 0)
 			gdp = (struct ext2_group_desc *) sb->u.ext2_sb.s_group_desc[desc_block++]->b_data;
-		/* Èç¹û¿éÎ»Í¼ËùÔÚµÄ¿éºÅ£¬²»ÔÚµ±Ç°¿é×éÖĞ£¬Ôò³ö´í */
+		/* å¦‚æœå—ä½å›¾æ‰€åœ¨çš„å—å·ï¼Œä¸åœ¨å½“å‰å—ç»„ä¸­ï¼Œåˆ™å‡ºé”™ */
 		if (gdp->bg_block_bitmap < block ||
 		    gdp->bg_block_bitmap >= block + EXT2_BLOCKS_PER_GROUP(sb))
 		{
@@ -333,7 +333,7 @@ static int ext2_check_descriptors (struct super_block * sb)
 			return 0;
 		}
 
-		/* Èç¹ûinodeÎ»Í¼ËùÔÚµÄ¿éºÅ£¬²»ÔÚµ±Ç°¿é×éÖĞ£¬Ôò³ö´í  */
+		/* å¦‚æœinodeä½å›¾æ‰€åœ¨çš„å—å·ï¼Œä¸åœ¨å½“å‰å—ç»„ä¸­ï¼Œåˆ™å‡ºé”™  */
 		if (gdp->bg_inode_bitmap < block ||
 		    gdp->bg_inode_bitmap >= block + EXT2_BLOCKS_PER_GROUP(sb))
 		{
@@ -353,22 +353,22 @@ static int ext2_check_descriptors (struct super_block * sb)
 				    i, gdp->bg_inode_table);
 			return 0;
 		}
-		/* Ã»É¨ÃèÒ»¸ö¿é×é£¬blockÔòÔö¼ÓÒ»¸ö¿é×éÖĞ¿éµÄÊıÁ¿ */
+		/* æ²¡æ‰«æä¸€ä¸ªå—ç»„ï¼Œblockåˆ™å¢åŠ ä¸€ä¸ªå—ç»„ä¸­å—çš„æ•°é‡ */
 		block += EXT2_BLOCKS_PER_GROUP(sb);
-		/* ´¦ÀíÏÂÒ»¸ö¿é×é */
+		/* å¤„ç†ä¸‹ä¸€ä¸ªå—ç»„ */
 		gdp++;
 	}
 	return 1;
 }
 
-/* ¶ÁÈ¡ext2ÎÄ¼şÏµÍ³µÄ³¬¼¶¿é
+/* è¯»å–ext2æ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å—
  */
 struct super_block * ext2_read_super (struct super_block * sb, void * data,
 				      int silent)
 {
 	struct buffer_head * bh;
 	struct ext2_super_block * es;
-        /* ×¢Òâ³¬¼¶¿é´æ·ÅÔÚÉè±¸µÄµÚÒ»¿é */
+        /* æ³¨æ„è¶…çº§å—å­˜æ”¾åœ¨è®¾å¤‡çš„ç¬¬ä¸€å— */
 	unsigned long sb_block = 1;
 	unsigned long logic_sb_block = 1;
 	int dev = sb->s_dev;
@@ -387,8 +387,8 @@ struct super_block * ext2_read_super (struct super_block * sb, void * data,
 
 	lock_super (sb);
 	set_blocksize (dev, BLOCK_SIZE);
-	/* ¶ÁÈ¡³¬¼¶¿éËùÔÚÉÈÇø£¬ÔÚext2ÎÄ¼şÏµÍ³ÖĞ£¬Ë÷ÒıÎª0µÄÂß¼­¿éÊÇ²»ÓÃµÄ£¬
-	 * ³¬¼¶¿éÔò´æ·ÅÔÚË÷ÒıÎª1µÄÂß¼­¿éÖĞ
+	/* è¯»å–è¶…çº§å—æ‰€åœ¨æ‰‡åŒºï¼Œåœ¨ext2æ–‡ä»¶ç³»ç»Ÿä¸­ï¼Œç´¢å¼•ä¸º0çš„é€»è¾‘å—æ˜¯ä¸ç”¨çš„ï¼Œ
+	 * è¶…çº§å—åˆ™å­˜æ”¾åœ¨ç´¢å¼•ä¸º1çš„é€»è¾‘å—ä¸­
 	 *
 	 */
 	if (!(bh = bread (dev, sb_block, BLOCK_SIZE))) {
@@ -401,7 +401,7 @@ struct super_block * ext2_read_super (struct super_block * sb, void * data,
 	 * Note: s_es must be initialized s_es as soon as possible because
 	 * some ext2 macro-instructions depend on its value
 	 */
-	/* ´Ó¸ßËÙ»º´æÖĞ»ñÈ¡ext2µÄ³¬¼¶¿éÊı¾İ */
+	/* ä»é«˜é€Ÿç¼“å­˜ä¸­è·å–ext2çš„è¶…çº§å—æ•°æ® */
 	es = (struct ext2_super_block *) bh->b_data;
 	sb->u.ext2_sb.s_es = es;
 	sb->s_magic = es->s_magic;
@@ -524,19 +524,19 @@ struct super_block * ext2_read_super (struct super_block * sb, void * data,
 		return NULL;
 	}
 
-	/* ×¢ÒâËüÊÇÔõÃ´ËãµÄ£¬½«ËùÓĞ¿ÉÓÃµÄ¿éÊıÁ¿(¼õÈ¥±£ÁôµÄ)³ıÒÔÃ¿×éµÄ¿éÊıÁ¿£¬È»ºóÏòÉÏÈ¡Õû */
+	/* æ³¨æ„å®ƒæ˜¯æ€ä¹ˆç®—çš„ï¼Œå°†æ‰€æœ‰å¯ç”¨çš„å—æ•°é‡(å‡å»ä¿ç•™çš„)é™¤ä»¥æ¯ç»„çš„å—æ•°é‡ï¼Œç„¶åå‘ä¸Šå–æ•´ */
 	sb->u.ext2_sb.s_groups_count = (es->s_blocks_count -
 				        es->s_first_data_block +
 				       EXT2_BLOCKS_PER_GROUP(sb) - 1) /
 				       EXT2_BLOCKS_PER_GROUP(sb);
-	/* ³õÊ¼»¯×éÃèÊö·ûµÄ¸ßËÙ»º´æ */
+	/* åˆå§‹åŒ–ç»„æè¿°ç¬¦çš„é«˜é€Ÿç¼“å­˜ */
 	for (i = 0; i < EXT2_MAX_GROUP_DESC; i++)
 		sb->u.ext2_sb.s_group_desc[i] = NULL;
 
-	/* ¼ÆËã×éÃèÊö·ûÕ¼ÓÃµÄ¸ßËÙ»º´æµÄ¿éÊı */
+	/* è®¡ç®—ç»„æè¿°ç¬¦å ç”¨çš„é«˜é€Ÿç¼“å­˜çš„å—æ•° */
 	bh_count = (sb->u.ext2_sb.s_groups_count + EXT2_DESC_PER_BLOCK(sb) - 1) /
 		   EXT2_DESC_PER_BLOCK(sb);
-	/* Èç¹û³¬¹ı×î´óÖ§³Ö£¬Ôò³ö´í */
+	/* å¦‚æœè¶…è¿‡æœ€å¤§æ”¯æŒï¼Œåˆ™å‡ºé”™ */
 	if (bh_count > EXT2_MAX_GROUP_DESC) {
 		sb->s_dev = 0;
 		unlock_super (sb);
@@ -545,7 +545,7 @@ struct super_block * ext2_read_super (struct super_block * sb, void * data,
 		return NULL;
 	}
 
-	/* ¿ªÊ¼¶ÁÈ¡×éÃèÊö·ûµ½¸ßËÙ»º´æ */
+	/* å¼€å§‹è¯»å–ç»„æè¿°ç¬¦åˆ°é«˜é€Ÿç¼“å­˜ */
 	for (i = 0; i < bh_count; i++) {
 		sb->u.ext2_sb.s_group_desc[i] = bread (dev, logic_sb_block + i + 1,
 						       sb->s_blocksize);
@@ -559,7 +559,7 @@ struct super_block * ext2_read_super (struct super_block * sb, void * data,
 			return NULL;
 		}
 	}
-	/* ¼ì²é¿é×éÊÇ·ñÕıÈ· */
+	/* æ£€æŸ¥å—ç»„æ˜¯å¦æ­£ç¡® */
 	if (!ext2_check_descriptors (sb)) {
 		sb->s_dev = 0;
 		unlock_super (sb);
@@ -582,9 +582,9 @@ struct super_block * ext2_read_super (struct super_block * sb, void * data,
 	 * set up enough so that it can read an inode
 	 */
 	sb->s_dev = dev;
-	/*ÉèÖÃext2³¬¼¶¿éµÄ²Ù×÷º¯Êı*/
+	/*è®¾ç½®ext2è¶…çº§å—çš„æ“ä½œå‡½æ•°*/
 	sb->s_op = &ext2_sops;
-	/* »ñÈ¡/¶ÔÓ¦µÄinode£¬¸ÃinodeµÄinoÊÇ2 */
+	/* è·å–/å¯¹åº”çš„inodeï¼Œè¯¥inodeçš„inoæ˜¯2 */
 	if (!(sb->s_mounted = iget (sb, EXT2_ROOT_INO))) {
 		sb->s_dev = 0;
 		for (i = 0; i < EXT2_MAX_GROUP_DESC; i++)
@@ -624,7 +624,7 @@ static void ext2_commit_super (struct super_block * sb,
  * set s_state to EXT2_VALID_FS after some corrections.
  */
 
-/* Çå³ş³¬¼¶¿éµÄÔà±ê¼Ç */
+/* æ¸…æ¥šè¶…çº§å—çš„è„æ ‡è®° */
 void ext2_write_super (struct super_block * sb)
 {
 	struct ext2_super_block * es;
@@ -643,7 +643,7 @@ void ext2_write_super (struct super_block * sb)
 	sb->s_dirt = 0;
 }
 
-/* ÅĞ¶Ï³¬¼¶¿éÊÇ·ñ¿ÉÒÔÖØĞÂ¹ÒÔØ */
+/* åˆ¤æ–­è¶…çº§å—æ˜¯å¦å¯ä»¥é‡æ–°æŒ‚è½½ */
 int ext2_remount (struct super_block * sb, int * flags, char * data)
 {
 	struct ext2_super_block * es;
@@ -685,7 +685,7 @@ int ext2_remount (struct super_block * sb, int * flags, char * data)
 	return 0;
 }
 
-/* »ñÈ¡³¬¼¶¿éÎÄ¼şÏµÍ³µÄ»ù±¾ĞÅÏ¢ */
+/* è·å–è¶…çº§å—æ–‡ä»¶ç³»ç»Ÿçš„åŸºæœ¬ä¿¡æ¯ */
 void ext2_statfs (struct super_block * sb, struct statfs * buf)
 {
 	long tmp;

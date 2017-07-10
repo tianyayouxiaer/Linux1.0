@@ -50,7 +50,7 @@
 #include "arp.h"
 
 
-/* ½«struct sockÖÐµÄÊ±ÖÓÉ¾³ý£¬Í¬Ê±½«sockµÄtimeroutÖÃÎª0 */
+/* å°†struct sockä¸­çš„æ—¶é’Ÿåˆ é™¤ï¼ŒåŒæ—¶å°†sockçš„timeroutç½®ä¸º0 */
 void
 delete_timer (struct sock *t)
 {
@@ -65,9 +65,9 @@ delete_timer (struct sock *t)
   restore_flags (flags);
 }
 
-/* ÖØÖÃstruct sockµÄtimer£¬Í¬Ê±½«sockµÄtimeroutÖÃÎªtimeout
- * ¾ßÌå²Ù×÷¹ý³ÌÊÇÏÈÉ¾³ýºóÌí¼Ó£¬
- * len±íÊ¾timerµÄ´¥·¢Ê±¼ä
+/* é‡ç½®struct sockçš„timerï¼ŒåŒæ—¶å°†sockçš„timeroutç½®ä¸ºtimeout
+ * å…·ä½“æ“ä½œè¿‡ç¨‹æ˜¯å…ˆåˆ é™¤åŽæ·»åŠ ï¼Œ
+ * lenè¡¨ç¤ºtimerçš„è§¦å‘æ—¶é—´
  */
 void
 reset_timer (struct sock *t, int timeout, unsigned long len)
@@ -93,18 +93,18 @@ reset_timer (struct sock *t, int timeout, unsigned long len)
  * sockets that need it.
  */
 
-/* Ã¿¸östruct sockµÄÊ±ÖÓº¯Êý */
+/* æ¯ä¸ªstruct sockçš„æ—¶é’Ÿå‡½æ•° */
 void
 net_timer (unsigned long data)
 {
   struct sock *sk = (struct sock*)data;
-  /* Ïàµ±ÓÚ»ñÈ¡Ê±ÖÓµÄÀàÐÍ°É£¬ */
+  /* ç›¸å½“äºŽèŽ·å–æ—¶é’Ÿçš„ç±»åž‹å§ï¼Œ */
   int why = sk->timeout;
   /* timeout is overwritten by 'delete_timer' and 'reset_timer' */
 
-  /* ÅÐ¶ÏsockÊÇ·ñÒÑ±»ÆäËû½ø³ÌÊ¹ÓÃ£¬»òÕßµ±Ç°ÊÇ·ñÕýÔÚÖ´ÐÐÍøÂçµÄÏÂ°ë²¿·Ö£¬
-    * Èç¹ûµ±Ç°ÕýÔÚÖ´ÐÐÍøÂçµÄÏÂ°ë²¿·Ö£¬ÔòÖØÐÂÉèÖÃsockµÄtimer£¬Í¬Ê±Ìí¼Óµ½
-    * ÄÚºËÊ±ÖÓµ±ÖÐ£¬µÈ´ýÏÂ´ÎÖ´ÐÐ 
+  /* åˆ¤æ–­sockæ˜¯å¦å·²è¢«å…¶ä»–è¿›ç¨‹ä½¿ç”¨ï¼Œæˆ–è€…å½“å‰æ˜¯å¦æ­£åœ¨æ‰§è¡Œç½‘ç»œçš„ä¸‹åŠéƒ¨åˆ†ï¼Œ
+    * å¦‚æžœå½“å‰æ­£åœ¨æ‰§è¡Œç½‘ç»œçš„ä¸‹åŠéƒ¨åˆ†ï¼Œåˆ™é‡æ–°è®¾ç½®sockçš„timerï¼ŒåŒæ—¶æ·»åŠ åˆ°
+    * å†…æ ¸æ—¶é’Ÿå½“ä¸­ï¼Œç­‰å¾…ä¸‹æ¬¡æ‰§è¡Œ 
     */
   if (sk->inuse || in_inet_bh()) {
     sk->timer.expires = 10;
@@ -112,7 +112,7 @@ net_timer (unsigned long data)
     return;
   }
 
-  /* ÉèÖÃsockÎªÓÃ */
+  /* è®¾ç½®sockä¸ºç”¨ */
   sk->inuse = 1;
 
   DPRINTF ((DBG_TMR, "net_timer: found sk=%X why = %d\n", sk, why));
@@ -126,9 +126,9 @@ net_timer (unsigned long data)
     reset_timer (sk, TIME_KEEPOPEN, TCP_TIMEOUT_LEN);
 
   /* Always see if we need to send an ack. */
-  /* ¿´¿´»¹ÓÐÃ»ÓÐÊÕµ½µÄÊý¾Ý°üÃ»ÓÐÓ¦´ð */
+  /* çœ‹çœ‹è¿˜æœ‰æ²¡æœ‰æ”¶åˆ°çš„æ•°æ®åŒ…æ²¡æœ‰åº”ç­” */
   if (sk->ack_backlog) {
-    /* sock·¢ËÍÈ·ÈÏÊý¾Ý°ü*/
+    /* sockå‘é€ç¡®è®¤æ•°æ®åŒ…*/
     sk->prot->read_wakeup (sk);
     if (! sk->dead)
       wake_up_interruptible (sk->sleep);
@@ -148,7 +148,7 @@ net_timer (unsigned long data)
 	/* We've waited for a while for all the memory associated with
 	 * the socket to be freed.  We need to print an error message.
 	 */
-	/* Èç¹ûsockµÄ·¢ËÍ»º³åÇøºÍ½ÓÊÕ»º³åÇø¶¼Îª¿Õ£¬ÔòÖ±½ÓÔÚºóÃæµÄÓï¾äµ±ÖÐÊÍ·Å */
+	/* å¦‚æžœsockçš„å‘é€ç¼“å†²åŒºå’ŒæŽ¥æ”¶ç¼“å†²åŒºéƒ½ä¸ºç©ºï¼Œåˆ™ç›´æŽ¥åœ¨åŽé¢çš„è¯­å¥å½“ä¸­é‡Šæ”¾ */
 	if(sk->wmem_alloc!=0 || sk->rmem_alloc!=0)
 	{
 		DPRINTF ((DBG_TMR, "possible memory leak.  sk = %X\n", sk));
@@ -172,11 +172,11 @@ net_timer (unsigned long data)
 	reset_timer (sk, TIME_DESTROY, TCP_DONE_TIME);
 	release_sock (sk);
 	break;
-    case TIME_PROBE0:   /* ´°¿ÚÌ½²â¶¨Ê±Æ÷£¬Ò²±»³ÆÎª¼á³Ö¶¨Ê±Æ÷ */
+    case TIME_PROBE0:   /* çª—å£æŽ¢æµ‹å®šæ—¶å™¨ï¼Œä¹Ÿè¢«ç§°ä¸ºåšæŒå®šæ—¶å™¨ */
 	tcp_send_probe0(sk);
 	release_sock (sk);
 	break;
-    case TIME_WRITE:	/* ³¬Ê±ÖØ´«¶¨Ê±Æ÷ */   /* try to retransmit. */
+    case TIME_WRITE:	/* è¶…æ—¶é‡ä¼ å®šæ—¶å™¨ */   /* try to retransmit. */
 	/* It could be we got here because we needed to send an ack.
 	 * So we need to check for that.
 	 */
@@ -190,7 +190,7 @@ net_timer (unsigned long data)
 	  /* printk("timer: seq %d retrans %d out %d cong %d\n", sk->send_head->h.seq,
 	     sk->retransmits, sk->packets_out, sk->cong_window); */
 	  DPRINTF ((DBG_TMR, "retransmitting.\n"));
-          /* µ÷ÓÃtcpÐ­ÒéµÄ³¬Ê±ÖØ´«º¯Êý */
+          /* è°ƒç”¨tcpåè®®çš„è¶…æ—¶é‡ä¼ å‡½æ•° */
 	  sk->prot->retransmit (sk, 0);
 	  if ((sk->state == TCP_ESTABLISHED && sk->retransmits && !(sk->retransmits & 7))
 	    || (sk->state != TCP_ESTABLISHED && sk->retransmits > TCP_RETR1)) {
@@ -213,11 +213,11 @@ net_timer (unsigned long data)
 	}
 	release_sock (sk);
 	break;
-    case TIME_KEEPOPEN:          /* ±£»î¶¨Ê±Æ÷ */
+    case TIME_KEEPOPEN:          /* ä¿æ´»å®šæ—¶å™¨ */
 	/* Send something to keep the connection open. */
 	if (sk->prot->write_wakeup)
 	  sk->prot->write_wakeup (sk);
-	sk->retransmits++;  /* ÒòÎªÊÇÖØ·¢¶¨Ê±£¬ËùÒÔ»áÔö¼Ó³¬Ê±ÖØ·¢´ÎÊý */
+	sk->retransmits++;  /* å› ä¸ºæ˜¯é‡å‘å®šæ—¶ï¼Œæ‰€ä»¥ä¼šå¢žåŠ è¶…æ—¶é‡å‘æ¬¡æ•° */
 	if (sk->shutdown == SHUTDOWN_MASK) {
 	  sk->prot->close (sk, 1);
 	  sk->state = TCP_CLOSE;

@@ -35,7 +35,7 @@ asmlinkage void ret_from_sys_call(void) __asm__("ret_from_sys_call");
 extern int shm_fork(struct task_struct *, struct task_struct *);
 long last_pid=0;
 
-//Ñ°ÕÒ¿ÕÏĞµÄtask_struct,²¢·µ»ØÆäË÷Òı
+//å¯»æ‰¾ç©ºé—²çš„task_struct,å¹¶è¿”å›å…¶ç´¢å¼•
 static int find_empty_process(void)
 {
 	int free_task;
@@ -43,30 +43,30 @@ static int find_empty_process(void)
 	int this_user_tasks;
 
 repeat:
-	//ÏŞ¶¨½ø³ÌºÅµÄ×î´óÖµ
+	//é™å®šè¿›ç¨‹å·çš„æœ€å¤§å€¼
 	if ((++last_pid) & 0xffff8000)
 		last_pid=1;
 	this_user_tasks = 0;
 	tasks_free = 0;
 	free_task = -EAGAIN;
 	i = NR_TASKS;
-	//´Ó·´·½Ïò¿ªÊ¼Ñ°ÕÒ
+	//ä»åæ–¹å‘å¼€å§‹å¯»æ‰¾
 	while (--i > 0) {
 		if (!task[i]) {
-			//Èç¹ûÕÒµ½ÁËÒ»¸ö¿ÕÏĞµÄ£¬ÔòÍ£Ö¹Ñ°ÕÒ
+			//å¦‚æœæ‰¾åˆ°äº†ä¸€ä¸ªç©ºé—²çš„ï¼Œåˆ™åœæ­¢å¯»æ‰¾
 			free_task = i;
 			tasks_free++;
 			continue;
 		}
-		//Èç¹ûÊÇµ±Ç°ÓÃ»§µÄ½ø³Ì£¬ÔòÔö¼Óµ±Ç°ÓÃ»§µÄ½ø³ÌÊı
+		//å¦‚æœæ˜¯å½“å‰ç”¨æˆ·çš„è¿›ç¨‹ï¼Œåˆ™å¢åŠ å½“å‰ç”¨æˆ·çš„è¿›ç¨‹æ•°
 		if (task[i]->uid == current->uid)
 			this_user_tasks++;
 		if (task[i]->pid == last_pid || task[i]->pgrp == last_pid ||
 		    task[i]->session == last_pid)
 			goto repeat;
 	}
-	/*Ê£ÏÂµÄ½ø³Ì±ØĞëÂú×ãrootÕË»§µÄ½ø³ÌĞèÒª£¬
-	 *²¢ÇÒÕË»§¿ÉÒÔ¿ª±ÙµÄ×î´ó½ø³ÌÊı²»ÄÜ³¬¹ıMAX_TASKS_PER_USER 
+	/*å‰©ä¸‹çš„è¿›ç¨‹å¿…é¡»æ»¡è¶³rootè´¦æˆ·çš„è¿›ç¨‹éœ€è¦ï¼Œ
+	 *å¹¶ä¸”è´¦æˆ·å¯ä»¥å¼€è¾Ÿçš„æœ€å¤§è¿›ç¨‹æ•°ä¸èƒ½è¶…è¿‡MAX_TASKS_PER_USER 
 	 */
 	if (tasks_free <= MIN_TASKS_LEFT_FOR_ROOT ||
 	    this_user_tasks > MAX_TASKS_PER_USER)
@@ -137,7 +137,7 @@ asmlinkage int sys_fork(struct pt_regs regs)
 	struct file *f;
 	unsigned long clone_flags = COPYVM | SIGCHLD;
 
-	//´ÓÄÚ´æµ±ÖĞÉêÇëÒ»¸ötask_struct,×¢Òâ²¢²»ÊÇÓÃkmallocÉêÇëµÄ
+	//ä»å†…å­˜å½“ä¸­ç”³è¯·ä¸€ä¸ªtask_struct,æ³¨æ„å¹¶ä¸æ˜¯ç”¨kmallocç”³è¯·çš„
 	if(!(p = (struct task_struct*)__get_free_page(GFP_KERNEL)))
 		goto bad_fork;
 	nr = find_empty_process();
@@ -145,22 +145,22 @@ asmlinkage int sys_fork(struct pt_regs regs)
 		goto bad_fork_free;
 	task[nr] = p;
 	*p = *current;
-	p->did_exec = 0;    /* Ä¬ÈÏÊÇÃ»ÓĞ±»execve×åº¯ÊıÖ´ĞĞ */
+	p->did_exec = 0;    /* é»˜è®¤æ˜¯æ²¡æœ‰è¢«execveæ—å‡½æ•°æ‰§è¡Œ */
 	p->kernel_stack_page = 0;
 	p->state = TASK_UNINTERRUPTIBLE;
 	p->flags &= ~(PF_PTRACED|PF_TRACESYS);
 	p->pid = last_pid;
 	p->swappable = 1;
-	/*¸Õ±»´´½¨Ê±£¬¸¸½ø³ÌºÍ´´½¨¸Ã½ø³ÌµÄ½ø³ÌÊÇÍ¬Ò»¸ö½ø³Ì£¬ÎªÉ¶ÒªÇø·Ö¿ª£¬ÊÇÒòÎª
-	 *½ø³ÌµÄ¸¸½ø³Ì±»É±ËÀºó£¬¾Í½«¸Ã½ø³ÌµÄ¸¸½ø³ÌÉèÖÃÎª1ºÅ½ø³Ì*/
+	/*åˆšè¢«åˆ›å»ºæ—¶ï¼Œçˆ¶è¿›ç¨‹å’Œåˆ›å»ºè¯¥è¿›ç¨‹çš„è¿›ç¨‹æ˜¯åŒä¸€ä¸ªè¿›ç¨‹ï¼Œä¸ºå•¥è¦åŒºåˆ†å¼€ï¼Œæ˜¯å› ä¸º
+	 *è¿›ç¨‹çš„çˆ¶è¿›ç¨‹è¢«æ€æ­»åï¼Œå°±å°†è¯¥è¿›ç¨‹çš„çˆ¶è¿›ç¨‹è®¾ç½®ä¸º1å·è¿›ç¨‹*/
 	p->p_pptr = p->p_opptr = current;
 	p->p_cptr = NULL;
-	//ÉèÖÃtask_struct½ø³ÌµÄÁ´±í¹ØÏµ
+	//è®¾ç½®task_structè¿›ç¨‹çš„é“¾è¡¨å…³ç³»
 	SET_LINKS(p);
 	p->signal = 0;
 	p->it_real_value = p->it_virt_value = p->it_prof_value = 0;
 	p->it_real_incr = p->it_virt_incr = p->it_prof_incr = 0;
-    /* ×Ó½ø³ÌµÄ½ø³Ì×éÁìµ¼½ø³ÌÊôĞÔ²»¼Ì³Ğ */
+    /* å­è¿›ç¨‹çš„è¿›ç¨‹ç»„é¢†å¯¼è¿›ç¨‹å±æ€§ä¸ç»§æ‰¿ */
 	p->leader = 0;		/* process leadership doesn't inherit */
 	p->utime = p->stime = 0;
 	p->cutime = p->cstime = 0;
@@ -212,9 +212,9 @@ asmlinkage int sys_fork(struct pt_regs regs)
 		goto bad_fork_cleanup;
 	if (clone_flags & COPYFD) {
 		for (i=0; i<NR_OPEN;i++)
-			/* ×¢Òâ´ËÊ±p->filpÈÎÈ»ÊÇ¸¸½ø³ÌµÄÎÄ¼şÖ¸Õë,copy_fdº¯Êı¾ÍÊÇ
-			 * ½«¸¸½ø³ÌµÄÎÄ¼şÖ¸Õë¿½±´Ò»·İ¹ıÀ´£¬×¢Òâstruct_fileµÄÎÄ¼ş¼ÆÊı
-			 * ºÍinodeµÄÎÄ¼ş¼ÆÊı
+			/* æ³¨æ„æ­¤æ—¶p->filpä»»ç„¶æ˜¯çˆ¶è¿›ç¨‹çš„æ–‡ä»¶æŒ‡é’ˆ,copy_fdå‡½æ•°å°±æ˜¯
+			 * å°†çˆ¶è¿›ç¨‹çš„æ–‡ä»¶æŒ‡é’ˆæ‹·è´ä¸€ä»½è¿‡æ¥ï¼Œæ³¨æ„struct_fileçš„æ–‡ä»¶è®¡æ•°
+			 * å’Œinodeçš„æ–‡ä»¶è®¡æ•°
 			 */
 			if ((f = p->filp[i]) != NULL)
 				p->filp[i] = copy_fd(f);
@@ -223,7 +223,7 @@ asmlinkage int sys_fork(struct pt_regs regs)
 			if ((f = p->filp[i]) != NULL)
 				f->f_count++;
 	}
-    /* ÔÚÍ¬Ò»¸ö½ø³ÌÔÚforkÖ®ºó£¬Í¬Ê±Ôö¼Ópwd,root,executableµÄÒıÓÃ¼ÆÊı */
+    /* åœ¨åŒä¸€ä¸ªè¿›ç¨‹åœ¨forkä¹‹åï¼ŒåŒæ—¶å¢åŠ pwd,root,executableçš„å¼•ç”¨è®¡æ•° */
 	if (current->pwd)
 		current->pwd->i_count++;
 	if (current->root)

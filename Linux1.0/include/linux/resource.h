@@ -16,7 +16,7 @@
 #define	RUSAGE_CHILDREN	(-1)
 #define RUSAGE_BOTH	(-2)		/* sys_wait4() uses this */
 
-/* ½ø³ÌµÄ×ÊÔ´Ê¹ÓÃÇé¿ö½á¹¹ */
+/* è¿›ç¨‹çš„èµ„æºä½¿ç”¨æƒ…å†µç»“æ„ */
 struct	rusage {
 	struct timeval ru_utime;	/* user time used */
 	struct timeval ru_stime;	/* system time used */
@@ -25,7 +25,7 @@ struct	rusage {
 	long	ru_idrss;		/* integral unshared data size */
 	long	ru_isrss;		/* integral unshared stack size */
 	long	ru_minflt;		/* page reclaims */
-	long	ru_majflt;		/* page faults */       /* Ò³Ê§°Ü */
+	long	ru_majflt;		/* page faults */       /* é¡µå¤±è´¥ */
 	long	ru_nswap;		/* swaps */
 	long	ru_inblock;		/* block input operations */
 	long	ru_oublock;		/* block output operations */
@@ -40,10 +40,10 @@ struct	rusage {
  * Resource limits
  */
 
-#define RLIMIT_CPU	0		/* CPU time in ms */ /* ×î´óÔÊĞíÊ¹ÓÃµÄcpuÊ±¼ä */
+#define RLIMIT_CPU	0		/* CPU time in ms */ /* æœ€å¤§å…è®¸ä½¿ç”¨çš„cpuæ—¶é—´ */
 #define RLIMIT_FSIZE	1		/* Maximum filesize */
-#define RLIMIT_DATA	2		/* max data size */    /* ½ø³ÌµÄ×î´óÊı¾İ¶Î*/
-#define RLIMIT_STACK	3		/* max stack size */ /* ×î´óµÄ½ø³Ì×ÊÔ´ */
+#define RLIMIT_DATA	2		/* max data size */    /* è¿›ç¨‹çš„æœ€å¤§æ•°æ®æ®µ*/
+#define RLIMIT_STACK	3		/* max stack size */ /* æœ€å¤§çš„è¿›ç¨‹èµ„æº */
 #define RLIMIT_CORE	4		/* max core file size */
 #define RLIMIT_RSS	5		/* max resident set size */
 

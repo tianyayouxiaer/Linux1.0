@@ -251,7 +251,7 @@ static unsigned int load_aout_interp(struct exec * interp_ex,
 #define INTERPRETER_AOUT 1
 #define INTERPRETER_ELF 2
 
-/* ¼ÓÔØelf¸ñÊ½µÄ¶þ½øÖÆÎÄ¼þ */
+/* åŠ è½½elfæ ¼å¼çš„äºŒè¿›åˆ¶æ–‡ä»¶ */
 int load_elf_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 {
 	struct elfhdr elf_ex;
@@ -279,7 +279,7 @@ int load_elf_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	load_addr = 0;
 	elf_ex = *((struct elfhdr *) bprm->buf);	  /* exec-header */
 
-	/* elfÎÄ¼þÍ·½øÐÐÅÐ¶Ï */
+	/* elfæ–‡ä»¶å¤´è¿›è¡Œåˆ¤æ–­ */
 	if (elf_ex.e_ident[0] != 0x7f ||
 	    strncmp(&elf_ex.e_ident[1], "ELF",3) != 0)
 		return  -ENOEXEC;
@@ -300,7 +300,7 @@ int load_elf_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	
 	old_fs = get_fs();
 	set_fs(get_ds());
-        /* ¼ÌÐø¶ÁÈ¡¿ÉÖ´ÐÐÎÄ¼þ */
+        /* ç»§ç»­è¯»å–å¯æ‰§è¡Œæ–‡ä»¶ */
 	retval = read_exec(bprm->inode, elf_ex.e_phoff, (char *) elf_phdata,
 			   elf_ex.e_phentsize * elf_ex.e_phnum);
 	set_fs(old_fs);
@@ -314,7 +314,7 @@ int load_elf_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	elf_bss = 0;
 	elf_brk = 0;
 	
-        /* ´ò¿ª¿ÉÖ´ÐÐÎÄ¼þµÄinode£¬²¢·µ»ØÎÄ¼þµÄÎÄ¼þÃèÊö·û */
+        /* æ‰“å¼€å¯æ‰§è¡Œæ–‡ä»¶çš„inodeï¼Œå¹¶è¿”å›žæ–‡ä»¶çš„æ–‡ä»¶æè¿°ç¬¦ */
 	elf_exec_fileno = open_inode(bprm->inode, O_RDONLY);
 
 	if (elf_exec_fileno < 0) {

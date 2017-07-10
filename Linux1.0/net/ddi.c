@@ -65,7 +65,7 @@ ddi_map(const char *id)
  * system startup.  Its purpose is to walk trough the "devices"
  * table (defined above), and to call all moduled defined in it.
  */
-/* ËùÓÐµÄÍøÂçÉè±¸¶¼ÔÚÕâÀïÍ¨¹ýÉè±¸µÄÐÎÊ½À´³õÊ¼»¯ */
+/* æ‰€æœ‰çš„ç½‘ç»œè®¾å¤‡éƒ½åœ¨è¿™é‡Œé€šè¿‡è®¾å¤‡çš„å½¢å¼æ¥åˆå§‹åŒ– */
 void ddi_init(void)
 {
   struct ddi_proto *pro;
@@ -75,7 +75,7 @@ void ddi_init(void)
 
   /* First off, kick all configured protocols. */
   pro = protocols;
-  /* ËùÓÐÉè±¸Ð­ÒéµÄ³õÊ¼»¯ */
+  /* æ‰€æœ‰è®¾å¤‡åè®®çš„åˆå§‹åŒ– */
   while (pro->name != NULL) {
 	(*pro->init)(pro);
 	pro++;

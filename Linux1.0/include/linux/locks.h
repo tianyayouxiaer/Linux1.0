@@ -39,7 +39,7 @@ extern inline void wait_on_super(struct super_block * sb)
 		__wait_on_super(sb);
 }
 
-/* Ëø×¡³¬¼¶¿é */
+/* é”ä½è¶…çº§å— */
 extern inline void lock_super(struct super_block * sb)
 {
 	if (sb->s_lock)
@@ -47,7 +47,7 @@ extern inline void lock_super(struct super_block * sb)
 	sb->s_lock = 1;
 }
 
-/* ½âËø³¬¼¶¿é */
+/* è§£é”è¶…çº§å— */
 extern inline void unlock_super(struct super_block * sb)
 {
 	sb->s_lock = 0;

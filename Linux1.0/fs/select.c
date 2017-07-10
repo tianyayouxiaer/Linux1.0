@@ -45,7 +45,7 @@ static void free_wait(select_table * p)
 	while (p->nr > 0) {
 		p->nr--;
 		entry--;
-		/* entryÖĞµÄwait´ÓÊµ¼ÊµÄµÈ´ıÁ´±íÖĞ¸øÉ¾³ı */
+		/* entryä¸­çš„waitä»å®é™…çš„ç­‰å¾…é“¾è¡¨ä¸­ç»™åˆ é™¤ */
 		remove_wait_queue(entry->wait_address,&entry->wait);
 	}
 }
@@ -61,7 +61,7 @@ static void free_wait(select_table * p)
  * and we aren't going to sleep on the select_table.  -- jrs
  */
 
-/* ¼ì²éÎÄ¼ş±ê¼Ç 
+/* æ£€æŸ¥æ–‡ä»¶æ ‡è®° 
  */
 static int check(int flag, select_table * wait, struct file * file)
 {
@@ -73,15 +73,15 @@ static int check(int flag, select_table * wait, struct file * file)
 	if ((fops = file->f_op) && (select = fops->select))
 		return select(inode, file, flag, wait)
 		    || (wait && select(inode, file, flag, NULL));
-	/* ÆÕÍ¨ÎÄ¼ş¿Ï¶¨ÊÇ¿ÉÒÔ±»¶ÁĞ´µÄ */
+	/* æ™®é€šæ–‡ä»¶è‚¯å®šæ˜¯å¯ä»¥è¢«è¯»å†™çš„ */
 	if (S_ISREG(inode->i_mode))
 		return 1;
 	return 0;
 }
 
-/* ËùÓĞÎÄ¼şÃèÊö·ûµÄ·¶Î§£¬Ò»°ãÊÇ×î´óµÄÎÄ¼şÃèÊö·û¼Ó1£¬
- * ÔÚin,out£¬exÈı¸ö²ÎÊıÖĞ·µ»ØµÄÊÇ¼ì²âµ½±ä¶¯µÄÎÄ¼ş¾ä±ú
- * º¯Êı·µ»ØÖµ´ú±í¼ì²âµ½±ä¶¯µÄÊıÁ¿ 
+/* æ‰€æœ‰æ–‡ä»¶æè¿°ç¬¦çš„èŒƒå›´ï¼Œä¸€èˆ¬æ˜¯æœ€å¤§çš„æ–‡ä»¶æè¿°ç¬¦åŠ 1ï¼Œ
+ * åœ¨in,outï¼Œexä¸‰ä¸ªå‚æ•°ä¸­è¿”å›çš„æ˜¯æ£€æµ‹åˆ°å˜åŠ¨çš„æ–‡ä»¶å¥æŸ„
+ * å‡½æ•°è¿”å›å€¼ä»£è¡¨æ£€æµ‹åˆ°å˜åŠ¨çš„æ•°é‡ 
  */
 int do_select(int n, fd_set *in, fd_set *out, fd_set *ex,
 	fd_set *res_in, fd_set *res_out, fd_set *res_ex)
@@ -93,56 +93,56 @@ int do_select(int n, fd_set *in, fd_set *out, fd_set *ex,
 	int i,j;
 	int max = -1;
 
-	/* Ñ­»·¼ì²éÃ¿¸öÎÄ¼ş¼¯ºÏµÄÎ» */
+	/* å¾ªç¯æ£€æŸ¥æ¯ä¸ªæ–‡ä»¶é›†åˆçš„ä½ */
 	for (j = 0 ; j < __FDSET_LONGS ; j++) {
-		/* Ò»¸öunsigned longÄÜ¹»±íÊ¾32¸öÎÄ¼şÃèÊö·û£¬32=2µÄ5´Î·½*/
+		/* ä¸€ä¸ªunsigned longèƒ½å¤Ÿè¡¨ç¤º32ä¸ªæ–‡ä»¶æè¿°ç¬¦ï¼Œ32=2çš„5æ¬¡æ–¹*/
 		i = j << 5;
-		/* ³¬¹ı×î´óÎÄ¼şÃèÊö·û£¬ÔòÍ£Ö¹ */
+		/* è¶…è¿‡æœ€å¤§æ–‡ä»¶æè¿°ç¬¦ï¼Œåˆ™åœæ­¢ */
 		if (i >= n)
 			break;
 		set = in->fds_bits[j] | out->fds_bits[j] | ex->fds_bits[j];
-		/* setÒÆ¶¯8´Î¾ÍµÈÓÚ0ÁË */
+		/* setç§»åŠ¨8æ¬¡å°±ç­‰äº0äº† */
 		for ( ; set ; i++,set >>= 1) {
 			if (i >= n)
 				goto end_check;
-			/* ²âÊÔ¼¯ºÏÖĞµÄ×îºóÒ»Î» */
+			/* æµ‹è¯•é›†åˆä¸­çš„æœ€åä¸€ä½ */
 			if (!(set & 1))
 				continue;
 			if (!current->filp[i])
 				return -EBADF;
 			if (!current->filp[i]->f_inode)
 				return -EBADF;
-			/* ¼ÇÂ¼×î´óµÄÎÄ¼şÃèÊö·û */
+			/* è®°å½•æœ€å¤§çš„æ–‡ä»¶æè¿°ç¬¦ */
 			max = i;
 		}
 	}
 end_check:
-	/* ¼ÇÂ¼Êµ¼Ê¼àÊÓµÄÎÄ¼şÃèÊö·ûµÄ×î´óÖµ+1 */
+	/* è®°å½•å®é™…ç›‘è§†çš„æ–‡ä»¶æè¿°ç¬¦çš„æœ€å¤§å€¼+1 */
 	n = max + 1;
 
-	/* »ñÈ¡Õ¼ÓÃÒ»Ò³´óĞ¡µÄselect_table_entryÄÚ´æ */
+	/* è·å–å ç”¨ä¸€é¡µå¤§å°çš„select_table_entryå†…å­˜ */
 	if(!(entry = (struct select_table_entry*) __get_free_page(GFP_KERNEL)))
 		return -ENOMEM;
 	FD_ZERO(res_in);
 	FD_ZERO(res_out);
 	FD_ZERO(res_ex);
 	count = 0;
-	/* ³õÊ¼»¯µÈ´ıÁĞ±í */
+	/* åˆå§‹åŒ–ç­‰å¾…åˆ—è¡¨ */
 	wait_table.nr = 0;
 	wait_table.entry = entry;
 	wait = &wait_table;
 repeat:
 	current->state = TASK_INTERRUPTIBLE;
-	/* Ñ­»·É¨ÃèËùÓĞ¼àÊÓµÄÎÄ¼şÃèÊö·û£¬×¢ÒâÕâÀïµÄwaitµÚÒ»´Î¼ì²âµ½ÓĞÎÄ¼ş±ä¶¯Ö®Ç°´«Èëcheckº¯Êı²»ÎªNULL,
-	 * Ö®ºó¾Í¶¼ÎªNULL,ÒòÎªÃ¿Ò»¸öÍøÂçÎÄ¼şÃèÊö·û¶¼¶ÔÓ¦Ò»¸öÎ¨Ò»µÄstruct sock£¬µ±Ç°½ø³ÌÖ»ĞèÒªÔÚstruct sock
-	 * µÄsleepÖĞµÈ´ıÒ»´Î¾Í¹»ÁË¡£
+	/* å¾ªç¯æ‰«ææ‰€æœ‰ç›‘è§†çš„æ–‡ä»¶æè¿°ç¬¦ï¼Œæ³¨æ„è¿™é‡Œçš„waitç¬¬ä¸€æ¬¡æ£€æµ‹åˆ°æœ‰æ–‡ä»¶å˜åŠ¨ä¹‹å‰ä¼ å…¥checkå‡½æ•°ä¸ä¸ºNULL,
+	 * ä¹‹åå°±éƒ½ä¸ºNULL,å› ä¸ºæ¯ä¸€ä¸ªç½‘ç»œæ–‡ä»¶æè¿°ç¬¦éƒ½å¯¹åº”ä¸€ä¸ªå”¯ä¸€çš„struct sockï¼Œå½“å‰è¿›ç¨‹åªéœ€è¦åœ¨struct sock
+	 * çš„sleepä¸­ç­‰å¾…ä¸€æ¬¡å°±å¤Ÿäº†ã€‚
 	 */
 	for (i = 0 ; i < n ; i++) {
 		if (FD_ISSET(i,in) && check(SEL_IN,wait,current->filp[i])) {
 			FD_SET(i, res_in);
 			count++;
-			wait = NULL; /* ´Ë´¦ÉèÖÃÎªNULL,¾Í´ú±íÒÑ¾­¼ì²âµ½ÁËÒ»¸öÎÄ¼ş±ä¶¯£¬ËùÒÔ²»ĞèÒªÔÚµÈ´ıÔÚÆäËûÎÄ¼şÉÏ
-			                  * ÔÚif(!count-----)ÅĞ¶ÏÊ±¾Í¿ÉÒÔ¿ìËÙ·µ»Ø 
+			wait = NULL; /* æ­¤å¤„è®¾ç½®ä¸ºNULL,å°±ä»£è¡¨å·²ç»æ£€æµ‹åˆ°äº†ä¸€ä¸ªæ–‡ä»¶å˜åŠ¨ï¼Œæ‰€ä»¥ä¸éœ€è¦åœ¨ç­‰å¾…åœ¨å…¶ä»–æ–‡ä»¶ä¸Š
+			                  * åœ¨if(!count-----)åˆ¤æ–­æ—¶å°±å¯ä»¥å¿«é€Ÿè¿”å› 
 			                  */
 		}
 		if (FD_ISSET(i,out) && check(SEL_OUT,wait,current->filp[i])) {
@@ -156,22 +156,22 @@ repeat:
 			wait = NULL;
 		}
 	}
-	/* ËùÓĞµÄÎÄ¼ş±»É¨ÃèÒ»´Î¹ıºó£¬¾ÍÒÑ¾­Ìí¼Óµ½struct sockÖĞµÄsleepµ±ÖĞ£¬
-	 * Èç¹ûwait²»ÎªNULL£¬Ôò»á¼ÌĞøÌí¼ÓÒ»´Î 
+	/* æ‰€æœ‰çš„æ–‡ä»¶è¢«æ‰«æä¸€æ¬¡è¿‡åï¼Œå°±å·²ç»æ·»åŠ åˆ°struct sockä¸­çš„sleepå½“ä¸­ï¼Œ
+	 * å¦‚æœwaitä¸ä¸ºNULLï¼Œåˆ™ä¼šç»§ç»­æ·»åŠ ä¸€æ¬¡ 
 	 */
 	wait = NULL;
-	/* ×¢ÒâÕâÀïµÄ×èÈûµÀÀí£¬¾­¹ıÒ»ÂÖÉ¨Ãè¹ıºó£¬Ò»µ©¼àÊÓµ½ÎÄ¼şÓĞ±ä¶¯£¬¾ÍÁ¢¼´·µ»Ø
-	 * ÔÚµÚÈı¸öÅĞ¶ÏÌõ¼şµ±ÖĞ£¬Èç¹ûµ±Ç°½ø³Ì½ÓÊÕµ½ÁËĞÅºÅ£¬²¢ÇÒÃ»ÓĞ
-	 * ±»×èÈû£¬Ôòselectº¯Êı²»»á¼ÌĞø×èÈûÁË£¬ÒòÎª¸Ãº¯ÊıÊÇÔÚÄÚºËÌ¬µ±ÖĞ£¬
-	 * ÒòÎªĞÅºÅµÄ´¦Àíº¯ÊıÊÇÔÚÄÚºËÌ¬·µ»Øµ½ÓÃ»§Ì¬µÄÊ±ºòÖ´ĞĞµÄ£¬ËùÒÔÎªÁË
-	 * ¾¡¿ìÏìÓ¦ĞÅºÅ£¬¾ÍÈÃ½ø³Ì´Ó¸Ãº¯Êıµ±ÖĞ¿ìËÙÍË³ö 
+	/* æ³¨æ„è¿™é‡Œçš„é˜»å¡é“ç†ï¼Œç»è¿‡ä¸€è½®æ‰«æè¿‡åï¼Œä¸€æ—¦ç›‘è§†åˆ°æ–‡ä»¶æœ‰å˜åŠ¨ï¼Œå°±ç«‹å³è¿”å›
+	 * åœ¨ç¬¬ä¸‰ä¸ªåˆ¤æ–­æ¡ä»¶å½“ä¸­ï¼Œå¦‚æœå½“å‰è¿›ç¨‹æ¥æ”¶åˆ°äº†ä¿¡å·ï¼Œå¹¶ä¸”æ²¡æœ‰
+	 * è¢«é˜»å¡ï¼Œåˆ™selectå‡½æ•°ä¸ä¼šç»§ç»­é˜»å¡äº†ï¼Œå› ä¸ºè¯¥å‡½æ•°æ˜¯åœ¨å†…æ ¸æ€å½“ä¸­ï¼Œ
+	 * å› ä¸ºä¿¡å·çš„å¤„ç†å‡½æ•°æ˜¯åœ¨å†…æ ¸æ€è¿”å›åˆ°ç”¨æˆ·æ€çš„æ—¶å€™æ‰§è¡Œçš„ï¼Œæ‰€ä»¥ä¸ºäº†
+	 * å°½å¿«å“åº”ä¿¡å·ï¼Œå°±è®©è¿›ç¨‹ä»è¯¥å‡½æ•°å½“ä¸­å¿«é€Ÿé€€å‡º 
 	 */
 	if (!count && current->timeout && !(current->signal & ~current->blocked)) {
-		/* ´ËÊ±µ±Ç°½ø³ÌÒÑ¾­Ìí¼Óµ½ËùÓĞstrut sockÖĞµÄsleepÁ´±íµ±ÖĞ£¬Ö÷¶¯·ÅÆúcpu */
+		/* æ­¤æ—¶å½“å‰è¿›ç¨‹å·²ç»æ·»åŠ åˆ°æ‰€æœ‰strut sockä¸­çš„sleepé“¾è¡¨å½“ä¸­ï¼Œä¸»åŠ¨æ”¾å¼ƒcpu */
 		schedule();
 		goto repeat;
 	}
-	/* ½«µ±Ç°½ø³Ì´ÓËùÓĞÒÑ¾­Ìí¼Óµ½struct sockµÄsleepÁ´±íÖĞÉ¾³ı */
+	/* å°†å½“å‰è¿›ç¨‹ä»æ‰€æœ‰å·²ç»æ·»åŠ åˆ°struct sockçš„sleepé“¾è¡¨ä¸­åˆ é™¤ */
 	free_wait(&wait_table);
 	free_page((unsigned long) entry);
 	current->state = TASK_RUNNING;
@@ -183,7 +183,7 @@ repeat:
  * we'll write to it eventually..
  */
 
-/* ½«fs_pointerÊı¾İ¿½±´µ½fdsetÎªµØÖ·µÄÄÚ´æµ±ÖĞ
+/* å°†fs_pointeræ•°æ®æ‹·è´åˆ°fdsetä¸ºåœ°å€çš„å†…å­˜å½“ä¸­
  */
 static int __get_fd_set(int nr, unsigned long * fs_pointer, unsigned long * fdset)
 {
@@ -195,20 +195,20 @@ static int __get_fd_set(int nr, unsigned long * fs_pointer, unsigned long * fdse
 	error = verify_area(VERIFY_WRITE,fs_pointer,sizeof(fd_set));
 	if (error)
 		return error;
-	/* ×¢ÒâÒ»¸öfdsetÕ¼ÓÃ32×Ö½Ú£¬Ã¿¸ö×Ö½Ú8Î»£¬Í¨¹ıÎ»À´±íÊ¾£¬
-	 * Ôò¿ÉÒÔ±íÊ¾32*8¸öÎÄ¼şÃèÊö·û£¬Õâ¸öÊı×ã¹»±íÊ¾µ±Ç°ÏµÍ³µÄÎÄ¼şÃèÊö·ûµÄ·¶Î§
+	/* æ³¨æ„ä¸€ä¸ªfdsetå ç”¨32å­—èŠ‚ï¼Œæ¯ä¸ªå­—èŠ‚8ä½ï¼Œé€šè¿‡ä½æ¥è¡¨ç¤ºï¼Œ
+	 * åˆ™å¯ä»¥è¡¨ç¤º32*8ä¸ªæ–‡ä»¶æè¿°ç¬¦ï¼Œè¿™ä¸ªæ•°è¶³å¤Ÿè¡¨ç¤ºå½“å‰ç³»ç»Ÿçš„æ–‡ä»¶æè¿°ç¬¦çš„èŒƒå›´
 	 */
 	while (nr > 0) {
 		*fdset = get_fs_long(fs_pointer);
 		fdset++;
 		fs_pointer++;
-		/* ÒòÎªÒ»¸öunsigned longÓĞ32Î»£¬¿ÉÒÔ±íÊ¾32¸öÎÄ¼şÃèÊö·û */
+		/* å› ä¸ºä¸€ä¸ªunsigned longæœ‰32ä½ï¼Œå¯ä»¥è¡¨ç¤º32ä¸ªæ–‡ä»¶æè¿°ç¬¦ */
 		nr -= 32;
 	}
 	return 0;
 }
 
-/* ½«fdsetÖĞµÄÊı¾İ¸´ÖÆµ½fs_pointerµØÖ·µÄÆğÊ¼´¦
+/* å°†fdsetä¸­çš„æ•°æ®å¤åˆ¶åˆ°fs_pointeråœ°å€çš„èµ·å§‹å¤„
  */
 static void __set_fd_set(int nr, unsigned long * fs_pointer, unsigned long * fdset)
 {
@@ -255,9 +255,9 @@ asmlinkage int sys_select( unsigned long *buffer )
 		return -EINVAL;
 	if (n > NR_OPEN)
 		n = NR_OPEN;
-	/* ¼àÊÓÕâ¸öÎÄ¼şÃèÊö·û¼¯ºÏÊÇ·ñ¿É¶Á */
+	/* ç›‘è§†è¿™ä¸ªæ–‡ä»¶æè¿°ç¬¦é›†åˆæ˜¯å¦å¯è¯» */
 	inp = (fd_set *) get_fs_long(buffer++);
-	/* ¼àÊÓÕâ¸öÎÄ¼şÃèÊö·û¼¯ºÏÊÇ·ñ¿ÉĞ´ */
+	/* ç›‘è§†è¿™ä¸ªæ–‡ä»¶æè¿°ç¬¦é›†åˆæ˜¯å¦å¯å†™ */
 	outp = (fd_set *) get_fs_long(buffer++);
 	exp = (fd_set *) get_fs_long(buffer++);
 	tvp = (struct timeval *) get_fs_long(buffer);
@@ -274,10 +274,10 @@ asmlinkage int sys_select( unsigned long *buffer )
 		if (timeout)
 			timeout += jiffies + 1;
 	}
-	/* ÉèÖÃµ±Ç°½ø³ÌµÄµÈ´ıÊ±¼ä */
+	/* è®¾ç½®å½“å‰è¿›ç¨‹çš„ç­‰å¾…æ—¶é—´ */
 	current->timeout = timeout;
 	i = do_select(n, &in, &out, &ex, &res_in, &res_out, &res_ex);
-	/* ¼ÇÂ¼Êµ¼ÊµÈ´ıÊ±¼ä */
+	/* è®°å½•å®é™…ç­‰å¾…æ—¶é—´ */
 	if (current->timeout > jiffies)
 		timeout = current->timeout - jiffies;
 	else
@@ -293,7 +293,7 @@ asmlinkage int sys_select( unsigned long *buffer )
 		return i;
 	if (!i && (current->signal & ~current->blocked))
 		return -ERESTARTNOHAND;
-	/* ½«¼à²âµ½µÄ½á¹û»ØĞ´µ½²ÎÊı¶ÔÓ¦µÄÄÚ´æµ±ÖĞ */
+	/* å°†ç›‘æµ‹åˆ°çš„ç»“æœå›å†™åˆ°å‚æ•°å¯¹åº”çš„å†…å­˜å½“ä¸­ */
 	set_fd_set(n, inp, &res_in);
 	set_fd_set(n, outp, &res_out);
 	set_fd_set(n, exp, &res_ex);

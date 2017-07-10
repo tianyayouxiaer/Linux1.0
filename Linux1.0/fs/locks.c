@@ -38,7 +38,7 @@ static struct file_lock *file_lock_free_list;
  * Called at boot time to initialize the lock table ...
  */
 
-/* ³õÊ¼»¯ÎÄ¼şËø£¬ÒÔµ¥Á´±íµÄĞÎÊ½½«ÆäÁ¬½ÓÆğÀ´
+/* åˆå§‹åŒ–æ–‡ä»¶é”ï¼Œä»¥å•é“¾è¡¨çš„å½¢å¼å°†å…¶è¿æ¥èµ·æ¥
  */
 void fcntl_init_locks(void)
 {
@@ -53,9 +53,9 @@ void fcntl_init_locks(void)
 	file_lock_free_list = &file_lock_table[0];
 }
 
-/* fdÊÇ²Ù×÷µÄÎÄ¼şÃèÊö·û£¬
- * lÊÇ´«µİ½øÀ´µÄËøµÄ½á¹¹
- * Èç¹û´æÔÚ³åÍ»Ôò·µ»Ø³åÍ»µÄÄÇÒ»¶Î
+/* fdæ˜¯æ“ä½œçš„æ–‡ä»¶æè¿°ç¬¦ï¼Œ
+ * læ˜¯ä¼ é€’è¿›æ¥çš„é”çš„ç»“æ„
+ * å¦‚æœå­˜åœ¨å†²çªåˆ™è¿”å›å†²çªçš„é‚£ä¸€æ®µ
  */
 int fcntl_getlk(unsigned int fd, struct flock *l)
 {
@@ -69,16 +69,16 @@ int fcntl_getlk(unsigned int fd, struct flock *l)
 	error = verify_area(VERIFY_WRITE,l, sizeof(*l));
 	if (error)
 		return error;
-	/* ½«lÖ¸ÏòµÄÄÚ´æ¸´ÖÆµ½flockµ±ÖĞ */
+	/* å°†læŒ‡å‘çš„å†…å­˜å¤åˆ¶åˆ°flockå½“ä¸­ */
 	memcpy_fromfs(&flock, l, sizeof(flock));
 	if (flock.l_type == F_UNLCK)
 		return -EINVAL;
 	if (!copy_flock(filp, &file_lock, &flock, fd))
 		return -EINVAL;
 
-	/* Ñ­»·´¦ÀíËø */
+	/* å¾ªç¯å¤„ç†é” */
 	for (fl = filp->f_inode->i_flock; fl != NULL; fl = fl->fl_next) {
-		/* Èç¹û´æÔÚ³åÍ»£¬ÔòĞŞ¸Ä´«µİ²ÎÊıËøµÄÊôĞÔ */
+		/* å¦‚æœå­˜åœ¨å†²çªï¼Œåˆ™ä¿®æ”¹ä¼ é€’å‚æ•°é”çš„å±æ€§ */
 		if (conflict(&file_lock, fl)) {
 			flock.l_pid = fl->fl_owner->pid;
 			flock.l_start = fl->fl_start;
@@ -202,7 +202,7 @@ void fcntl_remove_locks(struct task_struct *task, struct file *filp,
  * Result is a boolean indicating success.
  */
 
-/* ¸ù¾İstruct flockÀ´´´½¨Ò»¸östruct file_lock */
+/* æ ¹æ®struct flockæ¥åˆ›å»ºä¸€ä¸ªstruct file_lock */
 static int copy_flock(struct file *filp, struct file_lock *fl, struct flock *l,
                       unsigned int fd)
 {
@@ -238,7 +238,7 @@ static int copy_flock(struct file *filp, struct file_lock *fl, struct flock *l,
  * Determine if lock {sys_fl} blocks lock {caller_fl} ...
  */
 
-/* ÅĞ¶ÏÁ½¸öËøÖ®¼äÊÇ·ñÓĞ³åÍ»,·µ»Ø0±íÊ¾Ã»³åÍ»£¬·ñÔòÓĞ³åÍ» */
+/* åˆ¤æ–­ä¸¤ä¸ªé”ä¹‹é—´æ˜¯å¦æœ‰å†²çª,è¿”å›0è¡¨ç¤ºæ²¡å†²çªï¼Œå¦åˆ™æœ‰å†²çª */
 static int conflict(struct file_lock *caller_fl, struct file_lock *sys_fl)
 {
 	if (   caller_fl->fl_owner == sys_fl->fl_owner
@@ -246,8 +246,8 @@ static int conflict(struct file_lock *caller_fl, struct file_lock *sys_fl)
 		return 0;
 	if (!overlap(caller_fl, sys_fl))
 		return 0;
-	/* Èç¹û´æÔÚ½»²æ£¬ÇÒÁ½¸ö¶¼ÊÇ¶ÁËø£¬·µ»Ø0£¬
-	 * Èç¹ûµ±ÖĞ´æÔÚÒ»¸öĞ´Ëø£¬Ôò³ö´í 
+	/* å¦‚æœå­˜åœ¨äº¤å‰ï¼Œä¸”ä¸¤ä¸ªéƒ½æ˜¯è¯»é”ï¼Œè¿”å›0ï¼Œ
+	 * å¦‚æœå½“ä¸­å­˜åœ¨ä¸€ä¸ªå†™é”ï¼Œåˆ™å‡ºé”™ 
 	 */
 	switch (caller_fl->fl_type) {
 	case F_RDLCK :
@@ -258,7 +258,7 @@ static int conflict(struct file_lock *caller_fl, struct file_lock *sys_fl)
 	return 0;	/* shouldn't get here, but just in case */
 }
 
-/* ÅĞ¶ÏÁ½¸öËøµÄ¶ÎÊÇ·ñÓĞ½»²æ 
+/* åˆ¤æ–­ä¸¤ä¸ªé”çš„æ®µæ˜¯å¦æœ‰äº¤å‰ 
  */
 static int overlap(struct file_lock *fl1, struct file_lock *fl2)
 {

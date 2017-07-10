@@ -22,7 +22,7 @@ extern void sem_exit (void);
 
 int getrusage(struct task_struct *, int, struct rusage *);
 
-/* ÕæÕı½«ĞÅºÅÖµĞ´µ½½ø³ÌµÄsignal±äÁ¿µ±ÖĞ */
+/* çœŸæ­£å°†ä¿¡å·å€¼å†™åˆ°è¿›ç¨‹çš„signalå˜é‡å½“ä¸­ */
 static int generate(unsigned long sig, struct task_struct * p)
 {
 	unsigned long mask = 1 << (sig-1);
@@ -45,18 +45,18 @@ static int generate(unsigned long sig, struct task_struct * p)
 }
 
 
-/* Ïò½ø³Ì·¢ËÍĞÅºÅ
- * sig´ú±íĞÅºÅ
- * ´ú±í½ÓÊÜĞÅºÅµÄ½ø³Ì
- * priv´ú±íĞÅºÅµÄÓÅÏÈ¼¶
- * ·µ»Ø0±íÊ¾³É¹¦ 
+/* å‘è¿›ç¨‹å‘é€ä¿¡å·
+ * sigä»£è¡¨ä¿¡å·
+ * ä»£è¡¨æ¥å—ä¿¡å·çš„è¿›ç¨‹
+ * privä»£è¡¨ä¿¡å·çš„ä¼˜å…ˆçº§
+ * è¿”å›0è¡¨ç¤ºæˆåŠŸ 
  */
 int send_sig(unsigned long sig,struct task_struct * p,int priv)
 {
 	if (!p || sig > 32)
 		return -EINVAL;
-    /* ·¢ËÍĞÅºÅµÄ½ø³ÌÒªÊÇÍ¬Ò»¸ö»á»°µ±ÖĞ£¬²¢ÇÒ½ø³ÌËùÊôÓÃ»§Ò²ÒªÏàÍ¬£¬·ñÔò²»ĞĞ£¬
-      * Èç¹ûÏµÍ³ÖĞÓĞ¶à¸öÕË»§µÇÂ¼£¬ÔòÆäÖĞÒ»¸öÕË»§µÄ½ø³Ì²»Í¬ÏòÆäËûÕË»§µÄ½ø³Ì·¢ËÍĞÅºÅ
+    /* å‘é€ä¿¡å·çš„è¿›ç¨‹è¦æ˜¯åŒä¸€ä¸ªä¼šè¯å½“ä¸­ï¼Œå¹¶ä¸”è¿›ç¨‹æ‰€å±ç”¨æˆ·ä¹Ÿè¦ç›¸åŒï¼Œå¦åˆ™ä¸è¡Œï¼Œ
+      * å¦‚æœç³»ç»Ÿä¸­æœ‰å¤šä¸ªè´¦æˆ·ç™»å½•ï¼Œåˆ™å…¶ä¸­ä¸€ä¸ªè´¦æˆ·çš„è¿›ç¨‹ä¸åŒå‘å…¶ä»–è´¦æˆ·çš„è¿›ç¨‹å‘é€ä¿¡å·
       */
 	if (!priv && ((sig != SIGCONT) || (current->session != p->session)) &&
 	    (current->euid != p->euid) && (current->uid != p->uid) && !suser())
@@ -79,7 +79,7 @@ int send_sig(unsigned long sig,struct task_struct * p,int priv)
 }
 
 
-/* ×Ó½ø³ÌÍË³öÊ±»áÏò¸¸½ø³Ì·¢ËÍSIGCHLDĞÅºÅ */
+/* å­è¿›ç¨‹é€€å‡ºæ—¶ä¼šå‘çˆ¶è¿›ç¨‹å‘é€SIGCHLDä¿¡å· */
 void notify_parent(struct task_struct * tsk)
 {
 	if (tsk->p_pptr == task[1])
@@ -208,7 +208,7 @@ void audit_ptree(void)
  * without this...
  */
 
-/* ·µ»Ø½ø³Ì×éËùÔÚµÄ»á»°id */
+/* è¿”å›è¿›ç¨‹ç»„æ‰€åœ¨çš„ä¼šè¯id */
 int session_of_pgrp(int pgrp)
 {
 	struct task_struct *p;
@@ -231,7 +231,7 @@ int session_of_pgrp(int pgrp)
  * control characters do (^C, ^Z etc)
  */
 
-/* É±ËÀÒ»¸ö½ø³Ì×é£¬³É¹¦·¢ËÍÁËÒ»¸öÒÔÉÏµÄĞÅºÅÔò·µ»Ø0 */
+/* æ€æ­»ä¸€ä¸ªè¿›ç¨‹ç»„ï¼ŒæˆåŠŸå‘é€äº†ä¸€ä¸ªä»¥ä¸Šçš„ä¿¡å·åˆ™è¿”å›0 */
 int kill_pg(int pgrp, int sig, int priv)
 {
 	struct task_struct *p;
@@ -241,7 +241,7 @@ int kill_pg(int pgrp, int sig, int priv)
 	if (sig<0 || sig>32 || pgrp<=0)
 		return -EINVAL;
 	for_each_task(p) {
-        /* Èç¹û½ø³Ì×éºÅÏàÍ¬ */
+        /* å¦‚æœè¿›ç¨‹ç»„å·ç›¸åŒ */
 		if (p->pgrp == pgrp) {
 			if ((err = send_sig(sig,p,priv)) != 0)
 				retval = err;
@@ -249,7 +249,7 @@ int kill_pg(int pgrp, int sig, int priv)
 				found++;
 		}
 	}
-    /* found±íÊ¾ÕÒµ½²¢ÕıÈ··¢ËÍĞÅºÅµÄ½ø³ÌÊı */
+    /* foundè¡¨ç¤ºæ‰¾åˆ°å¹¶æ­£ç¡®å‘é€ä¿¡å·çš„è¿›ç¨‹æ•° */
 	return(found ? 0 : retval);
 }
 
@@ -259,7 +259,7 @@ int kill_pg(int pgrp, int sig, int priv)
  * the connection is lost.
  */
 
-/* ¸ø»á»°×éÊ×½ø³Ì·¢ËÍĞÅºÅ */
+/* ç»™ä¼šè¯ç»„é¦–è¿›ç¨‹å‘é€ä¿¡å· */
 int kill_sl(int sess, int sig, int priv)
 {
 	struct task_struct *p;
@@ -269,7 +269,7 @@ int kill_sl(int sess, int sig, int priv)
 	if (sig<0 || sig>32 || sess<=0)
 		return -EINVAL;
 	for_each_task(p) {
-        /* Ò»¸ö»á»°µ±ÖĞ´æÔÚ¶à¸ö½ø³Ì×é£¬Ã¿¸ö½ø³Ì×é´æÔÚÒ»¸öÁìµ¼½ø³Ì */
+        /* ä¸€ä¸ªä¼šè¯å½“ä¸­å­˜åœ¨å¤šä¸ªè¿›ç¨‹ç»„ï¼Œæ¯ä¸ªè¿›ç¨‹ç»„å­˜åœ¨ä¸€ä¸ªé¢†å¯¼è¿›ç¨‹ */
 		if (p->session == sess && p->leader) {
 			if ((err = send_sig(sig,p,priv)) != 0)
 				retval = err;
@@ -280,7 +280,7 @@ int kill_sl(int sess, int sig, int priv)
 	return(found ? 0 : retval);
 }
 
-/* Ïò¾ßÌå½ø³Ì·¢ËÍĞÅºÅ */
+/* å‘å…·ä½“è¿›ç¨‹å‘é€ä¿¡å· */
 int kill_proc(int pid, int sig, int priv)
 {
  	struct task_struct *p;
@@ -302,10 +302,10 @@ asmlinkage int sys_kill(int pid,int sig)
 {
 	int err, retval = 0, count = 0;
 
-    /* Èç¹ûÊÇ0£¬ÔòÏòµ±Ç°½ø³ÌËùÔÚµÄ×é·¢ËÍĞÅºÅ */
+    /* å¦‚æœæ˜¯0ï¼Œåˆ™å‘å½“å‰è¿›ç¨‹æ‰€åœ¨çš„ç»„å‘é€ä¿¡å· */
 	if (!pid)
 		return(kill_pg(current->pgrp,sig,0));
-    /* Ïò³ıÁË0,1½ø³ÌºÍµ±Ç°½ø³ÌÖ®ÍâµÄËùÓĞ½ø³Ì·¢ËÍĞÅºÅ */
+    /* å‘é™¤äº†0,1è¿›ç¨‹å’Œå½“å‰è¿›ç¨‹ä¹‹å¤–çš„æ‰€æœ‰è¿›ç¨‹å‘é€ä¿¡å· */
 	if (pid == -1) {
 		struct task_struct * p;
 		for_each_task(p) {
@@ -317,7 +317,7 @@ asmlinkage int sys_kill(int pid,int sig)
 		}
 		return(count ? retval : -ESRCH);
 	}
-    /* ÏòÆäËû½ø³Ì×é·¢ËÍĞÅºÅ */
+    /* å‘å…¶ä»–è¿›ç¨‹ç»„å‘é€ä¿¡å· */
 	if (pid < 0) 
 		return(kill_pg(-pid,sig,0));
 	/* Normal kill */
@@ -361,7 +361,7 @@ static int has_stopped_jobs(int pgrp)
 	return(0);
 }
 
-/* ½«father½ø³Ì´´½¨µÄËùÓĞ×Ó½ø³ÌµÄ´´½¨½ø³ÌÉèÖÃÎª1ºÅ½ø³Ì */
+/* å°†fatherè¿›ç¨‹åˆ›å»ºçš„æ‰€æœ‰å­è¿›ç¨‹çš„åˆ›å»ºè¿›ç¨‹è®¾ç½®ä¸º1å·è¿›ç¨‹ */
 static void forget_original_parent(struct task_struct * father)
 {
 	struct task_struct * p;
@@ -443,7 +443,7 @@ fake_volatile:
 	}
 	/* Let father know we died */
 
-    /* Í¨Öª¸¸½ø³Ì */
+    /* é€šçŸ¥çˆ¶è¿›ç¨‹ */
 	notify_parent(current);
 	
 	/*
@@ -510,7 +510,7 @@ asmlinkage int sys_exit(int error_code)
 	do_exit((error_code&0xff)<<8);
 }
 
-/* Èç¹û³É¹¦Ôò·µ»Ø0 */
+/* å¦‚æœæˆåŠŸåˆ™è¿”å›0 */
 asmlinkage int sys_wait4(pid_t pid,unsigned long * stat_addr, int options, struct rusage * ru)
 {
 	int flag, retval;
@@ -525,18 +525,18 @@ asmlinkage int sys_wait4(pid_t pid,unsigned long * stat_addr, int options, struc
 	add_wait_queue(&current->wait_chldexit,&wait);
 repeat:
 	flag=0;
-	/* p_cptr±íÊ¾×îĞ¡µÄº¢×Ó½ø³Ì£¬p_opptr±íÊ¾ÀÏµÄĞÖµÜ½ø³Ì
-	 * Í¨¹ı¸ÃÑ­»·¿ÉÒÔÖªµÀ´Óµ±Ç°½ø³ÌµÄ×îĞ¡½ø³Ì¿ªÊ¼Ò»´ÎÏòÄê³¤µÄ½ø³Ì¿ªÊ¼É¨Ãè
+	/* p_cptrè¡¨ç¤ºæœ€å°çš„å­©å­è¿›ç¨‹ï¼Œp_opptrè¡¨ç¤ºè€çš„å…„å¼Ÿè¿›ç¨‹
+	 * é€šè¿‡è¯¥å¾ªç¯å¯ä»¥çŸ¥é“ä»å½“å‰è¿›ç¨‹çš„æœ€å°è¿›ç¨‹å¼€å§‹ä¸€æ¬¡å‘å¹´é•¿çš„è¿›ç¨‹å¼€å§‹æ‰«æ
 	 */
  	for (p = current->p_cptr ; p ; p = p->p_osptr) {
-		/* Èç¹ûpid>0±íÊ¾µÈ´ıÄ³¸ö¾ßÌåµÄ½ø³Ì£¬µÈÓÚ0Ôò±íÊ¾½ø³Ì×é£¬Ğ¡ÓÚ0Ôò±íÊ¾ËùÓĞ×Ó½ø³Ì */
+		/* å¦‚æœpid>0è¡¨ç¤ºç­‰å¾…æŸä¸ªå…·ä½“çš„è¿›ç¨‹ï¼Œç­‰äº0åˆ™è¡¨ç¤ºè¿›ç¨‹ç»„ï¼Œå°äº0åˆ™è¡¨ç¤ºæ‰€æœ‰å­è¿›ç¨‹ */
 		if (pid>0) {
 			if (p->pid != pid)
 				continue;
 		} else if (!pid) {
 			if (p->pgrp != current->pgrp)
 				continue;
-		/* Èç¹ûÊÇ¸ºÊıµÄ»°£¬ÔòµÈ´ı½ø³Ì×éºÅÎª-pidµÄËùÓĞ×Ó½ø³Ì*/
+		/* å¦‚æœæ˜¯è´Ÿæ•°çš„è¯ï¼Œåˆ™ç­‰å¾…è¿›ç¨‹ç»„å·ä¸º-pidçš„æ‰€æœ‰å­è¿›ç¨‹*/
 		} else if (pid != -1) {
 			if (p->pgrp != -pid)
 				continue;
@@ -587,21 +587,21 @@ repeat:
 	}
 	if (flag) {
 		retval = 0;
-		/* Èç¹û×Ó½ø³Ì»¹ÔÚÔËĞĞ£¬²¢ÇÒÑ¡Ïî±ê¼ÇÎªWNOHANG£¬
-		 * Ôò±íÊ¾²»µÈ´ı£¬º¯ÊıÖ±½Ó·µ»Ø
+		/* å¦‚æœå­è¿›ç¨‹è¿˜åœ¨è¿è¡Œï¼Œå¹¶ä¸”é€‰é¡¹æ ‡è®°ä¸ºWNOHANGï¼Œ
+		 * åˆ™è¡¨ç¤ºä¸ç­‰å¾…ï¼Œå‡½æ•°ç›´æ¥è¿”å›
 		 */
 		if (options & WNOHANG)
 			goto end_wait4;
-		/* ÉèÖÃ½ø³ÌÎª¿ÉÖĞ¶Ï×´Ì¬£¬Í¬Ê±µ÷ÓÃ½ø³Ìµ÷¶Èº¯Êı
+		/* è®¾ç½®è¿›ç¨‹ä¸ºå¯ä¸­æ–­çŠ¶æ€ï¼ŒåŒæ—¶è°ƒç”¨è¿›ç¨‹è°ƒåº¦å‡½æ•°
 		 */
 		current->state=TASK_INTERRUPTIBLE;
 		schedule();
-		/* ÉèÖÃ½ø³ÌÊÕµ½SIGCHLDĞÅºÅ
+		/* è®¾ç½®è¿›ç¨‹æ”¶åˆ°SIGCHLDä¿¡å·
 		 */
 		current->signal &= ~(1<<(SIGCHLD-1));
 		retval = -ERESTARTSYS;
-		/* Èç¹ûµ±Ç°½ø³ÌµÄËùÓĞĞÅºÅ¶¼±»×èÈûÁË£¬Ò²¾ÍÊÇ×Ó½ø³ÌÍË³öÊ±
-		 * ¸ø¸¸½ø³Ì·¢ËÍµÄSIGCHLDĞÅºÅÒ²±»×èÈûÁË£¬Ôòº¯ÊıÖ±½Ó·µ»Ø
+		/* å¦‚æœå½“å‰è¿›ç¨‹çš„æ‰€æœ‰ä¿¡å·éƒ½è¢«é˜»å¡äº†ï¼Œä¹Ÿå°±æ˜¯å­è¿›ç¨‹é€€å‡ºæ—¶
+		 * ç»™çˆ¶è¿›ç¨‹å‘é€çš„SIGCHLDä¿¡å·ä¹Ÿè¢«é˜»å¡äº†ï¼Œåˆ™å‡½æ•°ç›´æ¥è¿”å›
 		 */
 		if (current->signal & ~current->blocked)
 			goto end_wait4;

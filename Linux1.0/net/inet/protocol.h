@@ -28,11 +28,11 @@
 
 /* This is used to register protocols. */
 
-/* Ã¿¸ö¡°ÉÏ²ãĞ­Òé¡±¶¼ÓÉÒ»¸öinet_protocol½á¹¹±íÊ¾£¬IPĞ­ÒéÄ£¿éÍê³ÉÆä×ÔÉí´¦Àíºó£¬¸ù¾İIPÊ×
- * ²¿ÖĞÉÏ²ãĞ­Òé×Ö¶ÎÖµ´Óinet_protosÊı×éÖĞ²éÕÒ¶ÔÓ¦inet_protocol½á¹¹£¬µ÷ÓÃ¸Ã½á¹¹ÖĞ
- * handlerº¯ÊıÖ¸Õë×Ö¶ÎÖ¸ÏòµÄº¯Êı£¬ÈçTCPĞ­ÒéhandlerÖ¸Ïòtcp_rcv, UDPÎªudp_rcv, ICMP
- * ¶ÔÓ¦icmp_rcv, IGMP¶ÔÓ¦igmp_rcv¡£ÕâĞ©¶ÔÉÏ²ãº¯ÊıµÄµ÷ÓÃÊÇÔÚIPĞ­ÒéÊµÏÖÄ£¿éÖĞip_rcv
- * º¯ÊıÖĞÍê³ÉµÄ¡£Ò²¾ÍÊÇIP²ãĞ­ÒéµÄÉÏ²ãĞ­Òé½á¹¹
+/* æ¯ä¸ªâ€œä¸Šå±‚åè®®â€éƒ½ç”±ä¸€ä¸ªinet_protocolç»“æ„è¡¨ç¤ºï¼ŒIPåè®®æ¨¡å—å®Œæˆå…¶è‡ªèº«å¤„ç†åï¼Œæ ¹æ®IPé¦–
+ * éƒ¨ä¸­ä¸Šå±‚åè®®å­—æ®µå€¼ä»inet_protosæ•°ç»„ä¸­æŸ¥æ‰¾å¯¹åº”inet_protocolç»“æ„ï¼Œè°ƒç”¨è¯¥ç»“æ„ä¸­
+ * handlerå‡½æ•°æŒ‡é’ˆå­—æ®µæŒ‡å‘çš„å‡½æ•°ï¼Œå¦‚TCPåè®®handleræŒ‡å‘tcp_rcv, UDPä¸ºudp_rcv, ICMP
+ * å¯¹åº”icmp_rcv, IGMPå¯¹åº”igmp_rcvã€‚è¿™äº›å¯¹ä¸Šå±‚å‡½æ•°çš„è°ƒç”¨æ˜¯åœ¨IPåè®®å®ç°æ¨¡å—ä¸­ip_rcv
+ * å‡½æ•°ä¸­å®Œæˆçš„ã€‚ä¹Ÿå°±æ˜¯IPå±‚åè®®çš„ä¸Šå±‚åè®®ç»“æ„
  */
 struct inet_protocol {
   int			(*handler)(struct sk_buff *skb, struct device *dev,
@@ -47,13 +47,13 @@ struct inet_protocol {
 				       unsigned long daddr,
 				       unsigned long saddr,
 				       struct inet_protocol *protocol);
-  /* ±íÊ¾Í¬Ò»¸öĞ­ÒéµÄÁ´±í£¬ÏÈÍ¨¹ıprotocolÀ´hash³öÀ´Ë÷Òı */
+  /* è¡¨ç¤ºåŒä¸€ä¸ªåè®®çš„é“¾è¡¨ï¼Œå…ˆé€šè¿‡protocolæ¥hashå‡ºæ¥ç´¢å¼• */
   struct inet_protocol *next;  
-  unsigned char		protocol;  /*²»Í¬Ğ­ÒéµÄÒ»¸öID,Í¨¹ıÃ¶¾ÙÀ´¸³ÖµµÄ*/
-  unsigned char		copy:1;    /* ±íÊ¾ÔÚnextµÄÁ´±íÖĞ£¬ÊÇ·ñ»¹ÓĞºóĞøµÄÔªËØµÄprotocolÖµºÍµ±Ç°ÏàÍ¬ */
-  /* ÔÚrawÌ×½Ó×ÖĞ­Òéµ±ÖĞ£¬¸ÃdataĞ¯´øµÄÊÇstruct inet_protocol½á¹¹ */
+  unsigned char		protocol;  /*ä¸åŒåè®®çš„ä¸€ä¸ªID,é€šè¿‡æšä¸¾æ¥èµ‹å€¼çš„*/
+  unsigned char		copy:1;    /* è¡¨ç¤ºåœ¨nextçš„é“¾è¡¨ä¸­ï¼Œæ˜¯å¦è¿˜æœ‰åç»­çš„å…ƒç´ çš„protocolå€¼å’Œå½“å‰ç›¸åŒ */
+  /* åœ¨rawå¥—æ¥å­—åè®®å½“ä¸­ï¼Œè¯¥dataæºå¸¦çš„æ˜¯struct inet_protocolç»“æ„ */
   void			*data;
-  char 			*name;	/* Ğ­ÒéÃû³Æ */
+  char 			*name;	/* åè®®åç§° */
 };
 
 

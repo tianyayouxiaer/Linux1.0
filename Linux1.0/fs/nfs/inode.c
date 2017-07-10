@@ -58,11 +58,11 @@ void nfs_put_super(struct super_block *sb)
  * Later we can add other mount parameters like caching values.
  */
 
-/* 网络文件系统读取超级块的函数 */
+/* 缃戠粶鏂囦欢绯荤粺璇诲彇瓒呯骇鍧楃殑鍑芥暟 */
 struct super_block *nfs_read_super(struct super_block *sb, void *raw_data,
 				   int silent)
 {  
-        /* 系统加载的时候raw_data一般为NULL */
+        /* 绯荤粺鍔犺浇鐨勬椂鍊檙aw_data涓�鑸负NULL */
 	struct nfs_mount_data *data = (struct nfs_mount_data *) raw_data;
 	struct nfs_server *server;
 	unsigned int fd;
@@ -195,8 +195,8 @@ struct inode *nfs_fhget(struct super_block *sb, struct nfs_fh *fhandle,
 	return inode;
 }
 
-/* 在网络文件系统当中，如果文件的inode被修改，
- * 则会调用该函数发起一个通知 
+/* 鍦ㄧ綉缁滄枃浠剁郴缁熷綋涓紝濡傛灉鏂囦欢鐨刬node琚慨鏀癸紝
+ * 鍒欎細璋冪敤璇ュ嚱鏁板彂璧蜂竴涓�氱煡 
  */
 int nfs_notify_change(int flags, struct inode *inode)
 {

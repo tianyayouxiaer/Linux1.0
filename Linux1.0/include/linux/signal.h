@@ -82,7 +82,7 @@ typedef void (*__sighandler_t)(int);
 #define SIG_IGN	((__sighandler_t)1)	/* ignore signal */
 #define SIG_ERR	((__sighandler_t)-1)	/* error return from signal */
 
-/* ÖĞ¶Ï´¦Àí¾ä±ú */
+/* ä¸­æ–­å¤„ç†å¥æŸ„ */
 struct sigaction {
 	__sighandler_t sa_handler;
 	sigset_t sa_mask;

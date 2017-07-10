@@ -70,7 +70,7 @@ void time_init(void)
 	    BCD_TO_BIN(time.year);
 	  }
 	time.mon--;
-        /* »ñÈ¡ÏµÍ³µ±Ç°¾àÀë1970Äê1ÔÂ1ºÅ0Ê±Æğµ½ÏÖÔÚµÄÃëÊı
+        /* è·å–ç³»ç»Ÿå½“å‰è·ç¦»1970å¹´1æœˆ1å·0æ—¶èµ·åˆ°ç°åœ¨çš„ç§’æ•°
           */
 	xtime.tv_sec = kernel_mktime(&time);
       }
@@ -94,7 +94,7 @@ asmlinkage int sys_time(long * tloc)
 	return i;
 }
 
-/* ĞŞ¸ÄÏµÍ³µ±Ç°Ê±¼ä */
+/* ä¿®æ”¹ç³»ç»Ÿå½“å‰æ—¶é—´ */
 asmlinkage int sys_stime(long * tptr)
 {
 	if (!suser())

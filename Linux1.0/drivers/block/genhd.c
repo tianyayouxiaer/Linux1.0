@@ -91,7 +91,7 @@ done:
 }
 
 
-/* Ğ£ÑéÓ²ÅÌ·ÖÇøÊÇ·ñÕıÈ· */
+/* æ ¡éªŒç¡¬ç›˜åˆ†åŒºæ˜¯å¦æ­£ç¡® */
 static void check_partition(struct gendisk *hd, unsigned int dev)
 {
 	static int first_time = 1;
@@ -173,7 +173,7 @@ void resetup_one_dev(struct gendisk *dev, int drive)
 		dev->sizes[i] = dev->part[i].nr_sects >> (BLOCK_SIZE_BITS - 9);
 }
 
-/* ÉèÖÃ¶ÔÓ¦µÄÓ²ÅÌ */
+/* è®¾ç½®å¯¹åº”çš„ç¡¬ç›˜ */
 static void setup_dev(struct gendisk *dev)
 {
 	int i;
@@ -207,16 +207,16 @@ asmlinkage int sys_setup(void * BIOS)
 		return -1;
 	callable = 0;
 
-	/* gendisk_headÁ´ÔÚblk_dev_initº¯ÊıÖĞ³õÊ¼»¯ */
+	/* gendisk_headé“¾åœ¨blk_dev_initå‡½æ•°ä¸­åˆå§‹åŒ– */
 	for (p = gendisk_head ; p ; p=p->next) {
 		setup_dev(p);
 		nr += p->nr_real;
 	}
 
-	/* Èç¹ûÓĞĞéÄâÅÌÔò¼ÓÔØĞéÄâÅÌ */
+	/* å¦‚æœæœ‰è™šæ‹Ÿç›˜åˆ™åŠ è½½è™šæ‹Ÿç›˜ */
 	if (ramdisk_size)
 		rd_load();
-	/*¹ÒÔÚ¸ùÎÄ¼şÏµÍ³*/
+	/*æŒ‚åœ¨æ ¹æ–‡ä»¶ç³»ç»Ÿ*/
 	mount_root();
 	return (0);
 }

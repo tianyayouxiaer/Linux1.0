@@ -12,9 +12,9 @@ struct shmid_ds {
 	unsigned short	shm_lpid;	/* pid of last operator */
 	short	shm_nattch;		/* no. of current attaches */
 	/* the following are private */
-	/* ¹²ÏíÄÚ´æÓĞ¶àÉÙÒ³ */
+	/* å…±äº«å†…å­˜æœ‰å¤šå°‘é¡µ */
 	unsigned short   shm_npages;  /* size of segment (pages) */
-	/* Ã¿Ò³¹²ÏíÄÚ´æµÄµØÖ· */
+	/* æ¯é¡µå…±äº«å†…å­˜çš„åœ°å€ */
 	unsigned long   *shm_pages;   /* array of ptrs to frames -> SHMMAX */ 
 	struct shm_desc *attaches;    /* descriptors for attaches */
 };
@@ -36,7 +36,7 @@ struct	shminfo {
     int shmall;	
 };
 
-/*¹²ÏíÄÚ´æ·¶Î§£¬ÔÚÏßĞÔµØÖ·¿Õ¼äÖĞ1G-1.5G ???*/
+/*å…±äº«å†…å­˜èŒƒå›´ï¼Œåœ¨çº¿æ€§åœ°å€ç©ºé—´ä¸­1G-1.5G ???*/
 #define SHM_RANGE_START	0x40000000
 #define SHM_RANGE_END	0x60000000
 
@@ -101,9 +101,9 @@ struct	shm_desc {
 	unsigned long shm_sgn;        /* signature for this attach */
 	unsigned long start;   /* virt addr of attach, multiple of SHMLBA */
 	unsigned long end;            /* multiple of SHMLBA */
-	/* ÕâÌõÁ´±íÎª½ø³ÌËùÓÃ */
+	/* è¿™æ¡é“¾è¡¨ä¸ºè¿›ç¨‹æ‰€ç”¨ */
 	struct shm_desc *task_next;   /* next attach for task */
-	/* ÕâÌõÁ´±íÎª¹²ÏíÄÚ´æ¼¯Ê¹ÓÃ */
+	/* è¿™æ¡é“¾è¡¨ä¸ºå…±äº«å†…å­˜é›†ä½¿ç”¨ */
 	struct shm_desc *seg_next;    /* next attach for segment */
 };
 

@@ -34,7 +34,7 @@ extern void fcntl_init_locks(void);
 
 extern int root_mountflags;
 
-/* Ö§³Ö³¬¼¶¿ìµÄÊýÁ¿
+/* æ”¯æŒè¶…çº§å¿«çš„æ•°é‡
  */ 
 struct super_block super_blocks[NR_SUPER];
 
@@ -43,7 +43,7 @@ static int do_remount_sb(struct super_block *sb, int flags, char * data);
 /* this is initialized in init/main.c */
 dev_t ROOT_DEV = 0;
 
-/* ¸ù¾ÝÎÄ¼þÏµÍ³Ãû³ÆÀ´»ñÈ¡ÎÄ¼þÏµÍ³µÄ³¬¼¶¿é¶ÁÈ¡º¯Êý */
+/* æ ¹æ®æ–‡ä»¶ç³»ç»Ÿåç§°æ¥èŽ·å–æ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å—è¯»å–å‡½æ•° */
 struct file_system_type *get_fs_type(char *name)
 {
 	int a;
@@ -90,7 +90,7 @@ void sync_supers(dev_t dev)
 	}
 }
 
-/* »ñÈ¡ÏàÓ¦Éè±¸µÄ³¬¼¶¿éºÅ
+/* èŽ·å–ç›¸åº”è®¾å¤‡çš„è¶…çº§å—å·
  */
 static struct super_block * get_super(dev_t dev)
 {
@@ -104,14 +104,14 @@ static struct super_block * get_super(dev_t dev)
 			wait_on_super(s);
 			if (s->s_dev == dev)
 				return s;
-			/* È»ºóÔÙÖØÍ·¿ªÊ¼ÕÒ */
+			/* ç„¶åŽå†é‡å¤´å¼€å§‹æ‰¾ */
 			s = 0+super_blocks;
 		} else
 			s++;
 	return NULL;
 }
 
-/* ÊÍ·ÅÏàÓ¦Éè±¸µÄ³¬¼¶¿é */
+/* é‡Šæ”¾ç›¸åº”è®¾å¤‡çš„è¶…çº§å— */
 void put_super(dev_t dev)
 {
 	struct super_block * sb;
@@ -132,9 +132,9 @@ void put_super(dev_t dev)
 		sb->s_op->put_super(sb);
 }
 
-/* ÒÀ´Î Ñ­»·´¦ÀíÎÄ¼þÏµÍ³ÀàÐÍ£¬½«¶ÁÈ¡µ½µÄÎÄ¼þÏµÍ³³¬¼¶¿éÌí¼Óµ½Êý×ésuper_blocksµ±ÖÐ
-  * name±íÊ¾ÎÄ¼þÏµÍ³µÄÃû³Æ 
-  * ·µ»Ø¶ÁÈ¡µ½µÄÎÄ¼þÏµÍ³³¬¼¶¿é  
+/* ä¾æ¬¡ å¾ªçŽ¯å¤„ç†æ–‡ä»¶ç³»ç»Ÿç±»åž‹ï¼Œå°†è¯»å–åˆ°çš„æ–‡ä»¶ç³»ç»Ÿè¶…çº§å—æ·»åŠ åˆ°æ•°ç»„super_blockså½“ä¸­
+  * nameè¡¨ç¤ºæ–‡ä»¶ç³»ç»Ÿçš„åç§° 
+  * è¿”å›žè¯»å–åˆ°çš„æ–‡ä»¶ç³»ç»Ÿè¶…çº§å—  
   */
 static struct super_block * read_super(dev_t dev,char *name,int flags,
 				       void *data, int silent)
@@ -146,17 +146,17 @@ static struct super_block * read_super(dev_t dev,char *name,int flags,
 		return NULL;
 	check_disk_change(dev);
 	s = get_super(dev);
-	/* Èç¹ûÕÒµ½ÁË¾ÍÖ±½Ó·µ»Ø */
+	/* å¦‚æžœæ‰¾åˆ°äº†å°±ç›´æŽ¥è¿”å›ž */
 	if (s)
 		return s;
-	/* »ñÈ¡ÎÄ¼þÏµÍ³ÀàÐÍ½á¹¹
+	/* èŽ·å–æ–‡ä»¶ç³»ç»Ÿç±»åž‹ç»“æž„
 	 */
 	if (!(type = get_fs_type(name))) {
 		printk("VFS: on device %d/%d: get_fs_type(%s) failed\n",
 						MAJOR(dev), MINOR(dev), name);
 		return NULL;
 	}
-	/* ÕÒµ½Ò»¸ö¿ÉÓÃµÄ³¬¼¶¿é */
+	/* æ‰¾åˆ°ä¸€ä¸ªå¯ç”¨çš„è¶…çº§å— */
 	for (s = 0+super_blocks ;; s++) {
 		if (s >= NR_SUPER+super_blocks)
 			return NULL;
@@ -165,13 +165,13 @@ static struct super_block * read_super(dev_t dev,char *name,int flags,
 	}
 	s->s_dev = dev;
 	s->s_flags = flags;
-	/* È»ºóÍ¨¹ý¶ÔÓ¦ÎÄ¼þÏµÍ³ÀàÐÍµÄ³¬¼¶¿é¶ÁÈ¡º¯ÊýÀ´¶ÁÈ¡³¬¼¶¿é
+	/* ç„¶åŽé€šè¿‡å¯¹åº”æ–‡ä»¶ç³»ç»Ÿç±»åž‹çš„è¶…çº§å—è¯»å–å‡½æ•°æ¥è¯»å–è¶…çº§å—
 	 */
 	if (!type->read_super(s,data, silent)) {
 		s->s_dev = 0;
 		return NULL;
 	}
-	/* ¶ÁÈ¡³É¹¦Ö®ºóÉèÖÃ³¬¼¶¿éµÄÉè±¸ºÅ
+	/* è¯»å–æˆåŠŸä¹‹åŽè®¾ç½®è¶…çº§å—çš„è®¾å¤‡å·
 	 */
 	s->s_dev = dev;
 	s->s_covered = NULL;
@@ -218,19 +218,19 @@ static void put_unnamed_dev(dev_t dev)
 	unnamed_dev_in_use[dev] = 0;
 }
 
-/* Ö´ÐÐÕýÔÚµÄ¹ÒÔØ */
+/* æ‰§è¡Œæ­£åœ¨çš„æŒ‚è½½ */
 static int do_umount(dev_t dev)
 {
 	struct super_block * sb;
 	int retval;
 	
-        /* Èç¹ûÊÇ¸ùÉè±¸£¬Ôò½øÐÐµÄÊÇ´ÓÐÂ¹ÒÔØ  */
+        /* å¦‚æžœæ˜¯æ ¹è®¾å¤‡ï¼Œåˆ™è¿›è¡Œçš„æ˜¯ä»Žæ–°æŒ‚è½½  */
 	if (dev==ROOT_DEV) {
 		/* Special case for "unmounting" root.  We just try to remount
 		   it readonly, and sync() the device. */
 		if (!(sb=get_super(dev)))
 			return -ENOENT;
-                /* Èç¹û¸ùÉè±¸²»ÊÇÖ»¶ÁµÄ */
+                /* å¦‚æžœæ ¹è®¾å¤‡ä¸æ˜¯åªè¯»çš„ */
 		if (!(sb->s_flags & MS_RDONLY)) {
 			fsync_dev(dev);
 			retval = do_remount_sb(sb, MS_RDONLY, 0);
@@ -268,7 +268,7 @@ static int do_umount(dev_t dev)
  * functions, they should be faked here.  -- jrs
  */
 
-/* Ð¶ÔØÎÄ¼þÏµÍ³ */
+/* å¸è½½æ–‡ä»¶ç³»ç»Ÿ */
 asmlinkage int sys_umount(char * name)
 {
 	struct inode * inode;
@@ -302,7 +302,7 @@ asmlinkage int sys_umount(char * name)
 		dummy_inode.i_rdev = dev;
 		inode = &dummy_inode;
 	}
-        /* Éè±¸µÄÖ÷Éè±¸ºÅ²»ÄÜ³¬¹ýÖ§³ÖµÄ×î´óÖ÷Éè±¸ºÅ */
+        /* è®¾å¤‡çš„ä¸»è®¾å¤‡å·ä¸èƒ½è¶…è¿‡æ”¯æŒçš„æœ€å¤§ä¸»è®¾å¤‡å· */
 	if (MAJOR(dev) >= MAX_BLKDEV) {
 		iput(inode);
 		return -ENXIO;
@@ -331,10 +331,10 @@ asmlinkage int sys_umount(char * name)
  * We also have to flush all inode-data for this device, as the new mount
  * might need new info.
  */
-/* ¹ÒÔØÎÄ¼þÏµÍ³
-  * dev±íÊ¾ÐèÒª¹ÒÔØµÄÎÄ¼þÏµÍ³µÄÉè±¸ºÅ
-  * dir±íÊ¾ÐèÒª¹ÒÔØµÄÄ¿Â¼
-  * type±íÊ¾¹ÒÔØÀàÐÍ£¬Èçnfs£¬proc£¬ext2
+/* æŒ‚è½½æ–‡ä»¶ç³»ç»Ÿ
+  * devè¡¨ç¤ºéœ€è¦æŒ‚è½½çš„æ–‡ä»¶ç³»ç»Ÿçš„è®¾å¤‡å·
+  * dirè¡¨ç¤ºéœ€è¦æŒ‚è½½çš„ç›®å½•
+  * typeè¡¨ç¤ºæŒ‚è½½ç±»åž‹ï¼Œå¦‚nfsï¼Œprocï¼Œext2
   */
 static int do_mount(dev_t dev, const char * dir, char * type, int flags, void * data)
 {
@@ -342,20 +342,20 @@ static int do_mount(dev_t dev, const char * dir, char * type, int flags, void * 
 	struct super_block * sb;
 	int error;
 
-	/* µÃµ½¶ÔÓ¦Â·¾¶µÄinode */
+	/* å¾—åˆ°å¯¹åº”è·¯å¾„çš„inode */
 	error = namei(dir,&dir_i);
 	if (error)
 		return error;
 
-	/* Õý³£Çé¿öÏÂ£¬Ã»ÓÐÆäËû½ø³Ì»òÖ®Ç°´ò¿ª¸ÃinodeµÄÎÄ¼þÃ»ÓÐ¹Ø±Õ£¬Ôò²»ÄÜ¹ÒÔØ
-	  * Ò²¾ÍÊÇ²»ÄÜÒòÎª¹ÒÔØ£¬Ç¿ÐÐÖÕÖ¹ÆäËû²Ù×÷£¬»òÕßÊÇÒ»¸öÒÑ¾­¹ÒÔØµÄÎÄ¼þÏµÍ³ 
-	  * ²»ÄÜÔÙÈÃÆäËûµÄÎÄ¼þÏµÍ³¹ÒÔØÔÚËüµÄÉÏÃæ£¬»òÕßÊÇÑ­»·¹ÒÔØ
+	/* æ­£å¸¸æƒ…å†µä¸‹ï¼Œæ²¡æœ‰å…¶ä»–è¿›ç¨‹æˆ–ä¹‹å‰æ‰“å¼€è¯¥inodeçš„æ–‡ä»¶æ²¡æœ‰å…³é—­ï¼Œåˆ™ä¸èƒ½æŒ‚è½½
+	  * ä¹Ÿå°±æ˜¯ä¸èƒ½å› ä¸ºæŒ‚è½½ï¼Œå¼ºè¡Œç»ˆæ­¢å…¶ä»–æ“ä½œï¼Œæˆ–è€…æ˜¯ä¸€ä¸ªå·²ç»æŒ‚è½½çš„æ–‡ä»¶ç³»ç»Ÿ 
+	  * ä¸èƒ½å†è®©å…¶ä»–çš„æ–‡ä»¶ç³»ç»ŸæŒ‚è½½åœ¨å®ƒçš„ä¸Šé¢ï¼Œæˆ–è€…æ˜¯å¾ªçŽ¯æŒ‚è½½
 	  */
 	if (dir_i->i_count != 1 || dir_i->i_mount) {
 		iput(dir_i);
 		return -EBUSY;
 	}
-	/* ¹ÒÔØ±ØÐëÒªÊÇÒ»¸öÄ¿Â¼£¬µ±È»²»ÄÜ¹ÒÔØµ½Ò»¸öÆÕÍ¨ÎÄ¼þÉÏ */
+	/* æŒ‚è½½å¿…é¡»è¦æ˜¯ä¸€ä¸ªç›®å½•ï¼Œå½“ç„¶ä¸èƒ½æŒ‚è½½åˆ°ä¸€ä¸ªæ™®é€šæ–‡ä»¶ä¸Š */
 	if (!S_ISDIR(dir_i->i_mode)) {
 		iput(dir_i);
 		return -EPERM;
@@ -364,16 +364,16 @@ static int do_mount(dev_t dev, const char * dir, char * type, int flags, void * 
 		iput(dir_i);
 		return -EBUSY;
 	}
-	/* ¶ÁÈ¡¹ÒÔØÎÄ¼þÏµÍ³µÄ³¬¼¶¿é£¬
-	  * type±íÊ¾¹ÒÔØµÄÎÄ¼þÏµÍ³µÄÃû³Æ£¬Èçnfs£¬proc£¬ext2µÈµÈ
+	/* è¯»å–æŒ‚è½½æ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å—ï¼Œ
+	  * typeè¡¨ç¤ºæŒ‚è½½çš„æ–‡ä»¶ç³»ç»Ÿçš„åç§°ï¼Œå¦‚nfsï¼Œprocï¼Œext2ç­‰ç­‰
 	  */
 	sb = read_super(dev,type,flags,data,0);
-	/* s_covered²»Îª¿Õ±íÊ¾ÒÑ¾­ÓÐÒ»¸öÎÄ¼þÏµÍ³¹ÒÔØÔÚ¸ÃÄ¿Â¼£¬ËùÒÔ²»ÄÜÔÙ´Î¹ÒÔØ */
+	/* s_coveredä¸ä¸ºç©ºè¡¨ç¤ºå·²ç»æœ‰ä¸€ä¸ªæ–‡ä»¶ç³»ç»ŸæŒ‚è½½åœ¨è¯¥ç›®å½•ï¼Œæ‰€ä»¥ä¸èƒ½å†æ¬¡æŒ‚è½½ */
 	if (!sb || sb->s_covered) {
 		iput(dir_i);
 		return -EBUSY;
 	}
-	/* ÉèÖÃ±»¸²¸ÇµÄ¹ÒÔØµã */
+	/* è®¾ç½®è¢«è¦†ç›–çš„æŒ‚è½½ç‚¹ */
 	sb->s_covered = dir_i;
 	dir_i->i_mount = sb->s_mounted;
 	return 0;		/* we don't iput(dir_i) - see umount */
@@ -386,7 +386,7 @@ static int do_mount(dev_t dev, const char * dir, char * type, int flags, void * 
  * FS-specific mount options can't be altered by remounting.
  */
 
-/* ÖØÐÂ¹ÒÔØ³¬¼¶¿é */
+/* é‡æ–°æŒ‚è½½è¶…çº§å— */
 static int do_remount_sb(struct super_block *sb, int flags, char *data)
 {
 	int retval;
@@ -546,7 +546,7 @@ asmlinkage int sys_mount(char * dev_name, char * dir_name, char * type,
 	return retval;
 }
 
-/* ¹ÒÔØ¸ùÎÄ¼þÏµÍ³
+/* æŒ‚è½½æ ¹æ–‡ä»¶ç³»ç»Ÿ
  */
 void mount_root(void)
 {
@@ -554,27 +554,27 @@ void mount_root(void)
 	struct super_block * sb;
 	struct inode * inode;
 
-	/* ½«super_blocksÈ«²¿Êý¾ÝÇå0 */
+	/* å°†super_blockså…¨éƒ¨æ•°æ®æ¸…0 */
 	memset(super_blocks, 0, sizeof(super_blocks));
 	fcntl_init_locks();
 	if (MAJOR(ROOT_DEV) == FLOPPY_MAJOR) {
 		printk(KERN_NOTICE "VFS: Insert root floppy and press ENTER\n");
 		wait_for_keypress();
 	}
-	/*Ñ­»·´¦ÀíÎÄ¼þÏµÍ³ÀàÐÍ*/
+	/*å¾ªçŽ¯å¤„ç†æ–‡ä»¶ç³»ç»Ÿç±»åž‹*/
 	for (fs_type = file_systems; fs_type->read_super; fs_type++) {
-		/* ±íÊ¾ÊÇ·ñÐèÒªÉè±¸£¬Èç¹ûÎÒext2¾ÍÊÇ1£¬proc¾ÍÊÇ0 */
+		/* è¡¨ç¤ºæ˜¯å¦éœ€è¦è®¾å¤‡ï¼Œå¦‚æžœæˆ‘ext2å°±æ˜¯1ï¼Œprocå°±æ˜¯0 */
 		if (!fs_type->requires_dev)
 			continue;
-		/* ¶ÁÈ¡Ã¿¸öÎÄ¼þÏµÍ³µÄ³¬¼¶¿é */
+		/* è¯»å–æ¯ä¸ªæ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å— */
 		sb = read_super(ROOT_DEV,fs_type->name,root_mountflags,NULL,1);
 		if (sb) {
-			/* ×¢Òâs_mountedÊÇÎÄ¼þÏµÍ³µÄ¸ù½Úµã */
+			/* æ³¨æ„s_mountedæ˜¯æ–‡ä»¶ç³»ç»Ÿçš„æ ¹èŠ‚ç‚¹ */
 			inode = sb->s_mounted;
 			inode->i_count += 3 ;	/* NOTE! it is logically used 4 times, not 1 */
 			sb->s_covered = inode;
 			sb->s_flags = root_mountflags;
-                        /* ÉèÖÃ½ø³ÌµÄ¹¤×÷Ä¿Â¼µÄ¸ùÄ¿Â¼ */
+                        /* è®¾ç½®è¿›ç¨‹çš„å·¥ä½œç›®å½•çš„æ ¹ç›®å½• */
 			current->pwd = inode;
 			current->root = inode;
 			printk ("VFS: Mounted root (%s filesystem)%s.\n",

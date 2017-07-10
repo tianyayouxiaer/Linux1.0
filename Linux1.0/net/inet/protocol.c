@@ -45,7 +45,7 @@ static struct inet_protocol tcp_protocol = {
   NULL,			/* No fragment handler (and won't be for a long time) */
   tcp_err,		/* TCP error control	*/
   NULL,			/* next			*/
-  IPPROTO_TCP,		/* protocol ID		*/  /* ´Óip²ãÍùÉÏ²ãÊ±£¬Í¨¹ı¸ÃÖµ¿ÉÒÔÅĞ¶ÏÊÇtcpĞ­Òé */
+  IPPROTO_TCP,		/* protocol ID		*/  /* ä»ipå±‚å¾€ä¸Šå±‚æ—¶ï¼Œé€šè¿‡è¯¥å€¼å¯ä»¥åˆ¤æ–­æ˜¯tcpåè®® */
   0,			/* copy			*/
   NULL,			/* data			*/
   "TCP"			/* name			*/
@@ -64,9 +64,9 @@ static struct inet_protocol udp_protocol = {
 };
 
 
-/* »¥ÁªÍø¿ØÖÆĞÅÏ¢Ğ­Òé 
+/* äº’è”ç½‘æ§åˆ¶ä¿¡æ¯åè®® 
  * internet control message protocol
- * »ùÓÚÍøÂç²ãµÄÒ»ÖÖĞ­Òé£¬ÓÃÀ´´«µİ²éÑ¯±¨ÎÄÓë²î´í±¨ÎÄµÄÒ»ÖÖĞ­Òé
+ * åŸºäºç½‘ç»œå±‚çš„ä¸€ç§åè®®ï¼Œç”¨æ¥ä¼ é€’æŸ¥è¯¢æŠ¥æ–‡ä¸å·®é”™æŠ¥æ–‡çš„ä¸€ç§åè®®
  */
 static struct inet_protocol icmp_protocol = {
   icmp_rcv,		/* ICMP handler		*/
@@ -82,14 +82,14 @@ static struct inet_protocol icmp_protocol = {
 
 struct inet_protocol *inet_protocol_base = &icmp_protocol;
 
-/* ÍøÂç²ãÏò´«Êä¿ØÖÆ²ã´«µİÊı¾İµÄÊı×é£¬»áÉ¨Ãèinet_protosÊı×é
-  * À´È·¶¨µ÷ÓÃ²»Í¬µÄ´«Êä²ãĞ­Òé£¬¶øÁ´Â·²ãÏòÍøÂç²ã´«ÊäµÄÔòÊÇstruct packet_type
+/* ç½‘ç»œå±‚å‘ä¼ è¾“æ§åˆ¶å±‚ä¼ é€’æ•°æ®çš„æ•°ç»„ï¼Œä¼šæ‰«æinet_protosæ•°ç»„
+  * æ¥ç¡®å®šè°ƒç”¨ä¸åŒçš„ä¼ è¾“å±‚åè®®ï¼Œè€Œé“¾è·¯å±‚å‘ç½‘ç»œå±‚ä¼ è¾“çš„åˆ™æ˜¯struct packet_type
   */
 struct inet_protocol *inet_protos[MAX_INET_PROTOS] = {
   NULL
 };
 
-/* Í¨¹ı´«Êä²ãĞ­Òéid»ñÈ¡Ğ­Òé */
+/* é€šè¿‡ä¼ è¾“å±‚åè®®idè·å–åè®® */
 struct inet_protocol *inet_get_protocol(unsigned char prot)
 {
   unsigned char hash;
@@ -104,16 +104,16 @@ struct inet_protocol *inet_get_protocol(unsigned char prot)
   return(NULL);
 }
 
-/* ½«protĞ­ÒéÌí¼Óµ½inet_protosĞ­ÒéÊı×éµ±ÖĞ
+/* å°†protåè®®æ·»åŠ åˆ°inet_protosåè®®æ•°ç»„å½“ä¸­
   */
 void inet_add_protocol(struct inet_protocol *prot)
 {
   unsigned char hash;
   struct inet_protocol *p2;
 
-  /* ×¢ÒâÊÇÍ¨¹ıĞ­ÒéidÀ´hashµÃµ½µÄÒ»¸öhashÊı×éÖĞµÄË÷ÒıµÄ */
+  /* æ³¨æ„æ˜¯é€šè¿‡åè®®idæ¥hashå¾—åˆ°çš„ä¸€ä¸ªhashæ•°ç»„ä¸­çš„ç´¢å¼•çš„ */
   hash = prot->protocol & (MAX_INET_PROTOS - 1);
-	/* ½«ºóÌí¼ÓµÄÔªËØÌí¼Óµ½µÚÒ»¸ö */
+	/* å°†åæ·»åŠ çš„å…ƒç´ æ·»åŠ åˆ°ç¬¬ä¸€ä¸ª */
   prot ->next = inet_protos[hash];
   inet_protos[hash] = prot;
   prot->copy = 0;
@@ -129,7 +129,7 @@ void inet_add_protocol(struct inet_protocol *prot)
   }
 }
 
-/* ¸Ãº¯ÊıÉ¾³ıÖ¸¶¨µÄ´«Êä²ãĞ­Òé */
+/* è¯¥å‡½æ•°åˆ é™¤æŒ‡å®šçš„ä¼ è¾“å±‚åè®® */
 int
 inet_del_protocol(struct inet_protocol *prot)
 {
@@ -138,7 +138,7 @@ inet_del_protocol(struct inet_protocol *prot)
   unsigned char hash;
 
   hash = prot->protocol & (MAX_INET_PROTOS - 1);
-	/* Èç¹ûÊÇµÚÒ»¸ö£¬ÔòÖ±½ÓÉ¾³ı */
+	/* å¦‚æœæ˜¯ç¬¬ä¸€ä¸ªï¼Œåˆ™ç›´æ¥åˆ é™¤ */
   if (prot == inet_protos[hash]) {
 		inet_protos[hash] = (struct inet_protocol *) inet_protos[hash]->next;
 		return(0);
@@ -151,13 +151,13 @@ inet_del_protocol(struct inet_protocol *prot)
 	 * the last one on the list, then we may need to reset
 	 * someones copied bit.
 	 */
-	/* Èç¹ûÔÚnextµÄÁ´±íÖĞÕÒµ½ */
+	/* å¦‚æœåœ¨nextçš„é“¾è¡¨ä¸­æ‰¾åˆ° */
 	if (p->next != NULL && p->next == prot) {
 		/*
 		 * if we are the last one with this protocol and
 		 * there is a previous one, reset its copy bit.
 		 */
-		   /* Èç¹û½«×îºóÒ»¸öĞ­ÒéÉ¾³ı£¬Ôò½«Ö®Ç°ºÍ¸ÃĞ­ÒéÏàÍ¬µÄĞ­ÒéµÄcopyÉèÖÃÎª0 */
+		   /* å¦‚æœå°†æœ€åä¸€ä¸ªåè®®åˆ é™¤ï¼Œåˆ™å°†ä¹‹å‰å’Œè¯¥åè®®ç›¸åŒçš„åè®®çš„copyè®¾ç½®ä¸º0 */
 	     if (p->copy == 0 && lp != NULL) lp->copy = 0;
 	     p->next = prot->next;
 	     return(0);

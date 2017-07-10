@@ -30,7 +30,7 @@ void proc_put_super(struct super_block *sb)
 	unlock_super(sb);
 }
 
-/* procÎÄ¼þÏµÍ³µÄ³¬¼¶¿é²Ù×÷·û */
+/* procæ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å—æ“ä½œç¬¦ */
 static struct super_operations proc_sops = { 
 	proc_read_inode,
 	NULL,
@@ -42,7 +42,7 @@ static struct super_operations proc_sops = {
 	NULL
 };
 
-/* ¶ÁÈ¡procÎÄ¼þÏµÍ³µÄ³¬¼¶¿é */
+/* è¯»å–procæ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å— */
 struct super_block *proc_read_super(struct super_block *s,void *data, 
 				    int silent)
 {
@@ -73,7 +73,7 @@ void proc_statfs(struct super_block *sb, struct statfs *buf)
 	/* Don't know what value to put in buf->f_fsid */
 }
 
-/* procÎÄ¼þÏµÍ³µÄindoe¶ÁÈ¡²Ù×÷ */
+/* procæ–‡ä»¶ç³»ç»Ÿçš„indoeè¯»å–æ“ä½œ */
 void proc_read_inode(struct inode * inode)
 {
 	unsigned long ino, pid;
@@ -90,17 +90,17 @@ void proc_read_inode(struct inode * inode)
 	inode->i_blocks = 0;
 	inode->i_blksize = 1024;
 	ino = inode->i_ino;
-        /* µÃµ½½ø³ÌµÄpid£¬ÎªºÎÈç´ËµÃµ½£¿ */
+        /* å¾—åˆ°è¿›ç¨‹çš„pidï¼Œä¸ºä½•å¦‚æ­¤å¾—åˆ°ï¼Ÿ */
 	pid = ino >> 16;
 	p = task[0];
-        /* ÕÒµ½ÏàÓ¦µÄ½ø³Ì */
+        /* æ‰¾åˆ°ç›¸åº”çš„è¿›ç¨‹ */
 	for (i = 0; i < NR_TASKS ; i++)
 		if ((p = task[i]) && (p->pid == pid))
 			break;
 	if (!p || i >= NR_TASKS)
 		return;
 
-        /* Èç¹ûÊÇprocµÄroot½Úµã */
+        /* å¦‚æžœæ˜¯procçš„rootèŠ‚ç‚¹ */
 	if (ino == PROC_ROOT_INO) {
 		inode->i_mode = S_IFDIR | S_IRUGO | S_IXUGO;
 		inode->i_nlink = 2;

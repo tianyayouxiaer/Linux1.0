@@ -125,7 +125,7 @@ struct elfhdr{
   short int e_type;
   short int e_machine;
   int   e_version;
-  char *e_entry;  /* Entry point */     /* ¿ÉÖ´ĞĞÎÄ¼şµÄº¯ÊıÈë¿Úµã */
+  char *e_entry;  /* Entry point */     /* å¯æ‰§è¡Œæ–‡ä»¶çš„å‡½æ•°å…¥å£ç‚¹ */
   int   e_phoff;
   int   e_shoff;
   int   e_flags;
@@ -137,7 +137,7 @@ struct elfhdr{
   short int e_shstrndx;
 };
 
-/* elfÎÄ¼şµÄÍ· */
+/* elfæ–‡ä»¶çš„å¤´ */
 struct elf_phdr{
   int p_type;
   int p_offset;

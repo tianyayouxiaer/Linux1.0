@@ -5,14 +5,14 @@
 
 #ifndef __STRUCT_EXEC_OVERRIDE__
 
-/* a.out¿ÉÖ´ĞĞÎÄ¼şµÄÍ· */
+/* a.outå¯æ‰§è¡Œæ–‡ä»¶çš„å¤´ */
 struct exec
 {
   unsigned long a_info;		/* Use macros N_MAGIC, etc for access */
-  unsigned a_text;		/* length of text, in bytes */     /* ´úÂë¶Î³¤¶È */
-  unsigned a_data;		/* length of data, in bytes */   /* Êı¾İ¶Î³¤¶È */
+  unsigned a_text;		/* length of text, in bytes */     /* ä»£ç æ®µé•¿åº¦ */
+  unsigned a_data;		/* length of data, in bytes */   /* æ•°æ®æ®µé•¿åº¦ */
   unsigned a_bss;		/* length of uninitialized data area for file, in bytes */
-  unsigned a_syms;		/* length of symbol table data in file, in bytes */  /* ·ûºÅ±í¶Î£¬ÈçcÖĞµÄconst×Ö·û´®  */
+  unsigned a_syms;		/* length of symbol table data in file, in bytes */  /* ç¬¦å·è¡¨æ®µï¼Œå¦‚cä¸­çš„constå­—ç¬¦ä¸²  */
   unsigned a_entry;		/* start address */
   unsigned a_trsize;		/* length of relocation info for text, in bytes */
   unsigned a_drsize;		/* length of relocation info for data, in bytes */

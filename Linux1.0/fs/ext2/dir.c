@@ -47,7 +47,7 @@ static struct file_operations ext2_dir_operations = {
  * directories can handle most operations...
  */
 
-/* Ä¿Â¼inodeµÄ²Ù×÷º¯Êı
+/* ç›®å½•inodeçš„æ“ä½œå‡½æ•°
  */
 struct inode_operations ext2_dir_inode_operations = {
 	&ext2_dir_operations,	/* default directory file-ops */
@@ -68,21 +68,21 @@ struct inode_operations ext2_dir_inode_operations = {
 };
 
 
-/* ÅĞ¶ÏÄ¿Â¼µÄºÏ·¨ĞÔ */
+/* åˆ¤æ–­ç›®å½•çš„åˆæ³•æ€§ */
 int ext2_check_dir_entry (char * function, struct inode * dir,
 			  struct ext2_dir_entry * de, struct buffer_head * bh,
 			  unsigned long offset)
 {
 	char * error_msg = NULL;
 
-	/* Ä¿Â¼ÏîµÄ×îĞ¡³¤¶ÈÒ²ÊÇÓĞÏŞÖÆµÄ £¬²¢ÇÒ³¤¶ÈÊÇÒªºÍ4×Ö½Ú¶ÔÆëµÄ*/
+	/* ç›®å½•é¡¹çš„æœ€å°é•¿åº¦ä¹Ÿæ˜¯æœ‰é™åˆ¶çš„ ï¼Œå¹¶ä¸”é•¿åº¦æ˜¯è¦å’Œ4å­—èŠ‚å¯¹é½çš„*/
 	if (de->rec_len < EXT2_DIR_REC_LEN(1))
 		error_msg = "rec_len is smaller than minimal";
 	else if (de->rec_len % 4 != 0)
 		error_msg = "rec_len % 4 != 0";
 	else if (de->rec_len < EXT2_DIR_REC_LEN(de->name_len))
 		error_msg = "rec_len is too small for name_len";
-	/* Ò»¸öÄ¿Â¼ÏîÖ»ÄÜ·ÅÔÚÒÔ¸öÎïÀí¿éµ±ÖĞ£¬Èç¹û³öÏÖ½»²æ¿ç¿éÔò³ö´í */
+	/* ä¸€ä¸ªç›®å½•é¡¹åªèƒ½æ”¾åœ¨ä»¥ä¸ªç‰©ç†å—å½“ä¸­ï¼Œå¦‚æœå‡ºç°äº¤å‰è·¨å—åˆ™å‡ºé”™ */
 	else if (dir && ((char *) de - bh->b_data) + de->rec_len >
 		 dir->i_sb->s_blocksize)
 		error_msg = "directory entry across blocks";
@@ -95,7 +95,7 @@ int ext2_check_dir_entry (char * function, struct inode * dir,
 	return error_msg == NULL ? 1 : 0;
 }
 
-/* ´ÓÄ¿Â¼ÎÄ¼şµ±ÖĞ¶ÁÈ¡Ò»¸öÄ¿Â¼ */
+/* ä»ç›®å½•æ–‡ä»¶å½“ä¸­è¯»å–ä¸€ä¸ªç›®å½• */
 static int ext2_readdir (struct inode * inode, struct file * filp,
 			 struct dirent * dirent, int count)
 {
@@ -106,7 +106,7 @@ static int ext2_readdir (struct inode * inode, struct file * filp,
 	struct super_block * sb;
 	int err;
 
-	/* Ê×ÏÈÒªÊÇÄ¿Â¼ */
+	/* é¦–å…ˆè¦æ˜¯ç›®å½• */
 	if (!inode || !S_ISDIR(inode->i_mode))
 		return -EBADF;
 	sb = inode->i_sb;
@@ -122,7 +122,7 @@ static int ext2_readdir (struct inode * inode, struct file * filp,
 		/*
 		 * Do the readahead
 		 */
-		/* Èç¹ûÕıºÃÄ¿Â¼ÎÄ¼şµÄ¶ÁÈ¡Æ«ÒÆÕıºÃÔÚ¿éµÄÆğÊ¼´¦ */
+		/* å¦‚æœæ­£å¥½ç›®å½•æ–‡ä»¶çš„è¯»å–åç§»æ­£å¥½åœ¨å—çš„èµ·å§‹å¤„ */
 		if (!offset) {
 			for (i = 16 >> (EXT2_BLOCK_SIZE_BITS(sb) - 9), num = 0;
 			     i > 0; i--) {
@@ -132,7 +132,7 @@ static int ext2_readdir (struct inode * inode, struct file * filp,
 				else
 					brelse (tmp);
 			}
-			/* ½«Êı¾İ¸øÖØĞÂ¶ÁÈ¡Ò»´Î */
+			/* å°†æ•°æ®ç»™é‡æ–°è¯»å–ä¸€æ¬¡ */
 			if (num) {
 				ll_rw_block (READA, num, bha);
 				for (i = 0; i < num; i++)
@@ -140,7 +140,7 @@ static int ext2_readdir (struct inode * inode, struct file * filp,
 			}
 		}
 
-		/* ½«¸ßËÙ»º´æ¿éÖĞÆ«ÒÆÎªoffsetµÄÎ»ÖÃ×÷ÎªÏÂÒ»¸öÄ¿Â¼ÏîµÄÆäÊµµØÖ· */
+		/* å°†é«˜é€Ÿç¼“å­˜å—ä¸­åç§»ä¸ºoffsetçš„ä½ç½®ä½œä¸ºä¸‹ä¸€ä¸ªç›®å½•é¡¹çš„å…¶å®åœ°å€ */
 		de = (struct ext2_dir_entry *) (offset + bh->b_data);
 		while (offset < sb->s_blocksize && filp->f_pos < inode->i_size) {
 			if (!ext2_check_dir_entry ("ext2_readdir", inode, de,
@@ -148,7 +148,7 @@ static int ext2_readdir (struct inode * inode, struct file * filp,
 				brelse (bh);
 				return 0;
 			}
-			/* Ôö¼Óµ±Ç°Ä¿Â¼ÏîÊµ¼ÊÕ¼ÓÃµÄ³¤¶È£¬²¢ĞŞ¸ÄÎÄ¼ş¶ÁÈ¡µÄÆ«ÒÆÁ¿ */
+			/* å¢åŠ å½“å‰ç›®å½•é¡¹å®é™…å ç”¨çš„é•¿åº¦ï¼Œå¹¶ä¿®æ”¹æ–‡ä»¶è¯»å–çš„åç§»é‡ */
 			offset += de->rec_len;
 			filp->f_pos += de->rec_len;
 			if (de->inode) {
@@ -168,10 +168,10 @@ static int ext2_readdir (struct inode * inode, struct file * filp,
 					inode->i_atime = CURRENT_TIME;
 					inode->i_dirt = 1;
 				}
-				/* ·µ»ØÄ¿Â¼Ãû³¤¶È */
+				/* è¿”å›ç›®å½•åé•¿åº¦ */
 				return i;
 			}
-			/* Ôö¼ÓÆ«ÒÆÁ¿µ½ÏÂÒ»¸öÄ¿Â¼µÄÓĞĞ§µØÖ·´¦ */
+			/* å¢åŠ åç§»é‡åˆ°ä¸‹ä¸€ä¸ªç›®å½•çš„æœ‰æ•ˆåœ°å€å¤„ */
 			de = (struct ext2_dir_entry *) ((char *) de +
 							de->rec_len);
 		}

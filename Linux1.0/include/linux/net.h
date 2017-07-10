@@ -43,8 +43,8 @@
 #define SYS_SETSOCKOPT	14		/* sys_setsockopt(2)		*/
 #define SYS_GETSOCKOPT	15		/* sys_getsockopt(2)		*/
 
-/* socketµÄ¼¸ÖÖ×´Ì¬ ,
- * ¿ÕÏĞ£¬Î´Á¬½Ó£¬ÒÑÁ¬½Ó£¬ÕıÔÚÁ¬½Ó£¬ÕıÔÚ¹Ø±Õ
+/* socketçš„å‡ ç§çŠ¶æ€ ,
+ * ç©ºé—²ï¼Œæœªè¿æ¥ï¼Œå·²è¿æ¥ï¼Œæ­£åœ¨è¿æ¥ï¼Œæ­£åœ¨å…³é—­
  */
 typedef enum {
   SS_FREE = 0,				/* not allocated		*/
@@ -54,7 +54,7 @@ typedef enum {
   SS_DISCONNECTING			/* in process of disconnecting	*/
 } socket_state;
 
-/* ÉèÖÃsocketµÄflagÎª¼àÌı×´Ì¬ */
+/* è®¾ç½®socketçš„flagä¸ºç›‘å¬çŠ¶æ€ */
 #define SO_ACCEPTCON	(1<<16)		/* performed a listen		*/
 
 
@@ -69,40 +69,40 @@ typedef enum {
  * wait		sleep for clients,	sleep for connection,
  *		sleep for i/o		sleep for i/o
  */
-/* BSD socket²ã¶ÔÓ¦µÄÌ×½Ó×Ö½á¹¹£¬ÕâÊÇÒ»¸öÍ¨ÓÃµÄÌ×½Ó×Ö½á¹¹
- * INET socket²ãÔòÊ¹ÓÃµÄÊÇsock½á¹¹£¬sock±Èsocket¸´ÔÓºÃ¶à
+/* BSD socketå±‚å¯¹åº”çš„å¥—æ¥å­—ç»“æ„ï¼Œè¿™æ˜¯ä¸€ä¸ªé€šç”¨çš„å¥—æ¥å­—ç»“æ„
+ * INET socketå±‚åˆ™ä½¿ç”¨çš„æ˜¯sockç»“æ„ï¼Œsockæ¯”socketå¤æ‚å¥½å¤š
  */
 struct socket {
   short			type;		/* SOCK_STREAM, ...		*/
   socket_state		state;
   long			flags;
-  /* ÕâÀïµÄops±íÊ¾struct socket¶ÔÓ¦µÄ²»Í¬Ğ­Òé×åµÄ²Ù×÷º¯Êı¼¯ºÏ,
-    * ¶østruct sockÖĞµÄprotÔò±íÊ¾ÔÚĞ­Òé×åÏÂÃæ²»Í¬Ğ­ÒéµÄº¯Êı²Ù×÷¼¯ºÏ 
+  /* è¿™é‡Œçš„opsè¡¨ç¤ºstruct socketå¯¹åº”çš„ä¸åŒåè®®æ—çš„æ“ä½œå‡½æ•°é›†åˆ,
+    * è€Œstruct sockä¸­çš„protåˆ™è¡¨ç¤ºåœ¨åè®®æ—ä¸‹é¢ä¸åŒåè®®çš„å‡½æ•°æ“ä½œé›†åˆ 
     */
   struct proto_ops	*ops;		/* protocols do most everything	*/
-  /* Õâ¾ÍÊÇsocketµÄĞ­ÒéÊı¾İ£¬ÆäÊµ¾ÍÊÇstruct sock½á¹¹£¬
-    * Èç¹ûÊÇUNIXĞ­Òé×å£¬ÔòÊÇstruct unix_proto_data½á¹¹
+  /* è¿™å°±æ˜¯socketçš„åè®®æ•°æ®ï¼Œå…¶å®å°±æ˜¯struct sockç»“æ„ï¼Œ
+    * å¦‚æœæ˜¯UNIXåè®®æ—ï¼Œåˆ™æ˜¯struct unix_proto_dataç»“æ„
     */
   void			*data;		/* protocol data		*/
-  /* ÔÚINETÓòÖĞÏÂÃæÁ½¸öÖ¸ÕëÎªNULL
-    * Ö¸Ïò½¨Á¢ÍêÈ«Á¬½ÓµÄ¶Ô·½ socket ½á¹¹,Ò»°ãÖ¸ 
-    * Á¬½ÓµÄ·şÎñ¶Ësocket 
+  /* åœ¨INETåŸŸä¸­ä¸‹é¢ä¸¤ä¸ªæŒ‡é’ˆä¸ºNULL
+    * æŒ‡å‘å»ºç«‹å®Œå…¨è¿æ¥çš„å¯¹æ–¹ socket ç»“æ„,ä¸€èˆ¬æŒ‡ 
+    * è¿æ¥çš„æœåŠ¡ç«¯socket 
     */
   struct socket		*conn;		/* server socket connected to	*/
-  /* µÈ´ı½¨Á¢Á¬½ÓµÄsocket½á¹¹£¬unixĞ­ÒéÓòµÄacceptº¯Êı¾ÍÊÇ
-    * Í¨¹ı¸ÃÁ´±íÀ´ÅĞ¶ÏÊÇ·ñÓĞÁ¬½ÓµÄÇëÇó 
+  /* ç­‰å¾…å»ºç«‹è¿æ¥çš„socketç»“æ„ï¼Œunixåè®®åŸŸçš„acceptå‡½æ•°å°±æ˜¯
+    * é€šè¿‡è¯¥é“¾è¡¨æ¥åˆ¤æ–­æ˜¯å¦æœ‰è¿æ¥çš„è¯·æ±‚ 
     */
   struct socket		*iconn;		/* incomplete client conn.s	*/
   struct socket		*next;
-  /* µÈ´ıÊ¹ÓÃ¸ÃsocketµÄ½ø³Ì¶ÓÁĞ */
+  /* ç­‰å¾…ä½¿ç”¨è¯¥socketçš„è¿›ç¨‹é˜Ÿåˆ— */
   struct wait_queue	**wait;		/* ptr to place to wait on	*/
   struct inode		*inode;
 };
 
-/* »ñÈ¡socketÖĞµÄinode½Úµã */
+/* è·å–socketä¸­çš„inodeèŠ‚ç‚¹ */
 #define SOCK_INODE(S)	((S)->inode)
 
-/* Ğ­Òé²Ù×÷º¯Êı£¬ÆäÖĞfamily´ú±íµØÖ·×å */
+/* åè®®æ“ä½œå‡½æ•°ï¼Œå…¶ä¸­familyä»£è¡¨åœ°å€æ— */
 struct proto_ops {
   int	family;
 

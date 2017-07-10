@@ -26,14 +26,14 @@
 
 /* IP flags. */
 #define IP_CE		0x8000		/* Flag: "Congestion"		*/
-/* ±íÊ¾²»·Ö¶Î */
+/* è¡¨ç¤ºä¸åˆ†æ®µ */
 #define IP_DF		0x4000		/* Flag: "Don't Fragment"	*/
 #define IP_MF		0x2000		/* Flag: "More Fragments"	*/
 #define IP_OFFSET	0x1FFF		/* "Fragment Offset" part	*/
 
 #define IP_FRAG_TIME	(30 * HZ)		/* fragment lifetime	*/
 
-/* ÒÔÏÂÁ½¸ö½á¹¹ÊÇipĞ­Òé·ÖÆ¬ºÍÖØ×éµÄÖØÒª½á¹¹ */
+/* ä»¥ä¸‹ä¸¤ä¸ªç»“æ„æ˜¯ipåè®®åˆ†ç‰‡å’Œé‡ç»„çš„é‡è¦ç»“æ„ */
 /* Describe an IP fragment. */
 struct ipfrag {
   int		offset;		/* offset of fragment in IP datagram	*/

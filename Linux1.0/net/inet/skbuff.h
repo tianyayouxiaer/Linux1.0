@@ -37,65 +37,65 @@
 #define FREE_READ	1
 #define FREE_WRITE	0
 
-/* Ì×½Ó×Ö»º³åÇø½á¹¹ */
+/* å¥—æ¥å­—ç¼“å†²åŒºç»“æ„ */
 struct sk_buff {
   unsigned long			magic_debug_cookie;
-  /* sk_buffÊÇÒ»¸öË«ÏòÑ­»·Á´±í£¬µ«ÊÇÍ¬Ê±Õâ¸öË«ÏòÁ´±íÒ²ÓĞÒ»¸öÍ·²¿£¬
-    * ¸ÃÍ·²¿¾ÍÊÇÓÃlistÀ´Ö¸Ïò 
+  /* sk_buffæ˜¯ä¸€ä¸ªåŒå‘å¾ªç¯é“¾è¡¨ï¼Œä½†æ˜¯åŒæ—¶è¿™ä¸ªåŒå‘é“¾è¡¨ä¹Ÿæœ‰ä¸€ä¸ªå¤´éƒ¨ï¼Œ
+    * è¯¥å¤´éƒ¨å°±æ˜¯ç”¨listæ¥æŒ‡å‘ 
     */
   struct sk_buff		*volatile next;
   struct sk_buff		*volatile prev;
-  /* Õâ¸öÖ¸ÕëÒ²ÊÇÓÃÓÚ¹¹³Ésk_buffµÄÁ´±í£¬Ö»²»¹ı¸ÃÁ´±íÊÇÖØ·¢µÄÁ´±í
-   * send_headÖ´ĞĞÁ´±íµÄÁ´Ê×£¬send_tailÖ¸ÏòÎ²²¿£¬¸ÃÁ´±íÍ¨¹ılink3À´Á¬½Ó
+  /* è¿™ä¸ªæŒ‡é’ˆä¹Ÿæ˜¯ç”¨äºæ„æˆsk_buffçš„é“¾è¡¨ï¼Œåªä¸è¿‡è¯¥é“¾è¡¨æ˜¯é‡å‘çš„é“¾è¡¨
+   * send_headæ‰§è¡Œé“¾è¡¨çš„é“¾é¦–ï¼Œsend_tailæŒ‡å‘å°¾éƒ¨ï¼Œè¯¥é“¾è¡¨é€šè¿‡link3æ¥è¿æ¥
    */
   struct sk_buff		*volatile link3;
   struct sk_buff		*volatile* list;
-  struct sock			*sk;     /* Ö¸¶¨Õâ¸ösk_buffÊÇÄÇ¸ösockµÄ */
-  volatile unsigned long	when;	/* used to compute rtt's	*/   /* ±íÊ¾Êı¾İµÄ·¢ËÍÊ±¼ä */
-  /* skb¶ÔÓ¦µÄÉè±¸£¬×îÖÕskbÖĞµÄÊı¾İĞèÒª½»¸øÉè±¸·¢ËÍ³öÈ¥£¬Ò²¾ÍÊÇÁ´Â·²ã */
+  struct sock			*sk;     /* æŒ‡å®šè¿™ä¸ªsk_buffæ˜¯é‚£ä¸ªsockçš„ */
+  volatile unsigned long	when;	/* used to compute rtt's	*/   /* è¡¨ç¤ºæ•°æ®çš„å‘é€æ—¶é—´ */
+  /* skbå¯¹åº”çš„è®¾å¤‡ï¼Œæœ€ç»ˆskbä¸­çš„æ•°æ®éœ€è¦äº¤ç»™è®¾å¤‡å‘é€å‡ºå»ï¼Œä¹Ÿå°±æ˜¯é“¾è·¯å±‚ */
   struct device			*dev;         
-  void				*mem_addr; /* ¼ÇÂ¼×Ô¼ºÔÚÄÚ´æÖĞµØÖ· */
-  /* ²»Í¬Ğ­ÒéµÄÍ·²¿
+  void				*mem_addr; /* è®°å½•è‡ªå·±åœ¨å†…å­˜ä¸­åœ°å€ */
+  /* ä¸åŒåè®®çš„å¤´éƒ¨
     */
   union {
-	struct tcphdr	*th;	/* tcpĞ­ÒéÍ·²¿ */
+	struct tcphdr	*th;	/* tcpåè®®å¤´éƒ¨ */
 	struct ethhdr	*eth;
 	struct iphdr	*iph;
 	struct udphdr	*uh;
-	struct arphdr	*arp;   /* arpÊ×²¿ */
+	struct arphdr	*arp;   /* arpé¦–éƒ¨ */
 	unsigned char	*raw;
 	unsigned long	seq;
 #ifdef CONFIG_IPX	
 	ipx_packet	*ipx;
 #endif	
   } h;
-  /* IPĞ­ÒéµÄÍ·²¿£¬ÔÚRAWµÄÌ×½Ó×ÖÖĞ»áÓÃµ½ */
+  /* IPåè®®çš„å¤´éƒ¨ï¼Œåœ¨RAWçš„å¥—æ¥å­—ä¸­ä¼šç”¨åˆ° */
   struct iphdr		*ip_hdr;		/* For IPPROTO_RAW */
-  unsigned long			mem_len;    /* sk_buffµÄÄÚ´æ³¤¶È */
-  unsigned long 		len;		/* Êµ¼ÊÊı¾İ³¤¶È */
-  /* ·ÖÆ¬Êı¾İ°üµÄ¸öÊı */
+  unsigned long			mem_len;    /* sk_buffçš„å†…å­˜é•¿åº¦ */
+  unsigned long 		len;		/* å®é™…æ•°æ®é•¿åº¦ */
+  /* åˆ†ç‰‡æ•°æ®åŒ…çš„ä¸ªæ•° */
   unsigned long			fraglen;
-  /* ·ÖÆ¬Êı¾İ°üµÄÁ´±í */
+  /* åˆ†ç‰‡æ•°æ®åŒ…çš„é“¾è¡¨ */
   struct sk_buff		*fraglist;	/* Fragment list */
   unsigned long			truesize;
   unsigned long 		saddr;
   unsigned long 		daddr;
   int				magic;
-  volatile char 		acked, /* =1,±íÊ¾¸ÃÊı¾İ°üÒÑµÃµ½È·ÈÏ£¬¿ÉÒÔ´ÓÖØ·¢¶ÓÁĞÖĞÉ¾³ı */
-				used, /* =1,±íÊ¾¸ÃÊı¾İ°üµÄÊı¾İÒÑ±»³ÌĞò¶ÁÍê£¬¿ÉÒÔ½øĞĞÊÍ·Å */
-				free, /* =1,ÓÃÓÚÊı¾İ°ü·¢ËÍ£¬µ±Ä³¸ö´ı·¢ËÍÊı¾İ°üµÄfree±ê¼ÇµÈÓÚ1£¬
-				         * Ôò±íÊ¾ÎŞÂÛÊı¾İ°üÊÇ·ñ·¢ËÍ³É¹¦£¬ÔÚ½øĞĞ·¢ËÍ²Ù×÷ºóÁ¢¼´ÊÍ·Å£¬ÎŞĞè»º´æ
+  volatile char 		acked, /* =1,è¡¨ç¤ºè¯¥æ•°æ®åŒ…å·²å¾—åˆ°ç¡®è®¤ï¼Œå¯ä»¥ä»é‡å‘é˜Ÿåˆ—ä¸­åˆ é™¤ */
+				used, /* =1,è¡¨ç¤ºè¯¥æ•°æ®åŒ…çš„æ•°æ®å·²è¢«ç¨‹åºè¯»å®Œï¼Œå¯ä»¥è¿›è¡Œé‡Šæ”¾ */
+				free, /* =1,ç”¨äºæ•°æ®åŒ…å‘é€ï¼Œå½“æŸä¸ªå¾…å‘é€æ•°æ®åŒ…çš„freeæ ‡è®°ç­‰äº1ï¼Œ
+				         * åˆ™è¡¨ç¤ºæ— è®ºæ•°æ®åŒ…æ˜¯å¦å‘é€æˆåŠŸï¼Œåœ¨è¿›è¡Œå‘é€æ“ä½œåç«‹å³é‡Šæ”¾ï¼Œæ— éœ€ç¼“å­˜
 				         */
-				arp;  /* ÓÃÓÚ´ı·¢ËÍÊı¾İ°ü£¬´Ë×Ö¶ÎµÈÓÚ1±íÊ¾´Ë´ı·¢ËÍÊı¾İ°üÒÑÍê³ÉMACÊ×²¿
-				         * ½¨Á¢£¬arp=0±íÊ¾macÊ×²¿ÖĞÄ¿µÄ¶ËÓ²¼şµØÖ·ÉĞ²»ÖªÏş£¬¹ÊĞèÊ¹ÓÃarpĞ­ÒéÑ¯ÎÊ¶Ô·½£¬
-				         * ÔÚmacÊ×²¿ÉĞÎ´Íê³É½¨Á¢Ö®Ç°£¬¸ÃÊı¾İ°üÒ»Ö±´¦ÓÚ·¢ËÍ»º³å¶ÓÁĞÖĞ
+				arp;  /* ç”¨äºå¾…å‘é€æ•°æ®åŒ…ï¼Œæ­¤å­—æ®µç­‰äº1è¡¨ç¤ºæ­¤å¾…å‘é€æ•°æ®åŒ…å·²å®ŒæˆMACé¦–éƒ¨
+				         * å»ºç«‹ï¼Œarp=0è¡¨ç¤ºmacé¦–éƒ¨ä¸­ç›®çš„ç«¯ç¡¬ä»¶åœ°å€å°šä¸çŸ¥æ™“ï¼Œæ•…éœ€ä½¿ç”¨arpåè®®è¯¢é—®å¯¹æ–¹ï¼Œ
+				         * åœ¨macé¦–éƒ¨å°šæœªå®Œæˆå»ºç«‹ä¹‹å‰ï¼Œè¯¥æ•°æ®åŒ…ä¸€ç›´å¤„äºå‘é€ç¼“å†²é˜Ÿåˆ—ä¸­
                               */
   unsigned char			tries,lock;	/* Lock is now unused */
-						 /* Ê¹ÓÃ¸ÃÊı¾İ°üµÄÄ£¿éÊı£¬Ê¹ÓÃstruct sockµÄ½ø³ÌÊıÁ¿ */
+						 /* ä½¿ç”¨è¯¥æ•°æ®åŒ…çš„æ¨¡å—æ•°ï¼Œä½¿ç”¨struct sockçš„è¿›ç¨‹æ•°é‡ */
   unsigned short		users;		/* User count - see datagram.c (and soon seqpacket.c/stream.c) */
-  unsigned long			padding[0];  /* Ìî³ä×Ö½Ú£¬Ä¿Ç°¶¨ÒåÎª0×Ö½Ú£¬ÎŞĞèÌî³ä */
-  /* Ö®ºóµÄÄÚ´æÊÇĞèÒª·¢ËÍµ½ÍøÂçµÄÊı¾İ£¬data¼´ÊÇsk_buffµÄÄ©Î²
-    * Ò²ÊÇÊı¾İµÄÊ×²¿ 
+  unsigned long			padding[0];  /* å¡«å……å­—èŠ‚ï¼Œç›®å‰å®šä¹‰ä¸º0å­—èŠ‚ï¼Œæ— éœ€å¡«å…… */
+  /* ä¹‹åçš„å†…å­˜æ˜¯éœ€è¦å‘é€åˆ°ç½‘ç»œçš„æ•°æ®ï¼Œdataå³æ˜¯sk_buffçš„æœ«å°¾
+    * ä¹Ÿæ˜¯æ•°æ®çš„é¦–éƒ¨ 
     */
   unsigned char			data[0];
 };

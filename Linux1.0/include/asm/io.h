@@ -97,9 +97,9 @@ __OUTS(l)
  *  - you don't have to worry about side effects within the __builtin..
  */
 
-/* Ïò¶Ë¿ÚportÖĞĞ´ÈëÖµval£¬valµÄ³¤¶ÈÎªÒ»¸ö×Ö½Ú
- * inb±íÊ¾¶ÁÈ¡Ò»¸ö×Ö½Ú£¬b±íÊ¾Ò»¸ö×Ö½Ú£¬w±íÊ¾Ò»¸ö×Ö£¬2¸ö×Ö½Ú
- * l±íÊ¾4¸ö×Ö½Ú
+/* å‘ç«¯å£portä¸­å†™å…¥å€¼valï¼Œvalçš„é•¿åº¦ä¸ºä¸€ä¸ªå­—èŠ‚
+ * inbè¡¨ç¤ºè¯»å–ä¸€ä¸ªå­—èŠ‚ï¼Œbè¡¨ç¤ºä¸€ä¸ªå­—èŠ‚ï¼Œwè¡¨ç¤ºä¸€ä¸ªå­—ï¼Œ2ä¸ªå­—èŠ‚
+ * lè¡¨ç¤º4ä¸ªå­—èŠ‚
  */
 #define outb(val,port) \
 ((__builtin_constant_p((port)) && (port) < 256) ? \
@@ -111,7 +111,7 @@ __OUTS(l)
 	__inbc(port) : \
 	__inb(port))
 
-/* Ïò¶Ë¿ÚĞ´ÈëÒ»¸ö×Ö½Ú£¬Í¬Ê±ÈÃCPUÔİÍ£ */
+/* å‘ç«¯å£å†™å…¥ä¸€ä¸ªå­—èŠ‚ï¼ŒåŒæ—¶è®©CPUæš‚åœ */
 #define outb_p(val,port) \
 ((__builtin_constant_p((port)) && (port) < 256) ? \
 	__outbc_p((val),(port)) : \

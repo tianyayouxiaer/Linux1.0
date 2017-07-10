@@ -148,7 +148,7 @@ packet_write(struct sock *sk, unsigned char *buff,
   return(packet_sendto(sk, buff, len, noblock, flags, NULL, 0));
 }
 
-/* packetÌ×½Ó×ÖµÄ¹Ø±Õº¯Êı */
+/* packetå¥—æ¥å­—çš„å…³é—­å‡½æ•° */
 static void
 packet_close(struct sock *sk, int timeout)
 {
@@ -160,14 +160,14 @@ packet_close(struct sock *sk, int timeout)
   release_sock(sk);
 }
 
-/* packetĞ­Òé³õÊ¼»¯ */
+/* packetåè®®åˆå§‹åŒ– */
 static int
 packet_init(struct sock *sk)
 {
   struct packet_type *p;
 
-  /* ×¢ÒâRAWÌ×½Ó×Ö´´½¨µÄÔòÊÇÍøÂç²ãµ½´«Êä²ãµÄstruct inet_protocol£¬
-    * ¶øpacketÀàĞÍĞ­Òé£¬ÔòĞÂ½¨µÄÊÇÁ´Â·²ãµ½ÍøÂç²ãµÄstruct packet_type½á¹¹ 
+  /* æ³¨æ„RAWå¥—æ¥å­—åˆ›å»ºçš„åˆ™æ˜¯ç½‘ç»œå±‚åˆ°ä¼ è¾“å±‚çš„struct inet_protocolï¼Œ
+    * è€Œpacketç±»å‹åè®®ï¼Œåˆ™æ–°å»ºçš„æ˜¯é“¾è·¯å±‚åˆ°ç½‘ç»œå±‚çš„struct packet_typeç»“æ„ 
     */
   p = (struct packet_type *) kmalloc(sizeof(*p), GFP_KERNEL);
   if (p == NULL) return(-ENOMEM);

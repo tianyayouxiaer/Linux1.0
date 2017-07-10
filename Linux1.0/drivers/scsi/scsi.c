@@ -1563,7 +1563,7 @@ int scsi_free(void *obj, unsigned int len)
 	should be called from main().
 */
 
-/* scsiÉè±¸³õÊ¼»¯ */
+/* scsiè®¾å¤‡åˆå§‹åŒ– */
 unsigned long scsi_dev_init (unsigned long memory_start,unsigned long memory_end)
 	{
 	int i;

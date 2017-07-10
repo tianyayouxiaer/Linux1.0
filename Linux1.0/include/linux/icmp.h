@@ -37,7 +37,7 @@
 #define ICMP_HOST_UNREACH	1	/* Host Unreachable		*/
 #define ICMP_PROT_UNREACH	2	/* Protocol Unreachable		*/
 #define ICMP_PORT_UNREACH	3	/* Port Unreachable		*/
-/* ĞèÒª·ÖÆ¬ */
+/* éœ€è¦åˆ†ç‰‡ */
 #define ICMP_FRAG_NEEDED	4	/* Fragmentation Needed/DF set	*/
 #define ICMP_SR_FAILED		5	/* Source Route failed		*/
 #define ICMP_NET_UNKNOWN	6
@@ -58,11 +58,11 @@
 #define ICMP_EXC_TTL		0	/* TTL count exceeded		*/
 #define ICMP_EXC_FRAGTIME	1	/* Fragment Reass time exceeded	*/
 
-/* icmpĞ­ÒéÍ·²¿ */
+/* icmpåè®®å¤´éƒ¨ */
 struct icmphdr {
   unsigned char		type;
   unsigned char		code;
-  unsigned short	checksum;  /* icmpĞ­ÒéĞ£ÑéºÍ */
+  unsigned short	checksum;  /* icmpåè®®æ ¡éªŒå’Œ */
   union {
 	struct {
 		unsigned short	id;
