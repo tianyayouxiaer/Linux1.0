@@ -8,6 +8,7 @@
 
 
 /* one msg structure for each message */
+//每个消息的结构
 struct msg {
     struct msg *msg_next;   /* next message on queue */
     long  msg_type;          
@@ -16,6 +17,7 @@ struct msg {
 };
 
 /* one msqid structure for each queue on the system */
+//消息队列结构
 struct msqid_ds {
     struct ipc_perm msg_perm;
     struct msg *msg_first;  /* first message on queue */

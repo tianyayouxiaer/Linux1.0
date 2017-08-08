@@ -21,6 +21,9 @@
 /*
  * second extended-fs super-block data in memory
  */
+ //文件系统信息结构
+ //包含：磁盘中超级块大部分数据结构
+ //
 struct ext2_sb_info {
 	unsigned long s_frag_size;	/* Size of a fragment in bytes */
 	unsigned long s_frags_per_block;/* Number of fragments per block */

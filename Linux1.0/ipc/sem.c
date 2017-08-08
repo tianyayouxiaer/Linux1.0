@@ -27,7 +27,6 @@ static int max_semid = 0;
 
 static unsigned short sem_seq = 0;     /* 信号量序列号 */
 
-
 /* 信号量通信初始化 */
 void sem_init (void)
 {
@@ -57,6 +56,7 @@ static int findkey (key_t key)
 		if (key == sma->sem_perm.key)
 			return id;
 	}
+	
 	return -1;
 }
 
@@ -420,6 +420,7 @@ int sys_semop (int semid, struct sembuf *tsops, unsigned nsops)
 			/* 如果不是SEM_UNDO则继续处理下一个 */
 			if (!(sops[i].sem_flg & SEM_UNDO))
 				continue;
+			//找到信号集合中的匹配项
 			for (un = current->semun; un; un = un->proc_next) 
 				if ((un->semid == semid) && 
 				    (un->sem_num == sops[i].sem_num))

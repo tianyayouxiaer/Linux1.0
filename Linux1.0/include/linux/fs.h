@@ -256,10 +256,11 @@ struct file_lock {
  * 还包含一些特定文件系统的超级块的数据，该数据是用一个union
  * 来表示的。
  */
+ //用来存储文件系统的信息
 struct super_block {
 	dev_t s_dev;					/*对应设备号*/
 	unsigned long s_blocksize;      /* 设备数据块的大小 */
-	unsigned char s_blocksize_bits; /* 块大小用2的幂次方表示的幂*/
+	unsigned char s_blocksize_bits; /* 块大小用2的幂次方表示的幂，以位为单位的块大小*/
 	unsigned char s_lock;  /* 超级块是否被锁住 */
 	unsigned char s_rd_only;
 	unsigned char s_dirt;		/* 超级块的脏标记 */
@@ -324,6 +325,7 @@ struct inode_operations {
 	int (*permission) (struct inode *, int);
 };
 
+//内核针对特定文件系统的操作方法
 struct super_operations {
 	void (*read_inode) (struct inode *);
 	int (*notify_change) (int flags, struct inode *);

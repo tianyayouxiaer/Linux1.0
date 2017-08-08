@@ -24,7 +24,6 @@
  * The definition of file_systems that used to be here is now in
  * filesystems.c.  Now super.c contains no fs specific code.  -- jrs
  */
-
 extern struct file_system_type file_systems[];
 extern struct file_operations * get_blkfops(unsigned int);
 extern struct file_operations * get_chrfops(unsigned int);
@@ -34,7 +33,7 @@ extern void fcntl_init_locks(void);
 
 extern int root_mountflags;
 
-/* 支持超级快的数量
+/* 支持超级快的数量，支持32个文件系统
  */ 
 struct super_block super_blocks[NR_SUPER];
 
@@ -466,6 +465,7 @@ static int copy_mount_options (const void * data, unsigned long *where)
  * isn't used, as the syscall assumes we are talking to an older
  * version that didn't understand them.
  */
+ //安装文件系统时，系统会调用该函数从磁盘读取文件系统超级块，并将信息填充到内存中的超级块对象中
 asmlinkage int sys_mount(char * dev_name, char * dir_name, char * type,
 	unsigned long new_flags, void * data)
 {

@@ -26,7 +26,7 @@ static int shm_rss = 0; /* number of shared memory pages that are in memory */
 static int shm_swp = 0; /* number of shared memory pages that are in swap */
 static int max_shmid = 0; /* every used id is <= max_shmid */
 static struct wait_queue *shm_lock = NULL; /* 等待使用共享内存的列表 */
-static struct shmid_ds *shm_segs[SHMMNI];
+static struct shmid_ds *shm_segs[SHMMNI];//共享内存数目
 
 static unsigned short shm_seq = 0; /* incremented, for recognizing stale ids */
 
@@ -38,7 +38,8 @@ static ulong used_segs = 0;
 void shm_init (void)
 {
 	int id;
-    //共享内存初始化为未使用
+	
+    //共享内存初始化未使用,
     for (id = 0; id < SHMMNI; id++) 
 		shm_segs[id] = (struct shmid_ds *) IPC_UNUSED;
 	shm_tot = shm_rss = shm_seq = max_shmid = used_segs = 0;
@@ -60,6 +61,7 @@ static int findkey (key_t key)
 		if (key == shp->shm_perm.key) 
 			return id;
 	}
+	
 	return -1;
 }
 
@@ -107,7 +109,9 @@ found:
 	}
 
 	/* 将共享内存的物理页地址都设置为0，在使用时才会分配，并相应的赋值 */
-	for (i=0; i< numpages; shp->shm_pages[i++] = 0);
+	//共享内存页数
+	for (i=0; i< numpages; shp->shm_pages[i++] = 0);//注意这种写法
+	
 	shm_tot += numpages;
 	shp->shm_perm.key = key;
 	shp->shm_perm.mode = (shmflg & S_IRWXUGO);
@@ -412,7 +416,8 @@ int sys_shmat (int shmid, char *shmaddr, int shmflg, ulong *raddr)
 	int err;
 	unsigned int id;
 	unsigned long addr;
-	
+
+	//参数检查
 	if (shmid < 0)
 		return -EINVAL;
 
@@ -432,20 +437,21 @@ int sys_shmat (int shmid, char *shmaddr, int shmflg, ulong *raddr)
 			return -EINVAL;
 		/* set addr below  all current unspecified attaches */
 		addr = SHM_RANGE_END; 
-		/* 扫描进程的共享链表 */
+		/* 扫描该进程共享内存链表，通过该进程找到共享该内存的进程 */
 		for (shmd = current->shm; shmd; shmd = shmd->task_next) {
 			if (shmd->start < SHM_RANGE_START)
 				continue;
-			if (addr >= shmd->start)
+			if (addr >= shmd->start)//共享内存的起始地址
 				addr = shmd->start;
 		}
-		addr = (addr - shp->shm_segsz) & PAGE_MASK;
+		addr = (addr - shp->shm_segsz) & PAGE_MASK; 
 	} else if (addr & (SHMLBA-1)) {
 		if (shmflg & SHM_RND) 
 			addr &= ~(SHMLBA-1);       /* round down */
 		else
 			return -EINVAL;
 	}
+	
 	if ((addr > current->start_stack - 16384 - PAGE_SIZE*shp->shm_npages))
 		return -EINVAL;
 	if (shmflg & SHM_REMAP)
@@ -456,9 +462,10 @@ int sys_shmat (int shmid, char *shmaddr, int shmflg, ulong *raddr)
 			    addr + shp->shm_segsz < shmd->end)
 				return -EINVAL;
 		}
-
+	//参数检查
 	if (ipcperms(&shp->shm_perm, shmflg & SHM_RDONLY ? S_IRUGO : S_IRUGO|S_IWUGO))
 		return -EACCES;
+	//seq检查
 	if (shp->shm_perm.seq != shmid / SHMMNI) 
 		return -EIDRM;
 

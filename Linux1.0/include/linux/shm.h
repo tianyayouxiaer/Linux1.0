@@ -2,6 +2,7 @@
 #define _LINUX_SHM_H_
 #include <linux/ipc.h>
 
+//共享内存数据结构
 struct shmid_ds {
 	struct	ipc_perm shm_perm;	/* operation perms */
 	int	shm_segsz;		/* size of segment (bytes) */
@@ -10,10 +11,10 @@ struct shmid_ds {
 	time_t	shm_ctime;		/* last change time */
 	unsigned short	shm_cpid;	/* pid of creator */
 	unsigned short	shm_lpid;	/* pid of last operator */
-	short	shm_nattch;		/* no. of current attaches */
+	short	shm_nattch;		/* no. of current attaches *///链接到该共享内存进程个数
 	/* the following are private */
 	/* 共享内存有多少页 */
-	unsigned short   shm_npages;  /* size of segment (pages) */
+	unsigned short   shm_npages;  /* size of segment (pages) *////共享内存数目
 	/* 每页共享内存的地址 */
 	unsigned long   *shm_pages;   /* array of ptrs to frames -> SHMMAX */ 
 	struct shm_desc *attaches;    /* descriptors for attaches */
@@ -21,7 +22,9 @@ struct shmid_ds {
 
 /* mode for attach */
 #define	SHM_RDONLY	010000	/* read-only access */
+//指定的地址应被向下靠拢到内存页面大小的整数倍
 #define	SHM_RND		020000	/* round attach address to SHMLBA boundary */
+//—映射的段可能替换任何存在的映射在shmaddr开始size大小的内存区域
 #define	SHM_REMAP	040000	/* take-over region on attach */
 
 /* super user shmctl commands */
@@ -69,7 +72,7 @@ struct	shminfo {
 #define SHMMAX 0x3fa000				/* max shared seg size (bytes) */
 #define SHMMIN 1	 /* really PAGE_SIZE */	/* min shared seg size (bytes) */
 #define SHMMNI (1<<_SHM_ID_BITS)		/* max num of segs system wide */
-#define SHMALL (1<<(_SHM_IDX_BITS+_SHM_ID_BITS))/* max shm system wide (pages) */
+#define SHMALL (1<<(_SHM_IDX_BITS+_SHM_ID_BITS))/* max shm system wide (pages) *///共享内存占用的总页数
 #define	SHMLBA 0x1000				/* attach addr a multiple of this */
 #define SHMSEG SHMMNI				/* max shared segs per process */
 
@@ -96,11 +99,12 @@ struct shm_info {
  * Per process internal structure for managing segments.
  * A shmat will add to and shmdt will remove from the list.
  */
+ //每个进程管理共享内存
 struct	shm_desc {
-	struct task_struct *task;     /* attacher */
-	unsigned long shm_sgn;        /* signature for this attach */
-	unsigned long start;   /* virt addr of attach, multiple of SHMLBA */
-	unsigned long end;            /* multiple of SHMLBA */
+	struct task_struct *task;     /* attacher *///连接到该共享内存的结构
+	unsigned long shm_sgn;        /* signature for this attach *///该连接的标志
+	unsigned long start;   /* virt addr of attach, multiple of SHMLBA *///虚拟地址起始地址
+	unsigned long end;            /* multiple of SHMLBA *///虚拟地址结束为止
 	/* 这条链表为进程所用 */
 	struct shm_desc *task_next;   /* next attach for task */
 	/* 这条链表为共享内存集使用 */

@@ -43,7 +43,6 @@ static int kmsg_select(struct inode *inode, struct file *file, int sel_type, sel
 	return 0;
 }
 
-
 static struct file_operations proc_kmsg_operations = {
 	NULL,		/* kmsg_lseek */
 	kmsg_read,

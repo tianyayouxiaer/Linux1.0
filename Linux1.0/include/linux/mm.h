@@ -13,12 +13,16 @@ int __verify_write(unsigned long addr, unsigned long count);
 
 extern inline int verify_area(int type, const void * addr, unsigned long size)
 {
+	//用户空间地址大于3GB
 	if (TASK_SIZE <= (unsigned long) addr)
 		return -EFAULT;
+	//addr + size 在用户空间地址中
 	if (size > TASK_SIZE - (unsigned long) addr)
 		return -EFAULT;
+	//如果是读，再验证读的大小不为0
 	if (wp_works_ok || type == VERIFY_READ || !size)
 		return 0;
+		
 	return __verify_write((unsigned long) addr,size);
 }
 

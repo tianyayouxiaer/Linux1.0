@@ -5,6 +5,7 @@
 typedef int key_t; 		/* should go in <types.h> type for IPC key */
 #define IPC_PRIVATE ((key_t) 0)  
 
+//ipc参数
 struct ipc_perm
 {
   key_t  key;
@@ -13,7 +14,7 @@ struct ipc_perm
   ushort cuid;  /* creator euid and egid */
   ushort cgid;
   ushort mode;  /* access modes see mode flags below */
-  ushort seq;   /* sequence number */
+  ushort seq;   /* sequence number */ //序列号
 };
 
 

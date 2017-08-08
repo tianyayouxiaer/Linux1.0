@@ -158,16 +158,18 @@ struct ext2_old_group_desc
 	unsigned short bg_free_inodes_count;	/* Free inodes count */
 };
 
+//组描述符表，ext2文件系统除引导块外，都统一用块组来进行管理，每个块组都有自己的块组，描述符
+//记录了
 struct ext2_group_desc
 {
-	unsigned long  bg_block_bitmap;		/* Blocks bitmap block */ /* 块位图块号 */
-	unsigned long  bg_inode_bitmap;		/* Inodes bitmap block */ /* inode位图块号 */
-	unsigned long  bg_inode_table;		/* Inodes table block */ /* 第一个索引节点表块块号 */
-	unsigned short bg_free_blocks_count;	/* Free blocks count */ /* 组中空闲块个数 */
-	unsigned short bg_free_inodes_count;	/* Free inodes count */ /* 组中空闲索引节点个数 */
+	unsigned long  bg_block_bitmap;		/* Blocks bitmap block */ /* 块位图开始的块号,块位图用用标示块的使用情况 */
+	unsigned long  bg_inode_bitmap;		/* Inodes bitmap block */ /* 索引节点位图开始的块地址 */
+	unsigned long  bg_inode_table;		/* Inodes table block */ /* 索引节点列表开始的地址 */
+	unsigned short bg_free_blocks_count;	/* Free blocks count */ /* 组中空闲块个数，即可用块数 */
+	unsigned short bg_free_inodes_count;	/* Free inodes count */ /* 组中空闲索引节点个数，即可用索引节点数 */
 	unsigned short bg_used_dirs_count;	/* Directories count */ /* 组中目录个数 */
 	unsigned short bg_pad;
-	unsigned long  bg_reserved[3];
+	unsigned long  bg_reserved[3];//保留
 };
 
 /*
@@ -213,12 +215,13 @@ struct ext2_group_desc
  * Structure of an inode on the disk
  */
 
-/* 在硬盘中inode的数据 
+/* 在硬盘中inode的数据,文件被映射成1个索引节点 
  */
+ //每个inode对应一个文件或目录，记录了文件的物理属性，如文件大小，所占用的block以及目录的directory block信息
 struct ext2_inode {
 	unsigned short i_mode;		/* File mode */ /* 文件类型和访问权限 */
 	unsigned short i_uid;		/* Owner Uid */
-	unsigned long  i_size;		/* Size in bytes */
+	unsigned long  i_size;		/* Size in bytes，文件的实际大小 */
 	unsigned long  i_atime;		/* Access time */
 	unsigned long  i_ctime;		/* Creation time */
 	unsigned long  i_mtime;		/* Modification time */
@@ -279,6 +282,8 @@ struct ext2_inode {
 /*
  * Structure of the super block
  */
+ //超级块，代表整个文件系统
+ //含了该硬盘或分区上的文件系统的整体信息，如文件系统的大小等
 struct ext2_super_block {
 	unsigned long  s_inodes_count;	/* Inodes count */
 	unsigned long  s_blocks_count;	/* Blocks count */
